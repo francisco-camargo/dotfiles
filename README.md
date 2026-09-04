@@ -109,6 +109,35 @@ track edits: after changing anything in this repo, re-run `./install.sh` to push
 the change back out. Turn Developer Mode on and you get real symlinks, and edits
 propagate on their own.
 
+### Copies drift both ways
+
+The copy fallback has a second failure mode, and it is easier to hit than the
+first. Because `~/.claude/skills/md-to-pdf/` is an ordinary directory and not a
+link, editing a skill in place — which is what Claude does when asked to change a
+global skill — leaves this repo clean. `git status` reports nothing, so the change
+looks like it was never made, and the next `./install.sh` quietly replaces it with
+the repo's older copy. The overwritten directory does get backed up to
+`<name>.bak.<timestamp>`, so the work is recoverable, but only if you notice in
+time to go looking for it.
+
+This has already happened once. An `h4` rule added to `print.css` lived only in
+`~/.claude`, while the repo picked up two commits the live copy never saw. Both
+sides had edits the other did not.
+
+Until it is fixed, the rule is: edit files in this repo, never in `~/.claude`,
+then re-run `./install.sh`. And before running the installer, diff the two trees
+so an in-place edit does not get thrown away:
+
+```bash
+diff -r claude/skills/md-to-pdf ~/.claude/skills/md-to-pdf
+```
+
+**To deal with next.** Turning on Developer Mode is the real fix — `install.sh`
+then links instead of copying and the drift cannot happen. Where that is not an
+option, `install.sh` should refuse to overwrite a destination whose contents
+differ from the repo unless it is passed something like `--force`. A copy-mode
+install should not be able to silently destroy work, and right now it can.
+
 ### Settings only load at startup
 
 Claude Code reads `~/.claude/settings.json` when a session starts. Installing or
