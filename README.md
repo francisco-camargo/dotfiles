@@ -2,6 +2,66 @@
 
 Claude Code configuration, kept in one place so every machine behaves the same.
 
+## Introduction
+
+### What dotfiles are
+
+Most programs store their settings as plain files in your home directory. On Unix
+these traditionally start with a dot — `.bashrc`, `.gitconfig`, `.vimrc` — which
+hides them from a normal `ls`. That is where the name *dotfiles* comes from.
+`~/.claude/` is the same convention: the dot is on the directory, and
+`settings.json` sits inside it.
+
+### The problem they solve
+
+Left alone, that config has three failure modes:
+
+1. **It is scattered and untracked.** You change a setting, it works, and six
+   months later you cannot recall what you changed or why. There is no `git log`
+   for a home directory.
+2. **It drifts between machines.** Laptop and desktop slowly diverge, and you
+   only notice when something behaves differently on one of them.
+3. **It is lost on reinstall.** A new machine means re-deriving everything from
+   memory.
+
+### The inversion
+
+A dotfiles repo makes the git repo the real location and the home directory a set
+of pointers. `~/.claude/settings.json` becomes a **symlink** — a file that is
+really just a pointer to another path — aimed at `claude/settings.json` in this
+repo. Both paths are then the same file: edit through either one and you have
+edited the repo. Setting that up is all `install.sh` does.
+
+The payoff is the ordinary git workflow applied to config:
+
+- **One source of truth.** No hunting for which copy is the current one.
+- **A history with reasons.** Every change is a commit, so `git log` answers "why
+  is this set this way", and `git revert` undoes one that turned out badly.
+- **Reproducible machines.** `git clone`, then `./install.sh`, and the machine
+  behaves like the others. No hand-copying, no half-configured laptop.
+- **Config that is readable.** The repo is also documentation. The sections below
+  explain what each piece does, so the setup can be understood later rather than
+  reverse-engineered.
+
+### What is here today
+
+Two things: `claude/settings.json`, holding the model choice and the three-layer
+[git approval gate](#the-git-approval-gate), and the
+[`md-to-pdf` skill](#the-md-to-pdf-skill). Small scope on purpose — it starts
+with what actually gets used and grows when repetition justifies it.
+[What else could live here](#what-else-could-live-here) lists the likely
+additions.
+
+### The working loop
+
+Edit a file in this repo, commit it, and on any other machine `git pull`. With
+symlinks the change is live immediately.
+
+On this Windows machine it is not, because Developer Mode is off and `install.sh`
+falls back to copying — and copies do not track edits. Until that changes, re-run
+`./install.sh` after editing anything here, or the change stays in the repo and
+never reaches `~/.claude/`. Details in [Symlinks on Windows](#symlinks-on-windows).
+
 ## Install on a new machine
 
 ```bash
