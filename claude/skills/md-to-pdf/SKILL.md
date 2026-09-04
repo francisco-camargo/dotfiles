@@ -1,17 +1,17 @@
 ---
 name: md-to-pdf
-description: Render a Markdown document in this repo to a print-ready PDF. Use when asked to export, print, or "save as PDF" any .md file here (e.g. roles_and_responsibilities.md), or to regenerate the PDF after editing the Markdown.
+description: Render a Markdown document to a print-ready PDF. Use when asked to export, print, or "save as PDF" any .md file, or to regenerate the PDF after editing the Markdown.
 ---
 
 # Markdown to PDF
 
 Converts a Markdown file to a PDF laid out for printing and handing out on
-paper. Built for this repo's wide four-column tables.
+paper.
 
 ## Usage
 
 ```bash
-.claude/skills/md-to-pdf/scripts/md2pdf.sh roles_and_responsibilities.md
+~/.claude/skills/md-to-pdf/scripts/md2pdf.sh roles_and_responsibilities.md
 ```
 
 Writes `roles_and_responsibilities.pdf` next to the source. Options:
@@ -32,12 +32,12 @@ Set `MD2PDF_BROWSER` to a Chrome/Edge executable if the script cannot find one.
 
 No pandoc, node, or python needed — only `awk` and an installed Chromium-family
 browser. This matters: none of the usual converters are installed on the
-machine this repo lives on.
+machine this config is installed on.
 
 ## Scope of the converter
 
 `md2html.awk` is intentionally small. It handles headings, GFM pipe tables,
-paragraphs, `**bold**`, and `` `code` `` — which is all this repo's documents
+paragraphs, `**bold**`, and `` `code` `` — which is all the target documents
 use. Anything else (lists, links, images, block quotes, fenced code) passes
 through as literal text. If a document starts needing those, extend the awk
 script rather than reaching for a heavier toolchain.
