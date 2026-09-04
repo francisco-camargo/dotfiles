@@ -62,6 +62,26 @@ falls back to copying — and copies do not track edits. Until that changes, re-
 `./install.sh` after editing anything here, or the change stays in the repo and
 never reaches `~/.claude/`. Details in [Symlinks on Windows](#symlinks-on-windows).
 
+## Platform support
+
+`bash` and `git` are the only requirements. There is nothing here that ties the
+repo to one operating system:
+
+- **macOS and Linux** work as-is, and get real symlinks by default — no
+  Developer Mode step, so the [working loop](#the-working-loop) above is the
+  live-edit one rather than the re-run-`install.sh` one.
+- **Windows** works through Git Bash. `.gitattributes` normalizes line endings
+  to LF so the scripts stay executable everywhere.
+
+The Windows-specific pieces are inert elsewhere rather than broken: the
+`PowerShell(...)` entries in `permissions.ask` name a tool that does not exist on
+macOS, `md2pdf.sh` guards its `cygpath` calls behind `command -v`, and its
+browser search list already includes the `/Applications/` paths alongside the
+`C:\Program Files\` ones.
+
+Where the sections below say "this Windows machine", they are reporting where
+the config happens to run today, not stating a requirement.
+
 ## Install on a new machine
 
 ```bash
