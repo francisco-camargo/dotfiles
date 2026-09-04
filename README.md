@@ -236,6 +236,77 @@ that repo. When the same skill name exists in both, the project copy wins.
 nothing misbehaves, but there are two sources of truth. Worth deleting the
 project copy at some point and letting this repo own it.
 
+## A global CLAUDE.md
+
+Not set up yet, and probably the most useful next addition. `~/.claude/CLAUDE.md`
+holds standing instructions Claude reads at the start of every session in every
+project — the home for preferences that otherwise get re-explained, and then
+re-explained again. Wiring it in is one more line in `install.sh`:
+
+```bash
+place "$repo/claude/CLAUDE.md" "$dest/CLAUDE.md"
+```
+
+### The bug that makes the case for it
+
+This machine gives Claude two shell tools, PowerShell and Bash, and their
+multi-line string syntax is not interchangeable. PowerShell uses a here-string:
+
+```powershell
+git commit -m @'
+subject line
+'@
+```
+
+Bash uses a heredoc:
+
+```bash
+git commit -F - <<'MSG'
+subject line
+MSG
+```
+
+Feed the PowerShell form to the Bash tool and nothing errors. Bash has no idea
+`@'` is meant to open anything, so it passes the `@` through as an ordinary
+character. The commit succeeds — with `@ ` glued to the front of the subject and
+a stray `@` alone on the last line of the body. Nothing complains, the tool
+reports success, and it looks fine until the log is read back. The repair is an
+amend.
+
+That happened here while making commit `116e4ff`, and it is the kind of mistake
+that recurs rather than teaching itself: neither tool signals the mismatch, and
+the confusion is a permanent property of a setup that exposes both shells.
+
+Which is precisely what a global `CLAUDE.md` is for. Not one-off errors, but
+standing facts about this environment that need saying once, somewhere durable:
+
+> This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes
+> do not mix. In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting — the
+> PowerShell here-string `@'...'@` is not Bash syntax and will silently embed
+> literal `@` characters rather than failing. In the PowerShell tool the reverse
+> holds, and `&&` and `||` are parse errors in Windows PowerShell 5.1.
+
+The general shape is worth noticing: anything corrected twice in two different
+sessions is a candidate. A correction that only lives in one conversation is
+gone when that conversation ends.
+
+### Instructions are not enforcement
+
+Worth being honest about the ceiling. `CLAUDE.md` is advice the model reads, not
+a rule the machine applies — it lowers the odds, it does not remove them. The
+`PreToolUse` hook that already gates commits could genuinely enforce this one:
+match `@'` in a Bash tool command and refuse it, the same way the gate stops an
+unapproved commit. If the written instruction proves not to be enough, that is
+the escalation rather than wording it more emphatically.
+
+### One caveat on contents
+
+A global `CLAUDE.md` gets committed and pushed like everything else here, so
+[Security](#security) applies to it in full. It is also a natural place to drift
+into recording machine specifics — absolute paths, host names, which drive holds
+what. Keep it to preferences and conventions, and it stays portable to the next
+machine.
+
 ## Security
 
 The repo is private, but private is not the same as safe. It gets cloned to every
@@ -329,9 +400,9 @@ need comes up, roughly in order of how much repetition each one removes.
 
 ### More Claude Code configuration
 
-- **`~/.claude/CLAUDE.md`** — standing instructions that apply to every project:
-  house style, how you like commits written, tools to prefer or avoid. The
-  natural home for preferences that keep having to be re-explained.
+- **`~/.claude/CLAUDE.md`** — standing instructions applied to every project.
+  Now has its own section above, [A global CLAUDE.md](#a-global-claudemd),
+  with a worked case for adding it.
 - **More skills** — anything done twice by hand is a candidate. Skills carry the
   *when* and *why* alongside the script, which is what makes them worth more than
   a loose shell script.
