@@ -1,0 +1,75 @@
+/* Print styling for the roles & responsibilities tables.
+   Tuned for wide 4-column tables on US Letter. */
+
+@page { size: letter; margin: 0.6in 0.55in; }
+
+body {
+  font-family: "Segoe UI", Calibri, Arial, sans-serif;
+  font-size: 9.5pt;
+  line-height: 1.4;
+  color: #1a1a1a;
+}
+
+h1 {
+  font-size: 20pt;
+  margin: 0 0 6pt;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5pt;
+}
+
+h2 {
+  font-size: 13pt;
+  margin: 18pt 0 6pt;
+  color: #111;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 3pt;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 11pt;
+  margin: 12pt 0 5pt;
+  color: #333;
+  page-break-after: avoid;
+}
+
+p { margin: 0 0 8pt; }
+
+code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.9em;
+  background: #f2f2f2;
+  padding: 0 2pt;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 10pt;
+  page-break-inside: auto;
+}
+
+/* Keep rows whole and repeat the header on every page. */
+thead { display: table-header-group; }
+tr { page-break-inside: avoid; page-break-after: auto; }
+
+th, td {
+  border: 1px solid #c8c8c8;
+  padding: 3.5pt 5pt;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #ececec;
+  font-weight: 600;
+  font-size: 9pt;
+}
+
+/* Task | Owner | Backup | Cadence */
+td:nth-child(1) { width: 55%; }
+td:nth-child(2),
+td:nth-child(3) { width: 13%; }
+td:nth-child(4) { width: 19%; }
+
+tbody tr:nth-child(even) { background: #fafafa; }

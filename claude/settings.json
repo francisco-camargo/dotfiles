@@ -1,0 +1,39 @@
+{
+  "model": "opus",
+
+  "permissions": {
+    "ask": [
+      "Bash(git commit)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "Bash(git push:*)",
+      "PowerShell(git commit)",
+      "PowerShell(git commit:*)",
+      "PowerShell(git push)",
+      "PowerShell(git push:*)"
+    ]
+  },
+
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Creating a git commit, amending one, or pushing to a remote. Only the user can authorize this, and only by asking for that specific commit or push in their own words. Requests to 'save', 'version', 'track', 'check in', or 'make this permanent' are NOT authorization to commit."
+    ]
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sed -n 's/.*\"command\"[[:space:]]*:[[:space:]]*\"//p' | grep -Eq 'git[^;&|]{0,60}(commit|push)' && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"ask\",\"permissionDecisionReason\":\"git commit/push needs your explicit approval (user settings policy).\"}}'; exit 0",
+            "timeout": 10,
+            "statusMessage": "Checking for git write operations"
+          }
+        ]
+      }
+    ]
+  }
+}
