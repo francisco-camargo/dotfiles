@@ -175,11 +175,10 @@ so an in-place edit does not get thrown away:
 diff -r claude/skills/md-to-pdf ~/.claude/skills/md-to-pdf
 ```
 
-**To deal with next.** Turning on Developer Mode is the real fix — `install.sh`
-then links instead of copying and the drift cannot happen. Where that is not an
-option, `install.sh` should refuse to overwrite a destination whose contents
-differ from the repo unless it is passed something like `--force`. A copy-mode
-install should not be able to silently destroy work, and right now it can.
+**To deal with next.** Both halves are tracked under [Open items](#open-items):
+turning on Developer Mode, which ends the copying, and a `--force` guard for
+machines where Developer Mode is not on offer. A copy-mode install should not be
+able to silently destroy work, and right now it can.
 
 ### A backup is not always inert
 
@@ -325,9 +324,8 @@ Left in a conversation, that preference lasts until the conversation ends and
 the next session goes back to wrapping at eighty. Written down here, it holds in
 every repo, including ones that have never heard of it.
 
-This README is still wrapped in the old style. Converting it is a whole-file
-reflow worth its own commit rather than a paragraph fixed in passing, which
-would leave one file written two ways.
+This README is still wrapped in the old style; reflowing it is an
+[open item](#reflow-this-readme-to-one-sentence-per-line).
 
 ### The third entry, chosen rather than corrected
 
@@ -447,6 +445,51 @@ commit before it happens. Overkill at the current size — there is nothing here
 catch. Worth adding once the repo grows to shell profiles and git config, which
 is where credentials genuinely creep in: a remote URL with a token embedded in
 it, an alias carrying a password, an exported key in `.bashrc`.
+
+## Open items
+
+Work that is started and unfinished, as opposed to
+[what else could live here](#what-else-could-live-here), which is speculative.
+Each of these is known to be missing, not merely imagined.
+
+### Turn on Developer Mode
+
+The one item that needs a person rather than a commit. `install.sh` now asks Git
+Bash for a real symlink instead of letting it copy in silence
+([Symlinks on Windows](#symlinks-on-windows)), so the only thing still in the way
+is the OS. Developer Mode is off on this machine —
+`AllowDevelopmentWithoutDevLicense` is unset under
+`HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock` — and the shell
+is not elevated, so a native link fails with "operation not permitted" and the
+installer copies instead.
+
+Settings → System → For developers → Developer Mode on, then re-run
+`./install.sh`. Turning it on takes an administrator, which is why no session can
+do it for you. After that the installed files are the repo files, edits
+propagate on their own, and the drift below stops being possible.
+
+### Reflow this README to one sentence per line
+
+`claude/CLAUDE.md` sets the convention and this file predates it, so the repo
+currently contradicts its own rule. Converting touches nearly every line, which
+is why it belongs in a commit of its own rather than arriving mixed into a change
+about something else.
+
+### Stop a copy-mode install from overwriting newer work
+
+Described in full under [Copies drift both ways](#copies-drift-both-ways). While
+the installer copies, a skill edited in place in `~/.claude` is invisible to
+`git status`, and the next install replaces it with the repo's older version.
+Backups make that recoverable, not harmless. The guard is to refuse a destination
+whose contents differ from the repo unless passed `--force`. Developer Mode
+removes the need on this machine; the guard is what covers a machine where
+Developer Mode is not on offer.
+
+### Prune `~/.claude/backups/`
+
+Every install adds a copy of whatever it replaced and nothing removes the old
+ones. Harmless while the tree is three small things, and worth a `--keep N` or a
+date cutoff before the directory turns into somewhere nobody looks.
 
 ## What else could live here
 
