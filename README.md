@@ -79,10 +79,11 @@ The payoff is the ordinary git workflow applied to config:
 
 ### What is here today
 
-Two things: `claude/settings.json`, holding the model choice and the three-layer
-[git approval gate](#the-git-approval-gate), and the
-[`md-to-pdf` skill](#the-md-to-pdf-skill). Small scope on purpose — it starts
-with what actually gets used and grows when repetition justifies it.
+Three things: `claude/settings.json`, holding the model choice and the three-layer
+[git approval gate](#the-git-approval-gate); `claude/CLAUDE.md`, the
+[standing instructions](#a-global-claudemd) read at the start of every session;
+and the [`md-to-pdf` skill](#the-md-to-pdf-skill). Small scope on purpose — it
+starts with what actually gets used and grows when repetition justifies it.
 [What else could live here](#what-else-could-live-here) lists the likely
 additions.
 
@@ -126,10 +127,10 @@ cd ~/git/dotfiles
 
 Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 
-`install.sh` symlinks `claude/settings.json` and `claude/skills/md-to-pdf` into
-`~/.claude/`. Anything already there is moved to `<name>.bak.<timestamp>` first —
-nothing is silently overwritten. Use `--dry-run` to preview, `--copy` to force
-copies instead of links.
+`install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and
+`claude/skills/md-to-pdf` into `~/.claude/`. Anything already there is moved to
+`<name>.bak.<timestamp>` first — nothing is silently overwritten. Use `--dry-run`
+to preview, `--copy` to force copies instead of links.
 
 ### Symlinks on Windows
 
@@ -188,6 +189,7 @@ not reloaded yet.
 | Path | Goes to | What it is |
 | --- | --- | --- |
 | `claude/settings.json` | `~/.claude/settings.json` | Model choice and the git approval gate below |
+| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Standing instructions for every session, everywhere |
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | Renders a Markdown file to a print-ready PDF |
 
 ## The git approval gate
@@ -238,14 +240,12 @@ project copy at some point and letting this repo own it.
 
 ## A global CLAUDE.md
 
-Not set up yet, and probably the most useful next addition. `~/.claude/CLAUDE.md`
-holds standing instructions Claude reads at the start of every session in every
-project — the home for preferences that otherwise get re-explained, and then
-re-explained again. Wiring it in is one more line in `install.sh`:
-
-```bash
-place "$repo/claude/CLAUDE.md" "$dest/CLAUDE.md"
-```
+`~/.claude/CLAUDE.md` holds standing instructions Claude reads at the start of
+every session in every project — the home for preferences that otherwise get
+re-explained, and then re-explained again. It is now in the repo as
+`claude/CLAUDE.md` and installed like everything else. Three entries so far: two
+that had to be said once already and would otherwise have to be said again, and
+one standard set up front.
 
 ### The bug that makes the case for it
 
@@ -289,6 +289,40 @@ standing facts about this environment that need saying once, somewhere durable:
 The general shape is worth noticing: anything corrected twice in two different
 sessions is a candidate. A correction that only lives in one conversation is
 gone when that conversation ends.
+
+### The preference that makes the same case
+
+The second entry is not a bug, which is the point — the file is for anything
+that would otherwise be re-explained, and preferences qualify. Prose here was
+hard-wrapped to eighty columns, which splits sentences across lines and makes a
+one-word edit reflow every line after it: the diff reports a paragraph changed
+when a word did. The convention that fixes it is one sentence per line, breaking
+at sentence boundaries only. Markdown joins the lines back into a paragraph when
+rendered, so the output is identical and only the diffs improve.
+
+Left in a conversation, that preference lasts until the conversation ends and
+the next session goes back to wrapping at eighty. Written down here, it holds in
+every repo, including ones that have never heard of it.
+
+This README is still wrapped in the old style. Converting it is a whole-file
+reflow worth its own commit rather than a paragraph fixed in passing, which
+would leave one file written two ways.
+
+### The third entry, chosen rather than corrected
+
+Orwell's six rules from *Politics and the English Language* are the third entry.
+Where the wrapping rule governs the line breaks, these govern the words: cut what
+can be cut, prefer the short word, prefer the active, and skip the jargon when a
+plain word carries the same meaning. His sixth rule keeps the other five honest —
+break any of them sooner than say something clumsy — which matters, because a
+style rule applied past the point of sense costs more than it saves.
+
+That entry arrived differently from the first two. Nothing went wrong first: no
+mangled commit, no paragraph reflowed for one word. It is a standard set up
+front, which is the second legitimate way in. The bar is not only "this has gone
+wrong twice" — it is also "this is general and durable enough to be worth saying
+before it costs anything." What stays out is the preference that applies to one
+file, or the rule that would read as a surprise six months from now.
 
 ### Instructions are not enforcement
 
@@ -400,9 +434,6 @@ need comes up, roughly in order of how much repetition each one removes.
 
 ### More Claude Code configuration
 
-- **`~/.claude/CLAUDE.md`** — standing instructions applied to every project.
-  Now has its own section above, [A global CLAUDE.md](#a-global-claudemd),
-  with a worked case for adding it.
 - **More skills** — anything done twice by hand is a candidate. Skills carry the
   *when* and *why* alongside the script, which is what makes them worth more than
   a loose shell script.
