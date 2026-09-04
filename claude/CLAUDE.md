@@ -18,6 +18,23 @@ Exceptions: list items are one line each regardless of length, and tables and co
 When editing a file that is already hard-wrapped, match the file rather than converting a paragraph in passing.
 Converting is a deliberate, whole-file change.
 
+## Writing style
+
+Follow Orwell's six rules, from *Politics and the English Language*:
+
+1. Never use a metaphor, simile, or other figure of speech which you are used to seeing in print.
+2. Never use a long word where a short one will do.
+3. If it is possible to cut a word out, always cut it out.
+4. Never use the passive where you can use the active.
+5. Never use a foreign phrase, a scientific word, or a jargon word if you can think of an everyday English equivalent.
+6. Break any of these rules sooner than say anything outright barbarous.
+
+They apply to everything written here: documentation, commit messages, code comments, and replies in the session.
+
+Rule 6 is not decoration.
+The first five are habits to catch yourself breaking, not a filter that outranks being clear or being accurate.
+Where a technical term is the precise word, use it — the target is the jargon reached for out of habit, not the vocabulary the subject actually requires.
+
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
