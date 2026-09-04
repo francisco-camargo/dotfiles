@@ -153,6 +153,92 @@ that repo. When the same skill name exists in both, the project copy wins.
 nothing misbehaves, but there are two sources of truth. Worth deleting the
 project copy at some point and letting this repo own it.
 
+## Security
+
+The repo is private, but private is not the same as safe. It gets cloned to every
+machine, sits in plain text in every backup, and is readable by anything running
+as you. Treat it as a file that leaks eventually and decide what goes in it on
+that basis.
+
+### What is in here today
+
+Nothing sensitive. `settings.json` holds a model name and permission rules,
+`install.sh` holds paths, the skill is shell, awk, and CSS. Searching the entire
+history — not just the current files — for key, token, and password patterns
+turns up only this README talking about them. That is the state to preserve, and
+it is worth re-checking whenever the repo grows.
+
+### The directory this installs into is full of secrets
+
+This is the real hazard, and it is not obvious. `~/.claude/` contains far more
+than `settings.json`:
+
+| Path | What it holds |
+| --- | --- |
+| `~/.claude/.credentials.json` | The Claude Code auth token |
+| `~/.claude.json` | OAuth account, user and machine IDs, per-project history |
+| `~/.claude/projects/` | Full transcripts of every session, in every repo |
+| `~/.claude/shell-snapshots/`, `session-env/` | Captured shell state, including exported environment variables |
+| `~/.claude/file-history/`, `backups/` | Copies of files as they were edited during sessions |
+
+None of that belongs in git. Transcripts alone are the whole content of private
+repos plus anything read or pasted during a session.
+
+The failure mode is not typing a password into `settings.json` — nobody does
+that. It is broadening `install.sh` to sync "all of `~/.claude`" and sweeping the
+rest up with it. So: **the install stays an explicit allowlist**. `install.sh`
+names each file it places, one `place` line at a time, and never walks the
+directory. Adding config means adding a line, not widening a glob.
+
+### Commit the reference, not the secret
+
+`settings.json` supports an `env` block, which is exactly where someone would
+paste an `ANTHROPIC_API_KEY` to make something work. Don't. Set the variable in
+the shell profile or the OS environment and let the config refer to it by name.
+The same rule covers every future addition: API keys, tokens, `~/.ssh/` private
+keys, `.env` files, anything with a password in it.
+
+`.gitignore` already excludes `*.bak`, which is where `install.sh` parks whatever
+it replaced — those backups are copies of real local config and should never be
+committed.
+
+### Git history does not forget
+
+If a secret is ever committed, deleting it in a later commit does not remove it.
+It stays in every clone, in every fork, and on GitHub's servers. The fix, in
+order:
+
+1. **Rotate the credential.** Assume it is burned. This is the step that actually
+   matters.
+2. Rewrite the history with `git filter-repo` and force-push, as cleanup.
+
+Same reason to audit the full history rather than the working tree before ever
+flipping this repo public — going public publishes every commit ever made, not
+the current state.
+
+### This repo runs code on every machine that installs it
+
+`install.sh` is a script you execute. More significantly, the `PreToolUse` hook
+in `settings.json` runs a shell command on *every* Bash and PowerShell tool call
+on every machine that has installed it. Whatever lands in this repo, runs.
+
+That makes write access to this repo equivalent to code execution on all your
+machines:
+
+- Keep 2FA on the GitHub account.
+- Read the diff before `git pull && ./install.sh` on another machine, the same
+  way you would for any script handed to you.
+- If this repo is ever shared or made public, treat a pull request against it as
+  a change to a security-sensitive script, not a config tweak.
+
+### A guardrail, if it earns its keep
+
+A pre-commit hook running `gitleaks` or `trufflehog` blocks the accidental
+commit before it happens. Overkill at the current size — there is nothing here to
+catch. Worth adding once the repo grows to shell profiles and git config, which
+is where credentials genuinely creep in: a remote URL with a token embedded in
+it, an alias carrying a password, an exported key in `.bashrc`.
+
 ## What else could live here
 
 Nothing below is set up yet. This is the list of things worth pulling in as the
@@ -209,11 +295,9 @@ approach strains. The usual fix is a `hosts/<machine-name>/` directory that
 config stays shared and only the differences are duplicated. Worth doing when the
 need actually appears, not before.
 
-### What not to put here
 
-The repo is private, but private is not the same as safe — it gets cloned to
-every machine and shows up in plain text in every backup. Keep out API keys,
-tokens, `~/.ssh/` private keys, `.env` files, and anything with a password in it.
-`.gitignore` already excludes `*.bak` files, which is where `install.sh` parks
-whatever it replaced. If a config file needs a secret, keep the secret in an
-environment variable and commit only the reference to it.
+### Before adding any of this
+
+Shell profiles, git config, and bootstrap scripts are where credentials actually
+creep in — a remote URL with a token in it, an exported key in `.bashrc`. Re-read
+[Security](#security) before pulling any of them in.
