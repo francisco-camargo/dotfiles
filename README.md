@@ -138,11 +138,19 @@ Windows only allows symlinks with Developer Mode on (Settings → System → For
 developers) or an elevated shell. Without it the script notices, says so, and
 copies instead.
 
-As of this writing that fallback is what happens on the main Windows machine —
-Developer Mode is off, so `install.sh` copies. Copies work fine, but they do not
-track edits: after changing anything in this repo, re-run `./install.sh` to push
-the change back out. Turn Developer Mode on and you get real symlinks, and edits
-propagate on their own.
+Git Bash adds a second requirement that is easy to miss. Its `ln -s` copies the
+file and exits 0 unless `MSYS=winsymlinks:nativestrict` is set, so no link is
+attempted and nothing reports a problem — turning Developer Mode on by itself
+would not have changed the outcome. `install.sh` now sets that variable on the
+`ln` call, which makes the OS refusal visible for the `-L` check to catch. The
+variable means nothing to `ln` on macOS or Linux.
+
+As of this writing the fallback is still what happens on the main Windows
+machine. Developer Mode is off and the shell is not elevated, so a native symlink
+fails with "operation not permitted" and `install.sh` copies. Copies work fine,
+but they do not track edits: after changing anything in this repo, re-run
+`./install.sh` to push the change back out. Turn Developer Mode on and you get
+real symlinks, and edits propagate on their own.
 
 ### Copies drift both ways
 

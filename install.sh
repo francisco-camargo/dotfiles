@@ -59,7 +59,12 @@ place() {
       say "  would: link $target -> $src"
       return 0
     fi
-    if ln -s "$src" "$target" 2>/dev/null && [ -L "$target" ]; then
+    # Git Bash needs MSYS=winsymlinks:nativestrict or `ln -s` copies the file
+    # and exits 0, so the destination is a regular file and Developer Mode makes
+    # no difference. nativestrict makes it attempt a real symlink and fail when
+    # the OS refuses, which is what the -L check and the fallback below expect.
+    # The variable means nothing to ln on macOS or Linux.
+    if MSYS=winsymlinks:nativestrict ln -s "$src" "$target" 2>/dev/null && [ -L "$target" ]; then
       say "  linked $target"
       return 0
     fi
