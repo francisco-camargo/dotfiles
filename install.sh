@@ -5,7 +5,7 @@
 #   ./install.sh --copy     always copy
 #   ./install.sh --dry-run  show what would happen, change nothing
 #
-# Existing files are backed up to <name>.bak.<timestamp> before being replaced.
+# Existing files move to ~/.claude/backups/<name>.<timestamp> before being replaced.
 set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -31,15 +31,22 @@ run() { if [ "$dry" -eq 1 ]; then say "  would: $*"; else "$@"; fi; }
 
 # Move anything already at the destination out of the way. A symlink we placed
 # on a previous run is just removed -- backing up a link is noise.
+#
+# Backups collect in one directory instead of sitting beside the original.
+# Claude Code loads every directory under ~/.claude/skills/ as a skill, so a
+# backup left next to a skill is not inert: it registers as a second, stale copy
+# of that skill, and reinstalling adds another one every time.
 backup() {
   local target="$1"
   [ -e "$target" ] || [ -L "$target" ] || return 0
   if [ -L "$target" ]; then
     run rm -f "$target"
-  else
-    say "  backing up existing $target -> $target.bak.$stamp"
-    run mv "$target" "$target.bak.$stamp"
+    return 0
   fi
+  local saved="$dest/backups/$(basename "$target").$stamp"
+  say "  backing up existing $target -> $saved"
+  run mkdir -p "$dest/backups"
+  run mv "$target" "$saved"
 }
 
 # Symlinks need Developer Mode or admin on Windows. Try, verify, fall back.

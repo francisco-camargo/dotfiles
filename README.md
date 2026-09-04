@@ -128,8 +128,8 @@ cd ~/git/dotfiles
 Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and
-`claude/skills/md-to-pdf` into `~/.claude/`. Anything already there is moved to
-`<name>.bak.<timestamp>` first — nothing is silently overwritten. Use `--dry-run`
+`claude/skills/md-to-pdf` into `~/.claude/`. Anything already there is moved into
+`~/.claude/backups/` first — nothing is silently overwritten. Use `--dry-run`
 to preview, `--copy` to force copies instead of links.
 
 ### Symlinks on Windows
@@ -151,8 +151,8 @@ first. Because `~/.claude/skills/md-to-pdf/` is an ordinary directory and not a
 link, editing a skill in place — which is what Claude does when asked to change a
 global skill — leaves this repo clean. `git status` reports nothing, so the change
 looks like it was never made, and the next `./install.sh` quietly replaces it with
-the repo's older copy. The overwritten directory does get backed up to
-`<name>.bak.<timestamp>`, so the work is recoverable, but only if you notice in
+the repo's older copy. The overwritten directory does get moved into
+`~/.claude/backups/`, so the work is recoverable, but only if you notice in
 time to go looking for it.
 
 This has already happened once. An `h4` rule added to `print.css` lived only in
@@ -172,6 +172,19 @@ then links instead of copying and the drift cannot happen. Where that is not an
 option, `install.sh` should refuse to overwrite a destination whose contents
 differ from the repo unless it is passed something like `--force`. A copy-mode
 install should not be able to silently destroy work, and right now it can.
+
+### A backup is not always inert
+
+`install.sh` used to leave backups beside the original, as
+`<name>.bak.<timestamp>`. Harmless for a file, wrong for a skill. Claude Code
+loads every directory under `~/.claude/skills/` as a skill, so
+`md-to-pdf.bak.20260904-012854` was not sitting quietly on disk — it was a second
+copy of the skill offered to the model next to the real one, carrying an older
+description of when to use it. Every reinstall added one more.
+
+Backups now collect in `~/.claude/backups/`, which nothing loads. The general
+point is worth keeping for anything else installed here: `~/.claude` is not a
+plain directory, and where a file sits decides whether it runs.
 
 ### Settings only load at startup
 
@@ -511,7 +524,7 @@ has a settings UI that writes to `%APPDATA%` directly. Editing settings through
 that UI while the repo holds the canonical copy produces two files that disagree,
 and the next `./install.sh` replaces the newer one with the repo's version. The
 UI-edited file is not lost — `backup()` moves it to
-`settings.json.bak.<timestamp>` first — but recovering a change from a timestamped
+`backup()` moves it into `backups/` first — but recovering a change from a
 backup in `%APPDATA%` is not a workflow anyone wants twice. So: edit
 `vscode/settings.json` in the repo, commit, re-run `./install.sh`. If a setting
 gets changed through the UI by reflex — and it will — copy it back into the repo
