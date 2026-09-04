@@ -50,7 +50,8 @@ done
 [ -n "$browser" ] || {
   echo "no Chrome/Edge found; set MD2PDF_BROWSER to the executable" >&2; exit 1; }
 
-work="$(mktemp -d)"
+# BSD mktemp (macOS) may reject a bare -d without a template; fall back to -t.
+work="$(mktemp -d 2>/dev/null || mktemp -d -t md2pdf)"
 html="$work/page.html"
 trap '[ "$keep_html" -eq 1 ] || rm -rf "$work"' EXIT
 
