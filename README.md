@@ -1,6 +1,6 @@
 # dotfiles
 
-Claude Code configuration, kept in one place so every machine behaves the same.
+Configuration files kept in one place so every machine behaves the same.
 
 ## Introduction
 
