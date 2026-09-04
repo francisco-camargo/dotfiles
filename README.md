@@ -2,6 +2,40 @@
 
 Configuration files kept in one place so every machine behaves the same.
 
+## Intent
+
+Why this repo exists, in my own words — for anyone picking up work here, Claude
+in a future session included.
+
+I am exploring dotfiles because I want to solve a problem **once**. Not once per
+repo, and not once per machine. When something takes real thought to work out, I
+want the result to still be there the next time I hit it — in a different
+project, or on a different computer — rather than re-derived from scratch or
+half-remembered.
+
+That is the lens I want applied to work here. The question about any fix is not
+only "does this work" but "where does this belong so it keeps working elsewhere":
+
+- A fix that only helps in the repo I happen to be sitting in is a fix I will
+  have to make again. Prefer the general form.
+- A fix that only helps on this machine is worse, because I will not notice it is
+  missing on the next one. Prefer the portable form.
+- A solution I have to remember to apply is the weakest kind. Prefer one the
+  machine applies on its own.
+
+**Claude, when we work here:** default to generalizing. If something we are
+fixing in another repo would help in every repo, or on every machine, say so and
+propose lifting it here instead of solving it locally and moving on. Treat a
+local one-off as a deliberate choice needing a reason, not the default. And when
+this repo's own mechanics undermine the goal — copies drifting out of sync, two
+sources of truth for one skill — treat that as a real problem rather than a
+papercut, because it defeats the entire point of the repo.
+
+The counterweight: scope grows when repetition justifies it, not in
+anticipation. Something earns a place here once I have hit it twice — not the
+first time I imagine I might. Generalize what has actually recurred; leave the
+rest alone.
+
 ## Introduction
 
 ### What dotfiles are
