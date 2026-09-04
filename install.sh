@@ -14,13 +14,16 @@ stamp="$(date +%Y%m%d-%H%M%S)"
 mode=link
 dry=0
 
-for arg in "$@"; do
-  case "$arg" in
+# Parsed with a shift loop rather than `for arg in "$@"`: bash 3.2 -- still the
+# system bash on macOS -- treats an empty "$@" as unbound under `set -u`.
+while [ $# -gt 0 ]; do
+  case "$1" in
     --copy)    mode=copy ;;
     --dry-run) dry=1 ;;
     -h|--help) sed -n '2,8p' "${BASH_SOURCE[0]}"; exit 0 ;;
-    *)         echo "unknown option: $arg" >&2; exit 2 ;;
+    *)         echo "unknown option: $1" >&2; exit 2 ;;
   esac
+  shift
 done
 
 say() { printf '%s\n' "$*"; }
