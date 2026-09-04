@@ -67,6 +67,7 @@ say "installing from $repo into $dest"
 [ "$dry" -eq 1 ] && say "(dry run -- nothing will change)"
 
 place "$repo/claude/settings.json"      "$dest/settings.json"
+place "$repo/claude/CLAUDE.md"          "$dest/CLAUDE.md"
 place "$repo/claude/skills/md-to-pdf"   "$dest/skills/md-to-pdf"
 
 say
