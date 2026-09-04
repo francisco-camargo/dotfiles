@@ -250,7 +250,7 @@ Markdown joins the lines back into a paragraph when rendered, so the output is i
 Left in a conversation, that preference lasts until the conversation ends and the next session goes back to wrapping at eighty.
 Written down here, it holds in every repo, including ones that have never heard of it.
 
-This README is still wrapped in the old style; reflowing it is an [open item](#reflow-this-readme-to-one-sentence-per-line).
+This README was written in the old style and converted in one pass, which is what the rule asks for: a whole-file change of its own rather than a paragraph quietly reflowed while editing something else.
 
 ### The third entry, chosen rather than corrected
 
@@ -364,11 +364,6 @@ Developer Mode is off on this machine — `AllowDevelopmentWithoutDevLicense` is
 Settings → System → For developers → Developer Mode on, then re-run `./install.sh`.
 Turning it on takes an administrator, which is why no session can do it for you.
 After that the installed files are the repo files, edits propagate on their own, and the drift below stops being possible.
-
-### Reflow this README to one sentence per line
-
-`claude/CLAUDE.md` sets the convention and this file predates it, so the repo currently contradicts its own rule.
-Converting touches nearly every line, which is why it belongs in a commit of its own rather than arriving mixed into a change about something else.
 
 ### Stop a copy-mode install from overwriting newer work
 
