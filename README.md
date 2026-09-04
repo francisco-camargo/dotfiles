@@ -21,8 +21,24 @@ copies instead of links.
 
 Windows only allows symlinks with Developer Mode on (Settings → System → For
 developers) or an elevated shell. Without it the script notices, says so, and
-copies instead. Copies work fine, but they do not track edits — after changing
-anything in this repo, re-run `./install.sh` to push the change back out.
+copies instead.
+
+As of this writing that fallback is what happens on the main Windows machine —
+Developer Mode is off, so `install.sh` copies. Copies work fine, but they do not
+track edits: after changing anything in this repo, re-run `./install.sh` to push
+the change back out. Turn Developer Mode on and you get real symlinks, and edits
+propagate on their own.
+
+### Settings only load at startup
+
+Claude Code reads `~/.claude/settings.json` when a session starts. Installing or
+editing settings mid-session does nothing until the config reloads — a session
+that was already running keeps the old rules, including no git approval gate.
+Restart Claude Code, or open `/hooks` once, before assuming a change is live.
+
+To confirm the gate is actually working, ask Claude to make a trivial commit. You
+should get an approval prompt. If the commit just goes through, the settings have
+not reloaded yet.
 
 ## What's here
 
@@ -65,3 +81,79 @@ Converts Markdown to HTML with a small awk script, inlines `assets/print.css`,
 and prints it with headless Chrome or Edge. No pandoc or node needed. Layout,
 including page breaks and repeated table headers, is all in the stylesheet.
 See `claude/skills/md-to-pdf/SKILL.md` for details.
+
+### Skill scope, and duplicates
+
+A skill installed here lands in `~/.claude/skills/` and is available in every
+project. A skill committed to a repo's own `.claude/skills/` is available only in
+that repo. When the same skill name exists in both, the project copy wins.
+
+`md-to-pdf` currently exists in both places — here, and in
+`gb-roles-and-responsibilities/.claude/skills/`. The copies are identical so
+nothing misbehaves, but there are two sources of truth. Worth deleting the
+project copy at some point and letting this repo own it.
+
+## What else could live here
+
+Nothing below is set up yet. This is the list of things worth pulling in as the
+need comes up, roughly in order of how much repetition each one removes.
+
+### More Claude Code configuration
+
+- **`~/.claude/CLAUDE.md`** — standing instructions that apply to every project:
+  house style, how you like commits written, tools to prefer or avoid. The
+  natural home for preferences that keep having to be re-explained.
+- **More skills** — anything done twice by hand is a candidate. Skills carry the
+  *when* and *why* alongside the script, which is what makes them worth more than
+  a loose shell script.
+- **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or
+  researcher earns its keep.
+- **`~/.claude/commands/`** — custom slash commands for repeated multi-step
+  workflows.
+- **More hooks** — the same `PreToolUse` mechanism as the git gate can auto-format
+  after edits, block writes to protected paths, or log what ran.
+
+### Shared repo scaffolding
+
+The gym repos already repeat the same files by hand. `.gitignore` is in all
+three; `.gitattributes` with `* text=auto eol=lf` is in two and had to be written
+twice; `cspell.json` exists in one and will want to exist in the others.
+
+Two ways to stop copying them around:
+
+- **Templates here** plus a small `new-repo.sh` that stamps them into a fresh
+  repo. Simple, and each repo stays self-contained.
+- **Global git config** — `core.attributesFile` and `core.excludesFile` point at
+  files in this repo, so the rules apply everywhere without any per-repo file.
+  Nothing to copy, but the rules become invisible to anyone cloning a repo, which
+  matters if the repos are ever shared.
+
+Global git config also carries aliases, `pull.rebase`, `init.defaultBranch`, and
+the default commit editor.
+
+### Machine setup
+
+- **A bootstrap script** listing what a machine needs — `winget install` or
+  `scoop install` lines for gh, Git, VS Code, a PDF viewer. Turns "set up a new
+  laptop" into one command.
+- **Editor settings** — VS Code `settings.json`, `keybindings.json`, and an
+  extensions list, which `code --install-extension` can replay from a file.
+- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding
+  aliases and PATH tweaks.
+
+### Per-machine differences
+
+The moment a second machine has a genuinely different setting, the single-file
+approach strains. The usual fix is a `hosts/<machine-name>/` directory that
+`install.sh` layers on top of the shared files after placing them, so shared
+config stays shared and only the differences are duplicated. Worth doing when the
+need actually appears, not before.
+
+### What not to put here
+
+The repo is private, but private is not the same as safe — it gets cloned to
+every machine and shows up in plain text in every backup. Keep out API keys,
+tokens, `~/.ssh/` private keys, `.env` files, and anything with a password in it.
+`.gitignore` already excludes `*.bak` files, which is where `install.sh` parks
+whatever it replaced. If a config file needs a secret, keep the secret in an
+environment variable and commit only the reference to it.
