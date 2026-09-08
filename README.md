@@ -395,6 +395,79 @@ A pre-commit hook running `gitleaks` or `trufflehog` blocks the accidental commi
 Overkill at the current size — there is nothing here to catch.
 Worth adding once the repo grows to shell profiles and git config, which is where credentials genuinely creep in: a remote URL with a token embedded in it, an alias carrying a password, an exported key in `.bashrc`.
 
+That "once" has arrived: see [Before this repo goes public](#before-this-repo-goes-public).
+
+## Before this repo goes public
+
+Going public is a one-way door.
+A private repo nobody has fetched can still be rewritten; a public one cannot be un-published, because clones and forks are outside your control ([Git history does not forget](#git-history-does-not-forget)).
+Everything below wants deciding first rather than afterwards.
+
+### The leak that is actually likely
+
+Not a password in `settings.json`.
+Two paths that are real:
+
+`~/.claude/.credentials.json` holds the auth token and sits in the directory this repo mirrors.
+Nothing copies it today, and the allowlist rule under [The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets) is what keeps that true.
+But [What else could live here](#what-else-could-live-here) runs to shell profiles, global git config, VS Code settings, and a bootstrap script, and any bulk copy out of `~/.claude` on the way there takes the token with it.
+
+Those additions are themselves where credentials hide: a remote URL with a token in `.gitconfig`, a credential helper, extension tokens in VS Code's own `settings.json`, an export in `.bashrc`.
+The section above judged a scanner overkill at the current size.
+Going public while growing into exactly those files is the trigger that judgment named.
+
+### Four layers, and what each one misses
+
+| Layer | Catches | Misses | Cost |
+| --- | --- | --- | --- |
+| GitHub push protection | Recognized credential formats, server side, blocks the push | Passwords, host names, anything without a known token shape | A checkbox |
+| Hardened `.gitignore` | Whole files — `.credentials.json`, `.env`, private keys | `git add -f`, and secrets pasted inside tracked files | Ten lines |
+| A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | Forty lines plus setup |
+| `gitleaks` in Actions | The best detection of the four | Runs after the push — on a public repo, after it is already published | A workflow file |
+
+Push protection is the one to reach for first, and it is free.
+Secret scanning runs automatically on public repositories at no cost.
+Push protection is a separate switch: repository-level is off by default, and an administrator turns it on under Settings → Code security.
+It blocks the push and says why.
+Anyone with write access can bypass it by giving a reason, which is the right trade when the thing being defended against is an accident rather than an attacker.
+
+The Actions scan is a backstop rather than a gate.
+By the time it fires on a public repo, the commit is already published.
+
+### Repo-local hooks, or global, and the trap in the global one
+
+A `pre-commit` hook needs `core.hooksPath`, because `.git/hooks/` is not cloned.
+
+- **Repo-local**, set by `install.sh` from inside this repo. Narrow and safe, and covers only this repo.
+- **Global**, pointing at this repo from the global git config. This is the "solve it once, not once per repo" form the [Intent](#intent) section argues for.
+
+The trap is that a global `core.hooksPath` overrides per-repo hooks everywhere.
+Any repo shipping its own `pre-commit` quietly stops running it, with nothing to say so.
+Repo-local first, then; global is a separate decision that needs an answer to that objection before it is worth taking.
+
+### Already decided: the history keeps the old names
+
+The two references to internal repos are generalized in the working tree.
+Both remain in `README.md` throughout the history, and one remains in the commit message of `938f77c`.
+Rewriting 26 of 27 commits to hide a repo name was judged not worth losing the history over.
+
+That decision is reversible only up to the moment the repo goes public.
+Anyone minded to reconsider should reconsider now.
+
+### The order to do it in
+
+1. **Turn on push protection.** Highest value, and the only item here that no commit can do for you.
+2. **Harden `.gitignore`** with the filenames that would actually cost something.
+3. **Add the `pre-commit` hook**, `sed` and `grep` only, wired up repo-local by `install.sh`.
+4. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim.
+5. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
+
+Then the switch.
+
+One more that is not about secrets but shares the deadline.
+[This repo runs code on every machine that installs it](#this-repo-runs-code-on-every-machine-that-installs-it), so public means strangers can open pull requests against a script you execute.
+Turn on branch protection, and read every proposed change to `install.sh` or the hooks as what it is.
+
 ## Open items
 
 Work that is started and unfinished, as opposed to [what else could live here](#what-else-could-live-here), which is speculative.
