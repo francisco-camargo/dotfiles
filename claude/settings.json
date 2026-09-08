@@ -33,6 +33,17 @@
             "statusMessage": "Checking for git write operations"
           }
         ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sed -n 's/.*\"command\"[[:space:]]*:[[:space:]]*\"//p' | sed 's/\"[,}].*$//' | grep -Eq '(^|[;&|( ])sed +[^;&|]*(-[-a-zA-Z.]*i[ .=]|-[-a-zA-Z.]*i$|--in-place|s[/#@,|])' && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"No editing with sed. An unescaped regex character silently mangles the wrong lines and -i leaves no undo. Use the Edit tool for a known string, or write a short script that you can read back before it runs. Reading with sed -n is still allowed.\"}}'; exit 0",
+            "timeout": 10,
+            "statusMessage": "Checking for sed edits"
+          }
+        ]
       }
     ]
   }
