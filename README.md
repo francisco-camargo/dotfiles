@@ -418,6 +418,26 @@ Backups make that recoverable, not harmless.
 The guard is to refuse a destination whose contents differ from the repo unless passed `--force`.
 Developer Mode removes the need on this machine; the guard is what covers a machine where Developer Mode is not on offer.
 
+### Merge `settings.json` instead of replacing it
+
+Described in full under [`install.sh` replaces `settings.json` wholesale](#installsh-replaces-settingsjson-wholesale).
+The installer overwrites a file that everything user-level shares, so anyone who already had settings loses them to a backup directory.
+
+A real merge is the wrong fix.
+It needs a JSON parser, and the rule that keeps the hooks portable — `sed` and `grep` only, no `jq`, no `node`, no `python` — is the same rule that makes merging JSON inside `install.sh` a bad idea.
+A merger written in awk would fail quietly on a nested key, which is the failure this repo keeps trying to design out.
+
+Three smaller pieces instead, in the order they are worth doing:
+
+- **Refuse rather than clobber.** If `~/.claude/settings.json` exists and is not already this repo's, skip it, print the block to paste, and carry on installing `CLAUDE.md` and the skill. Roughly fifteen lines, no JSON parsing, and it fails loudly instead of silently.
+- **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the git gate and the sed gate work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
+- **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh` and `claude/hooks/sed-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON.
+
+One thing to settle at the same time, because it arrives with Developer Mode rather than with a coworker.
+Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
+Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
+Keeping `settings.json` a copy while the other two are links is the simple answer.
+
 ### Prune `~/.claude/backups/`
 
 Every install adds a copy of whatever it replaced and nothing removes the old ones.
