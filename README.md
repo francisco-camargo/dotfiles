@@ -238,7 +238,7 @@ A skill installed here lands in `~/.claude/skills/` and is available in every pr
 A skill committed to a repo's own `.claude/skills/` is available only in that repo.
 When the same skill name exists in both, the project copy wins.
 
-`md-to-pdf` currently exists in both places — here, and in `gb-roles-and-responsibilities/.claude/skills/`.
+`md-to-pdf` currently exists in both places — here, and in another repo's own `.claude/skills/`.
 The copies are identical so nothing misbehaves, but there are two sources of truth.
 Worth deleting the project copy at some point and letting this repo own it.
 
@@ -457,7 +457,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 
 ### Shared repo scaffolding
 
-The gym repos already repeat the same files by hand.
+Three of my other repos already repeat the same files by hand.
 `.gitignore` is in all three; `.gitattributes` with `* text=auto eol=lf` is in two and had to be written twice; `cspell.json` exists in one and will want to exist in the others.
 
 Two ways to stop copying them around:
