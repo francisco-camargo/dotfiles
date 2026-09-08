@@ -98,6 +98,25 @@ Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
 Use `--dry-run` to preview, `--copy` to force copies instead of links.
 
+On a machine that has been used before this repo reaches it, read the next section first.
+
+### `install.sh` replaces `settings.json` wholesale
+
+`install.sh` treats all three items the same way: back up what is there, then put the repo's version in its place.
+That is right for `CLAUDE.md` and the skill, which are whole files this repo owns.
+It is wrong for `settings.json`, because there is only one user settings file and everything user-level has to share it.
+
+Claude Code reads settings in this order, highest first: managed, command line, `.claude/settings.local.json`, `.claude/settings.json`, `~/.claude/settings.json`.
+The `settings.local.json` layer is per project, not per user, and there is no include or extends mechanism.
+So an existing `~/.claude/settings.json` is not merged with this repo's — it is moved into `~/.claude/backups/` and replaced.
+
+What that costs someone who already had one: their model choice, their `statusLine`, their `env` block, their MCP servers, and every `permissions.allow` rule they built up answering "Yes, and don't ask again".
+Nothing is destroyed, but getting it back means merging two JSON files by hand, and the symptom is Claude Code asking again about commands it had stopped asking about a year ago.
+
+This costs nothing on a machine already running this repo's settings, which is why it went unnoticed.
+It is a real hazard for anyone else, and for a future machine of mine that has a history before the first `./install.sh`.
+Until the guard lands — [Merge `settings.json` instead of replacing it](#merge-settingsjson-instead-of-replacing-it) — copy `~/.claude/settings.json` somewhere safe first, then merge the pieces back by hand afterwards.
+
 ### Symlinks on Windows
 
 Windows only allows symlinks with Developer Mode on (Settings → System → For developers) or an elevated shell.
