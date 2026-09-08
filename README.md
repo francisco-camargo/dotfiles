@@ -322,6 +322,26 @@ A global `CLAUDE.md` gets committed and pushed like everything else here, so [Se
 It is also a natural place to drift into recording machine specifics — absolute paths, host names, which drive holds what.
 Keep it to preferences and conventions, and it stays portable to the next machine.
 
+### What belongs here, and what belongs in a skill
+
+Everything in this file is read at the start of every session in every project, whether or not that session touches the subject.
+At 46 lines it costs nothing.
+A long guide would cost something every time, including in the sessions that never write a word of prose.
+
+A skill is the other half of the pair.
+It installs to `~/.claude/skills/` and is available everywhere, exactly like this file, but it loads only when the work matches its description.
+So the choice is not where the instructions live — both are global — but when they are paid for.
+
+The test: instructions that must shape work nobody thought to ask about, such as a commit message, a code comment, or a reply in the session, have to be always-on and belong here.
+Instructions that only matter once someone sits down to a particular kind of task can be ten times longer as a skill and cost nothing the rest of the time.
+
+Writing style is the worked example rather than the whole of it.
+Orwell's six rules apply to every sentence produced in any session, so they belong in this file.
+A longer style guide — examples, before and after pairs, a checklist — would not, and would sit better as a `writing-style` skill that this file points at.
+
+The same split is waiting for anything else that grows past a few lines: review checklists, commit message conventions, a house style for diagrams.
+The test is the same each time, and [Split standing instructions between CLAUDE.md and skills](#split-standing-instructions-between-claudemd-and-skills) records what is left to decide.
+
 ## Security
 
 The repo is private, but private is not the same as safe.
@@ -510,6 +530,20 @@ One thing to settle at the same time, because it arrives with Developer Mode rat
 Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
 Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
 Keeping `settings.json` a copy while the other two are links is the simple answer.
+
+### Split standing instructions between CLAUDE.md and skills
+
+Described under [What belongs here, and what belongs in a skill](#what-belongs-here-and-what-belongs-in-a-skill).
+
+Nothing is wrong today.
+`CLAUDE.md` is 46 lines and every entry in it earns being read every session.
+The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case — with review checklists, commit conventions, and diagram style queued behind it.
+
+Three things to settle when it does:
+
+- Where the line falls: a short core here, the long form in a skill, and this file pointing at it.
+- Whether a skill's `description` can trigger reliably for prose work, which is a vaguer trigger than "render this Markdown to PDF".
+- Whether the split runs per subject, or one `house-style` skill covers all of it.
 
 ### Prune `~/.claude/backups/`
 

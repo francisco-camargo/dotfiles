@@ -23,6 +23,7 @@ Started and unfinished, as opposed to speculative — [Open items](README.md#ope
 - [ ] Turn on Developer Mode, which ends the copying and makes edits propagate ([turn on Developer Mode](README.md#turn-on-developer-mode))
 - [ ] Guard a copy-mode install from overwriting newer work, with `--force` ([stop a copy-mode install](README.md#stop-a-copy-mode-install-from-overwriting-newer-work))
 - [ ] Stop `install.sh` replacing `settings.json` wholesale ([merge settings.json](README.md#merge-settingsjson-instead-of-replacing-it), [the warning](README.md#installsh-replaces-settingsjson-wholesale))
+- [ ] Decide what stays in `CLAUDE.md` and what becomes a skill — writing style is the first case, not the only one ([split standing instructions](README.md#split-standing-instructions-between-claudemd-and-skills))
 - [ ] Prune `~/.claude/backups/`, with a `--keep N` or a date cutoff ([prune backups](README.md#prune-claudebackups))
 - [ ] Delete the duplicate `md-to-pdf` in the other repo and let this one own it ([skill scope, and duplicates](README.md#skill-scope-and-duplicates))
 
