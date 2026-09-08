@@ -59,7 +59,7 @@ The payoff is the ordinary git workflow applied to config:
 
 ### What is here today
 
-Three things: `claude/settings.json`, holding the model choice and the three-layer [git approval gate](#the-git-approval-gate); `claude/CLAUDE.md`, the [standing instructions](#a-global-claudemd) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
+Three things: `claude/settings.json`, holding the model choice, the three-layer [git approval gate](#the-git-approval-gate), and the [sed gate](#the-sed-gate); `claude/CLAUDE.md`, the [standing instructions](#a-global-claudemd) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
 Small scope on purpose — it starts with what actually gets used and grows when repetition justifies it.
 [What else could live here](#what-else-could-live-here) lists the likely additions.
 
@@ -158,7 +158,7 @@ If the commit just goes through, the settings have not reloaded yet.
 
 | Path | Goes to | What it is |
 | --- | --- | --- |
-| `claude/settings.json` | `~/.claude/settings.json` | Model choice and the git approval gate below |
+| `claude/settings.json` | `~/.claude/settings.json` | Model choice, the git approval gate, and the sed gate below |
 | `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Standing instructions for every session, everywhere |
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | Renders a Markdown file to a print-ready PDF |
 
@@ -175,6 +175,32 @@ The hook uses only `sed` and `grep` — no `jq`, `node`, or `python`, none of wh
 Keep it that way, or it will silently stop firing on a machine that lacks the dependency.
 
 To tighten it from "prompt me" to "never, I'll run git myself", move the entries from `permissions.ask` to `permissions.deny`.
+
+## The sed gate
+
+The second `PreToolUse` hook denies `sed` edits outright.
+Unlike the git gate it does not prompt, because there is no case where the answer is yes.
+
+sed rewrites a file by regex, and code is full of characters a regex reads as syntax — `.`, `*`, `[`, `$`, `/`.
+A pattern that looks literal quietly matches more than it says.
+`s/old/new/g` then replaces every match on every line rather than the one that was meant, `-i` writes the result straight over the file, and the command exits 0 either way.
+Run by hand that is survivable, because you read the diff before moving on.
+Run as one step in a longer task it is not: the mangled line becomes the base for the next several edits, and by the time it surfaces the diff is hard to untangle.
+
+The hook denies a sed invocation carrying `-i`, `--in-place`, or an `s///` substitution.
+It leaves `sed -n '1,50p' file` alone, so paging a file still works — and so does the git gate above, which is itself a `sed -n 's///p'` pipeline.
+The refusal names the alternatives, so the response is to use the `Edit` tool or write a short script, not to look for a way around the hook.
+
+Two details that took a try to get right, and are worth keeping if this is ever edited:
+
+**It trims the payload before matching.**
+The hook reads the command out of the tool payload with the same `sed -n 's/.*"command"...//p'` extraction as the git gate.
+That extraction is greedy in one direction only: it strips everything before the command but leaves the rest of the JSON — including the `description` field — on the line.
+Any description containing `files,` or `functions,` then reads as an `s,` substitution and blocks an innocent command.
+The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, which is what stops it.
+
+To drop the gate, delete the second entry in `hooks.PreToolUse`.
+To make it a prompt rather than a refusal, change `"permissionDecision": "deny"` to `"ask"`.
 
 ## The md-to-pdf skill
 
@@ -335,7 +361,7 @@ Same reason to audit the full history rather than the working tree before ever f
 ### This repo runs code on every machine that installs it
 
 `install.sh` is a script you execute.
-More significantly, the `PreToolUse` hook in `settings.json` runs a shell command on *every* Bash and PowerShell tool call on every machine that has installed it.
+More significantly, the `PreToolUse` hooks in `settings.json` run a shell command on *every* Bash and PowerShell tool call on every machine that has installed it.
 Whatever lands in this repo, runs.
 
 That makes write access to this repo equivalent to code execution on all your machines:
@@ -388,7 +414,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 - **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
 - **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher earns its keep.
 - **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
-- **More hooks** — the same `PreToolUse` mechanism as the git gate can auto-format after edits, block writes to protected paths, or log what ran.
+- **More hooks** — the same `PreToolUse` mechanism as the git and sed gates can auto-format after edits, block writes to protected paths, or log what ran.
 
 ### Shared repo scaffolding
 
