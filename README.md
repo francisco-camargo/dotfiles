@@ -59,7 +59,7 @@ The payoff is the ordinary git workflow applied to config:
 
 ### What is here today
 
-Three things: `claude/settings.json`, holding the model choice, the three-layer [git approval gate](#the-git-approval-gate), the [sed gate](#the-sed-gate), and the [uv gate](#the-uv-gate); `claude/CLAUDE.md`, the [standing instructions](#a-global-claudemd) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
+Three things: `claude/settings.json`, holding the model choice and three [hooks](#hooks) — the [git approval gate](#the-git-approval-gate), the [sed gate](#the-sed-gate), and the [uv gate](#the-uv-gate); `claude/CLAUDE.md`, the [standing instructions](#standing-instructions) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
 Small scope on purpose — it starts with what actually gets used and grows when repetition justifies it.
 [What else could live here](#what-else-could-live-here) lists the likely additions.
 
@@ -177,25 +177,41 @@ If the commit just goes through, the settings have not reloaded yet.
 
 | Path | Goes to | What it is |
 | --- | --- | --- |
-| `claude/settings.json` | `~/.claude/settings.json` | Model choice, the git approval gate, and the sed and uv gates below |
-| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Standing instructions for every session, everywhere |
-| `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | Renders a Markdown file to a print-ready PDF |
+| `claude/settings.json` | `~/.claude/settings.json` | Model choice, and the three [hooks](#hooks) below |
+| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | [Standing instructions](#standing-instructions) for every session, everywhere |
+| `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](#skills) that renders a Markdown file to a print-ready PDF |
 
-## The git approval gate
+## Hooks
 
-`claude/settings.json` requires explicit approval before Claude runs `git commit` or `git push`.
+Each of the three gates below is an entry in `hooks.PreToolUse` in `claude/settings.json`, described here in the order it appears there: git, then sed, then uv.
+A `PreToolUse` hook runs before every Bash and PowerShell tool call and can let it through, force an approval prompt, or refuse it outright.
+The git gate backs its hook with two further layers of permission rules; the other two are the hook alone.
+
+Two rules hold for all three, and both are worth keeping if any of them is ever edited.
+
+**`sed` and `grep` only** — no `jq`, `node`, or `python`, none of which are reliably installed.
+Keep it that way, or a hook will silently stop firing on a machine that lacks the dependency.
+
+**Test the pattern after JSON escaping, not before.**
+Each pattern is a string inside `settings.json`, so an alternation written `\|\|` at a shell prompt has to survive as `\\|\\|`, and `\.` as `\\.`.
+Get that wrong and the pattern still parses, still exits 0, and quietly matches nothing.
+Test the string pulled back out of `settings.json`, not the one typed into the shell.
+
+To drop any one gate, delete its entry in `hooks.PreToolUse`.
+To turn a refusal into a prompt, change that entry's `"permissionDecision": "deny"` to `"ask"`.
+
+### The git approval gate
+
+This gate requires explicit approval before Claude runs `git commit` or `git push`.
 Three layers, because the first two have gaps:
 
 1. **`hooks.PreToolUse`** — a sed+grep command that reads the command out of the tool payload and forces an approval prompt when it matches `git[^;&|]{0,60}(commit|push)`. This is the layer that matters: it catches compound commands like `cd /repo && git commit`, which the prefix-matching permission rules below miss entirely.
 2. **`permissions.ask`** — rules for `Bash(git commit:*)`, `Bash(git push:*)` and the PowerShell equivalents. `ask` rules beat `allow` rules, so a project cannot grant itself permission later.
 3. **`autoMode.soft_deny`** — stops auto mode's classifier from self-approving a commit, and spells out that "save this" or "version this" is not authorization.
 
-The hook uses only `sed` and `grep` — no `jq`, `node`, or `python`, none of which are reliably installed.
-Keep it that way, or it will silently stop firing on a machine that lacks the dependency.
-
 To tighten it from "prompt me" to "never, I'll run git myself", move the entries from `permissions.ask` to `permissions.deny`.
 
-## The sed gate
+### The sed gate
 
 The second `PreToolUse` hook denies `sed` edits outright.
 Unlike the git gate it does not prompt, because there is no case where the answer is yes.
@@ -210,7 +226,7 @@ The hook denies a sed invocation carrying `-i`, `--in-place`, or an `s///` subst
 It leaves `sed -n '1,50p' file` alone, so paging a file still works — and so does the git gate above, which is itself a `sed -n 's///p'` pipeline.
 The refusal names the alternatives, so the response is to use the `Edit` tool or write a short script, not to look for a way around the hook.
 
-Two details that took a try to get right, and are worth keeping if this is ever edited:
+One detail took a try to get right, and is worth keeping if this is ever edited.
 
 **It trims the payload before matching.**
 The hook reads the command out of the tool payload with the same `sed -n 's/.*"command"...//p'` extraction as the git gate.
@@ -218,10 +234,7 @@ That extraction is greedy in one direction only: it strips everything before the
 Any description containing `files,` or `functions,` then reads as an `s,` substitution and blocks an innocent command.
 The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, which is what stops it.
 
-To drop the gate, delete the second entry in `hooks.PreToolUse`.
-To make it a prompt rather than a refusal, change `"permissionDecision": "deny"` to `"ask"`.
-
-## The uv gate
+### The uv gate
 
 The third `PreToolUse` hook denies a bare `python`, `python3`, or `py`.
 Like the sed gate it refuses outright rather than prompting, because the answer never changes: run it through `uv`.
@@ -240,17 +253,17 @@ It also leaves an explicit interpreter path such as `.venv/Scripts/python.exe` a
 
 The refusal names the `uv` forms to use, so the correction arrives in the same turn and the next attempt is `uv run` rather than a hunt for the interpreter.
 
-One detail worth keeping if this is ever edited: the alternation `\|\|` and the escaped `\.` have to survive being written into JSON as `\\|\\|` and `\\.`.
-Get that wrong and the pattern still parses, still exits 0, and quietly matches nothing.
-Test the string pulled back out of `settings.json`, not the one typed into the shell.
+This is the gate that argued for the escaping rule at the top of this section: the alternation `\|\|` and the escaped `\.` both had to be written into JSON doubled.
 
 `pip` is not covered.
 `pip install` reaches for the same missing interpreter, and `uv pip` or `uv add` is the replacement — the omission is scope, not a finding that it is safe.
 
-To drop the gate, delete the third entry in `hooks.PreToolUse`.
-To make it a prompt rather than a refusal, change `"permissionDecision": "deny"` to `"ask"`.
+## Skills
 
-## The md-to-pdf skill
+A skill pairs a script with the description that tells Claude when to reach for it.
+One is here so far.
+
+### The md-to-pdf skill
 
 ```bash
 ~/.claude/skills/md-to-pdf/scripts/md2pdf.sh some-document.md
@@ -271,7 +284,7 @@ When the same skill name exists in both, the project copy wins.
 The copies are identical so nothing misbehaves, but there are two sources of truth.
 Worth deleting the project copy at some point and letting this repo own it.
 
-## A global CLAUDE.md
+## Standing instructions
 
 `~/.claude/CLAUDE.md` holds standing instructions Claude reads at the start of every session in every project — the home for preferences that otherwise get re-explained, and then re-explained again.
 It is now in the repo as `claude/CLAUDE.md` and installed like everything else.
