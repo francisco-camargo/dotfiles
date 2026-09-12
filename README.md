@@ -751,6 +751,27 @@ What closes it is a list of what a machine needs, kept as a file rather than a r
 It stays separate from `install.sh`.
 Installing tools onto a machine is a larger claim than placing config files, and making it a side effect of the second is the trade `install.sh` already refuses when it declines to install `pre-commit` for you.
 
+### Verify the machine, not only write to it
+
+`install.sh` places files and reports what it did.
+Nothing answers the question that comes next on a new machine: is this right yet?
+Today you answer it by reading this README and checking by hand.
+
+A `doctor.sh` would report state and change nothing:
+
+- link or copy, for each installed target
+- whether Developer Mode is on
+- which installed copies differ from the repo
+- whether this clone has a `pre-commit` hook in `.git/hooks/`
+- whether `uv` and `gh` are on PATH
+
+Two of those are worth more than a status line.
+The difference check is the detecting half of [the `--force` guard](#stop-a-copy-mode-install-from-overwriting-newer-work), so building it here means not building it twice.
+And a doctor script is where the test that [Hooks](#hooks) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
+A gate that quietly stopped firing is the failure this repo keeps designing against, and nothing checks for it.
+
+`sed` and `grep` only, for the reason the hooks are.
+
 ## What else could live here
 
 Nothing below is set up yet.

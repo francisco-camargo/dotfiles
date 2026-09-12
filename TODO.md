@@ -30,6 +30,7 @@ Started and unfinished, as opposed to speculative — [Open items](README.md#ope
 - [ ] Consolidate this `.pre-commit-config.yaml` with the Python one, and audit what each is missing ([consolidate the two configs](README.md#consolidate-the-two-pre-commit-configs))
 - [ ] Settle how spelling gets checked — `codespell` at commit time, `cspell` in the editor, or both ([settle how spelling gets checked](README.md#settle-how-spelling-gets-checked))
 - [ ] Install what this config already assumes — a new machine has neither `uv` nor `pre-commit` ([install what this config assumes](README.md#install-what-this-config-already-assumes))
+- [ ] Report the state of a machine with a `doctor.sh`, including whether each gate still fires ([verify the machine](README.md#verify-the-machine-not-only-write-to-it))
 
 ## Someday
 
