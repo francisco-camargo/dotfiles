@@ -317,7 +317,10 @@ Which is precisely what a global `CLAUDE.md` is for.
 Not one-off errors, but standing facts about this environment that need saying once, somewhere durable:
 
 > This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
-> In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting — the PowerShell here-string `@'...'@` is not Bash syntax and will silently embed literal `@` characters rather than failing.
+>
+> In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting.
+> The PowerShell here-string `@'...'@` is not Bash syntax and does not fail — Bash passes the `@` through as an ordinary character, silently embedding it in the text.
+>
 > In the PowerShell tool the reverse holds, and `&&` and `||` are parse errors in Windows PowerShell 5.1.
 
 The general shape is worth noticing: anything corrected twice in two different sessions is a candidate.
