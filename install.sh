@@ -82,5 +82,19 @@ place "$repo/claude/settings.json"      "$dest/settings.json"
 place "$repo/claude/CLAUDE.md"          "$dest/CLAUDE.md"
 place "$repo/claude/skills/md-to-pdf"   "$dest/skills/md-to-pdf"
 
+# Git does not clone .git/hooks/, so the gates in .pre-commit-config.yaml are
+# inert until something writes the hook into this clone. This is that step, and
+# it touches only this repo -- no global core.hooksPath, which would override
+# the hooks of every other repo on the machine.
+say
+if [ "$dry" -eq 1 ]; then
+  say "  would: pre-commit install"
+elif command -v pre-commit >/dev/null 2>&1; then
+  (cd "$repo" && pre-commit install)
+else
+  say "pre-commit is not installed, so this repo's commit gates are off:"
+  say "  uv tool install pre-commit && pre-commit install"
+fi
+
 say
 say "done. Restart Claude Code (or open /hooks once) so it reloads settings."
