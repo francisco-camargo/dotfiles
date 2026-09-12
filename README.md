@@ -153,7 +153,7 @@ diff -r claude/skills/md-to-pdf ~/.claude/skills/md-to-pdf
 **To deal with next.** Both halves are tracked under [Open items](#open-items): turning on Developer Mode, which ends the copying, and a `--force` guard for machines where Developer Mode is not on offer.
 A copy-mode install should not be able to silently destroy work, and right now it can.
 
-### A backup is not always inert
+### A backup can load as a skill
 
 `install.sh` used to leave backups beside the original, as `<name>.bak.<timestamp>`.
 Harmless for a file, wrong for a skill.
@@ -399,7 +399,7 @@ That is the state to preserve, and it is worth re-checking whenever the repo gro
 
 ### The directory this installs into is full of secrets
 
-This is the real hazard, and it is not obvious.
+This is the real hazard, and it is easy to miss.
 `~/.claude/` contains far more than `settings.json`:
 
 | Path | What it holds |
