@@ -55,7 +55,7 @@ The payoff is the ordinary git workflow applied to config:
 - **One source of truth.** No hunting for which copy is the current one.
 - **A history with reasons.** Every change is a commit, so `git log` answers "why is this set this way", and `git revert` undoes one that turned out badly.
 - **Reproducible machines.** `git clone`, then `./install.sh`, and the machine behaves like the others. No hand-copying, no half-configured laptop.
-- **Config that is readable.** The repo is also documentation. The sections below explain what each piece does, so the setup can be understood later rather than reverse-engineered.
+- **Config that is readable.** The repo is also documentation. The sections below explain what each piece does, so you can read the setup later instead of reverse-engineering it.
 
 ### What is here today
 
@@ -237,10 +237,10 @@ The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, w
 ### The uv gate
 
 This gate denies a bare `python`, `pythonw`, or `py`, and any version suffix on the first of those — `python3`, `python3.12`.
-Like the sed gate it refuses outright rather than prompting, because the answer never changes: run it through `uv`.
+Like the sed gate it refuses outright, with no prompt, because the answer never changes: run it through `uv`.
 
 The reason is not taste.
-On this machine `python` and `python3` on `PATH` are symlinks to `AppInstallerPythonRedirector.exe` — the Microsoft Store redirector, which opens a Store page rather than running anything.
+On this machine `python` and `python3` on `PATH` are symlinks to `AppInstallerPythonRedirector.exe` — the Microsoft Store redirector, which opens a Store page and runs nothing.
 There is no Python installed outside uv; the only real interpreter is the one under `%APPDATA%\uv\python\`.
 So `python script.py` cannot succeed here, and the cost of trying is a wasted turn spent reading a failure that looks like a missing file rather than a missing interpreter.
 
@@ -248,10 +248,10 @@ The hook matches those names in command position — at the start, or after `;`,
 That anchoring is what makes it worth a hook rather than a permission rule, for the same reason the git gate needs one: it catches `cd src && python app.py`, which prefix matching misses.
 
 It deliberately leaves alone anything under `uv run`, including `uv run python -c ...`, where `python` is an argument rather than the command.
-It also leaves an explicit interpreter path such as `.venv/Scripts/python.exe` alone, which is a deliberate choice rather than the habit being corrected, and `python` used as an argument or inside a filename — `which python`, `grep -r python src/`, `cat python_notes.md`.
+It also leaves an explicit interpreter path such as `.venv/Scripts/python.exe` alone, which is a deliberate choice, not the habit being corrected, and `python` used as an argument or inside a filename — `which python`, `grep -r python src/`, `cat python_notes.md`.
 `pytest` is untouched too, despite sharing its first two letters with the `py` launcher.
 
-The refusal names the `uv` forms to use, so the correction arrives in the same turn and the next attempt is `uv run` rather than a hunt for the interpreter.
+The refusal names the `uv` forms to use, so the correction arrives in the same turn and the next attempt is `uv run`, not a hunt for the interpreter.
 
 This is the gate that argued for the escaping rule at the top of this section: the alternation `\|\|` and the escaped `\.` both had to be written into JSON doubled.
 
@@ -422,7 +422,7 @@ Don't.
 Set the variable in the shell profile or the OS environment and let the config refer to it by name.
 The same rule covers every future addition: API keys, tokens, `~/.ssh/` private keys, `.env` files, anything with a password in it.
 
-Backups are covered by where they land rather than by a rule.
+Backups are covered by where they land, not by a rule.
 `install.sh` moves whatever it replaced into `~/.claude/backups/`, outside this repo, so those copies of real local config are not somewhere git can pick them up.
 `.gitignore` still carries `*.bak` from when backups sat beside the original, and guards nothing now.
 
@@ -461,7 +461,7 @@ That "once" has arrived: see [Before this repo goes public](#before-this-repo-go
 
 Going public cannot be undone.
 A private repo nobody has fetched can still be rewritten; a public one cannot be un-published, because clones and forks are outside your control ([Git history does not forget](#git-history-does-not-forget)).
-Everything below wants deciding first rather than afterwards.
+Everything below wants deciding first, not afterwards.
 
 ### How a secret would actually get out
 
@@ -656,7 +656,7 @@ This matters more for VS Code than it did for Claude Code, because `install.sh` 
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
 The UI-edited file is not lost — `backup()` moves it into `backups/` first — but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
 So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
-If a setting gets changed through the UI by reflex — and it will — copy it back into the repo before the next install rather than after.
+If a setting gets changed through the UI by reflex — and it will — copy it back into the repo before the next install, not after.
 
 Enabling Developer Mode and getting real symlinks removes the whole problem, and is the single change that makes versioning editor settings pleasant instead of fiddly.
 Worth doing first if you have the option.
