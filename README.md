@@ -467,16 +467,20 @@ Everything below wants deciding first rather than afterwards.
 
 ### The leak that is actually likely
 
-Not a password in `settings.json`.
-Two paths that are real:
+Not a password typed into `settings.json`.
+Two routes matter, and both open as the repo grows.
 
-`~/.claude/.credentials.json` holds the auth token and sits in the directory this repo mirrors.
-Nothing copies it today, and the allowlist rule under [The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets) is what keeps that true.
-But [What else could live here](#what-else-could-live-here) runs to shell profiles, global git config, VS Code settings, and a bootstrap script, and any bulk copy out of `~/.claude` on the way there takes the token with it.
+**One: a bulk copy takes the auth token.**
+`~/.claude/.credentials.json` holds that token, and it sits in the directory this repo mirrors.
+Nothing copies it today, because `install.sh` names every file it places ([The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets)).
+Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest.
 
-Those additions are themselves where credentials hide: a remote URL with a token in `.gitconfig`, a credential helper, extension tokens in VS Code's own `settings.json`, an export in `.bashrc`.
-The section above judged a scanner overkill at the current size.
-Going public while growing into exactly those files is the trigger that judgment named.
+**Two: the new files arrive with secrets already in them.**
+[What else could live here](#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
+Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
+
+[A guardrail, if it earns its keep](#a-guardrail-if-it-earns-its-keep) called a scanner overkill at this size, and said to revisit that once the repo grew into those files.
+Going public while growing into them is that moment.
 
 ### Four layers, and what each one misses
 
