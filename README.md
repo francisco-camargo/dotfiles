@@ -88,6 +88,8 @@ Where the sections below say "this Windows machine", they are reporting where th
 
 ## Install on a new machine
 
+To use the config and nothing else, `git` and `bash` are the whole list:
+
 ```bash
 git clone https://github.com/francisco-camargo/dotfiles.git ~/git/dotfiles
 cd ~/git/dotfiles
@@ -95,6 +97,19 @@ cd ~/git/dotfiles
 ```
 
 Then restart Claude Code, or open `/hooks` once, so it reloads settings.
+
+To commit here as well, install `pre-commit` first and `install.sh` wires [the gates](#the-commit-gates) into the clone in the same run:
+
+```bash
+uv tool install pre-commit
+git clone https://github.com/francisco-camargo/dotfiles.git ~/git/dotfiles
+cd ~/git/dotfiles
+./install.sh
+```
+
+`uv` is what I use; `pipx install pre-commit` or a `pip --user` install do the same job, and nothing here depends on which.
+Either order works — `install.sh` says so when the gates end up off, and `pre-commit install` from inside the clone turns them on afterwards.
+Tool first is simply the shorter path, which is the only reason it is written this way round.
 
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and `claude/skills/md-to-pdf` into `~/.claude/`.
 Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
