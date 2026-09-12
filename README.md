@@ -772,6 +772,21 @@ A gate that quietly stopped firing is the failure this repo keeps designing agai
 
 `sed` and `grep` only, for the reason the hooks are.
 
+### Put the new-machine steps in one order
+
+The steps are all written down and none of them are together.
+Developer Mode opens [Install on a new machine](#install-on-a-new-machine), `pre-commit` arrives in `install.sh`'s closing warning, restarting Claude Code is the line after the install command, and authenticating to GitHub is nowhere, because cloning is where the instructions start.
+Someone setting up a machine wants the sequence once, in one place:
+
+1. Developer Mode, first, because it decides whether the install links or copies
+2. git, and the tools the config assumes
+3. authentication — `gh auth login`, or an SSH key
+4. clone, `./install.sh --dry-run`, then `./install.sh`
+5. restart Claude Code
+
+Each step already has a section arguing it.
+The list is a table of contents for one afternoon, not a replacement for them.
+
 ## What else could live here
 
 Nothing below is set up yet.
