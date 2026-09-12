@@ -59,7 +59,8 @@ The payoff is the ordinary git workflow applied to config:
 
 ### What is here today
 
-`claude/settings.json`, holding the model choice and the [hooks](#hooks) — the [git approval gate](#the-git-approval-gate), the [sed gate](#the-sed-gate), and the [uv gate](#the-uv-gate); `claude/CLAUDE.md`, the [standing instructions](#standing-instructions) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
+Claude Code's user settings, carrying the [hooks](#hooks) that gate git, `sed`, and bare `python`; the [standing instructions](#standing-instructions) read at the start of every session; and a [skill](#skills) that prints Markdown.
+[What's here](#whats-here) gives the paths and where each one installs to.
 Small scope on purpose — it starts with what actually gets used and grows when repetition justifies it.
 [What else could live here](#what-else-could-live-here) lists the likely additions.
 
