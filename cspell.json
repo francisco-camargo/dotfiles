@@ -27,6 +27,7 @@
     "filemode",
     "gitattributes",
     "gitconfig",
+    "gitdir",
     "gitignore",
     "gitleaks",
     "gsub",

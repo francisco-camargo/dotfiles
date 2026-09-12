@@ -809,7 +809,24 @@ Two ways to stop copying them around:
 - **Templates here** plus a small `new-repo.sh` that stamps them into a fresh repo. Simple, and each repo stays self-contained.
 - **Global git config** — `core.attributesFile` and `core.excludesFile` point at files in this repo, so the rules apply everywhere without any per-repo file. Nothing to copy, but the rules become invisible to anyone cloning a repo, which matters if the repos are ever shared.
 
-Global git config also carries aliases, `pull.rebase`, `init.defaultBranch`, and the default commit editor.
+### Global git config
+
+`~/.gitconfig` on this machine carries an editor, a name, and an address.
+`init.defaultBranch`, `pull.rebase`, aliases, `core.excludesFile` — all of it is re-derived per machine or lived without, which is the drift this repo exists to end.
+
+Git also solves here what `settings.json` could not, because a gitconfig can include another one:
+
+```ini
+[include]
+    path = ~/git/dotfiles/git/gitconfig
+```
+
+The install appends a line instead of replacing a file someone already owns, so [refuse rather than clobber](#merge-settingsjson-instead-of-replacing-it) stops being something to build.
+Two more things fall out of the same mechanism.
+`includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](#per-machine-differences)).
+And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo, above.
+
+Read [Commit the reference, not the secret](#commit-the-reference-not-the-secret) before the first commit of one: a credential helper and a remote URL with a token in it both live in this file.
 
 ### Machine setup
 
