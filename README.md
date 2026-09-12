@@ -88,34 +88,48 @@ Where the sections below say "this Windows machine", they are reporting where th
 
 ## Install on a new machine
 
-To use the config and nothing else, `git` and `bash` are the whole list:
+Read this paragraph before running anything.
+`install.sh` writes into `~/.claude/`, and it replaces `settings.json` rather than merging with one you already have.
+If that directory has a history, [`install.sh` replaces `settings.json` wholesale](#installsh-replaces-settingsjson-wholesale) is the section to read first — every `permissions.allow` rule you have built up answering "Yes, and don't ask again" lives in that file.
+
+See what it would do first. `--dry-run` changes nothing:
 
 ```bash
 git clone https://github.com/francisco-camargo/dotfiles.git ~/git/dotfiles
 cd ~/git/dotfiles
+./install.sh --dry-run
+```
+
+It prints every move it would make. When that reads the way you want, drop the flag:
+
+```bash
 ./install.sh
 ```
 
 Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 
-To commit here as well, install `pre-commit` first and `install.sh` wires [the gates](#the-commit-gates) into the clone in the same run:
+`git` and `bash` are the whole requirement for this much.
+`install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and `claude/skills/md-to-pdf` into `~/.claude/`.
+Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
+Use `--copy` to force copies instead of links.
+
+### Making it your own
+
+This repo is meant as a starting point rather than something to depend on.
+Fork it, or clone it and point `origin` at your own remote, and everything from that commit on is yours to change.
+
+Install `pre-commit` before running `install.sh`, and the same run also wires [the gates](#the-commit-gates) into your clone:
 
 ```bash
 uv tool install pre-commit
-git clone https://github.com/francisco-camargo/dotfiles.git ~/git/dotfiles
-cd ~/git/dotfiles
-./install.sh
 ```
 
 `uv` is what I use; `pipx install pre-commit` or a `pip --user` install do the same job, and nothing here depends on which.
 Either order works — `install.sh` says so when the gates end up off, and `pre-commit install` from inside the clone turns them on afterwards.
-Tool first is simply the shorter path, which is the only reason it is written this way round.
 
-`install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and `claude/skills/md-to-pdf` into `~/.claude/`.
-Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
-Use `--dry-run` to preview, `--copy` to force copies instead of links.
-
-On a machine that has been used before this repo reaches it, read the next section first.
+The gates are worth more in your copy than in mine.
+A dotfiles repo grows toward shell profiles and git config, and that is where a credential eventually lands: see [how a secret would actually get out](#how-a-secret-would-actually-get-out).
+Mine is small enough that there is nothing to catch yet, which is exactly the wrong moment to find out the gates were never on.
 
 ### `install.sh` replaces `settings.json` wholesale
 
