@@ -48,6 +48,23 @@ The rule targets understatement, not negation.
 "This does not work" and "nothing copies it today" are plain negatives and stay as they are.
 What goes is the negated opposite standing in for a word that already exists: "not unlike", "not without merit", "it would not be unreasonable to", "this is no accident".
 
+### No details that go stale
+
+Do not restate in prose what a reader could look up.
+A count of what a directory holds, a file's line count, an entry's position in a list, how many repos do something — each is right when written and quietly wrong later, because nothing fails when the thing it describes changes.
+
+The test is: if this claim went false, what would say so?
+A list or table in the same section answers that, since the reader sees the mismatch and whoever adds a row fixes the count in the same edit.
+Nothing answers it for a claim about a file the reader is not looking at.
+
+So name things rather than counting them, and describe them by what they are rather than where they sit.
+Prefer "the gates below" to "the three gates below".
+Prefer "this gate denies sed edits" to "the second hook denies sed edits", which reordering a file makes false in silence.
+Prefer "while it stays short" to "at sixty lines".
+
+Keep a count an adjacent list makes self-evident, a count that carries an argument, a fixed outside fact, and identifiers that do not drift, such as a commit hash.
+Links and names are fine: a renamed heading breaks a link, where a stale number still reads as true.
+
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.

@@ -59,7 +59,7 @@ The payoff is the ordinary git workflow applied to config:
 
 ### What is here today
 
-Three things: `claude/settings.json`, holding the model choice and three [hooks](#hooks) — the [git approval gate](#the-git-approval-gate), the [sed gate](#the-sed-gate), and the [uv gate](#the-uv-gate); `claude/CLAUDE.md`, the [standing instructions](#standing-instructions) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
+`claude/settings.json`, holding the model choice and the [hooks](#hooks) — the [git approval gate](#the-git-approval-gate), the [sed gate](#the-sed-gate), and the [uv gate](#the-uv-gate); `claude/CLAUDE.md`, the [standing instructions](#standing-instructions) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
 Small scope on purpose — it starts with what actually gets used and grows when repetition justifies it.
 [What else could live here](#what-else-could-live-here) lists the likely additions.
 
@@ -102,7 +102,7 @@ On a machine that has been used before this repo reaches it, read the next secti
 
 ### `install.sh` replaces `settings.json` wholesale
 
-`install.sh` treats all three items the same way: back up what is there, then put the repo's version in its place.
+`install.sh` treats every item the same way: back up what is there, then put the repo's version in its place.
 That is right for `CLAUDE.md` and the skill, which are whole files this repo owns.
 It is wrong for `settings.json`, because there is only one user settings file and everything user-level has to share it.
 
@@ -177,17 +177,17 @@ If the commit just goes through, the settings have not reloaded yet.
 
 | Path | Goes to | What it is |
 | --- | --- | --- |
-| `claude/settings.json` | `~/.claude/settings.json` | Model choice, and the three [hooks](#hooks) below |
+| `claude/settings.json` | `~/.claude/settings.json` | Model choice, and the [hooks](#hooks) below |
 | `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | [Standing instructions](#standing-instructions) for every session, everywhere |
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](#skills) that renders a Markdown file to a print-ready PDF |
 
 ## Hooks
 
-Each of the three gates below is an entry in `hooks.PreToolUse` in `claude/settings.json`, described here in the order it appears there: git, then sed, then uv.
+Each gate below is an entry in `hooks.PreToolUse` in `claude/settings.json`.
 A `PreToolUse` hook runs before every Bash and PowerShell tool call and can let it through, force an approval prompt, or refuse it outright.
-The git gate backs its hook with two further layers of permission rules; the other two are the hook alone.
+The git gate backs its hook with further layers of permission rules; the rest are the hook alone.
 
-Two rules hold for all three, and both are worth keeping if any of them is ever edited.
+Two rules hold for every gate here, and both are worth keeping if one is ever edited.
 
 **`sed` and `grep` only** — no `jq`, `node`, or `python`, none of which are reliably installed.
 Keep it that way, or a hook will silently stop firing on a machine that lacks the dependency.
@@ -213,7 +213,7 @@ To tighten it from "prompt me" to "never, I'll run git myself", move the entries
 
 ### The sed gate
 
-The second `PreToolUse` hook denies `sed` edits outright.
+This gate denies `sed` edits outright.
 Unlike the git gate it does not prompt, because there is no case where the answer is yes.
 
 sed rewrites a file by regex, and code is full of characters a regex reads as syntax — `.`, `*`, `[`, `$`, `/`.
@@ -236,7 +236,7 @@ The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, w
 
 ### The uv gate
 
-The third `PreToolUse` hook denies a bare `python`, `python3`, or `py`.
+This gate denies a bare `python`, `python3`, or `py`.
 Like the sed gate it refuses outright rather than prompting, because the answer never changes: run it through `uv`.
 
 The reason is not taste.
@@ -288,7 +288,7 @@ Worth deleting the project copy at some point and letting this repo own it.
 
 `~/.claude/CLAUDE.md` holds standing instructions Claude reads at the start of every session in every project — the home for preferences that otherwise get re-explained, and then re-explained again.
 It is now in the repo as `claude/CLAUDE.md` and installed like everything else.
-Three entries so far: two that had to be said once already and would otherwise have to be said again, and one standard set up front.
+The entries so far arrived two ways: some had to be said once already and would otherwise have to be said again, and some are standards set up front.
 
 ### The bug that makes the case for it
 
@@ -329,7 +329,7 @@ A correction that only lives in one conversation is gone when that conversation 
 
 ### The preference that makes the same case
 
-The second entry is not a bug, which is the point — the file is for anything that would otherwise be re-explained, and preferences qualify.
+The wrapping convention is not a bug, which is the point — the file is for anything that would otherwise be re-explained, and preferences qualify.
 Prose here was hard-wrapped to eighty columns, which splits sentences across lines and makes a one-word edit reflow every line after it: the diff reports a paragraph changed when a word did.
 The convention that fixes it is one sentence per line, breaking at sentence boundaries only.
 Markdown joins the lines back into a paragraph when rendered, so the output is identical and only the diffs improve.
@@ -339,15 +339,15 @@ Written down here, it holds in every repo, including ones that have never heard 
 
 This README was written in the old style and converted in one pass, which is what the rule asks for: a whole-file change of its own rather than a paragraph quietly reflowed while editing something else.
 
-### The third entry, chosen rather than corrected
+### The entry chosen rather than corrected
 
-Orwell's six rules from *Politics and the English Language* are the third entry.
+Orwell's six rules from *Politics and the English Language* are in there too.
 Where the wrapping rule governs the line breaks, these govern the words: cut what can be cut, prefer the short word, prefer the active, and skip the jargon when a plain word carries the same meaning.
 His sixth rule keeps the other five honest — break any of them sooner than say something clumsy — which matters, because a style rule applied past the point of sense costs more than it saves.
 
-That entry arrived differently from the first two.
+That entry arrived differently from the ones above.
 Nothing went wrong first: no mangled commit, no paragraph reflowed for one word.
-It is a standard set up front, which is the second legitimate way in.
+It is a standard set up front, which is the other legitimate way in.
 The bar is not only "this has gone wrong twice" — it is also "this is general and durable enough to be worth saying before it costs anything."
 What stays out is the preference that applies to one file, or the rule that would read as a surprise six months from now.
 
@@ -367,7 +367,7 @@ Keep it to preferences and conventions, and it stays portable to the next machin
 ### What belongs here, and what belongs in a skill
 
 Everything in this file is read at the start of every session in every project, whether or not that session touches the subject.
-At sixty lines it costs nothing.
+While it stays short that costs nothing.
 A long guide would cost something every time, including in the sessions that never write a word of prose.
 
 A skill is the other half of the pair.
@@ -514,9 +514,9 @@ Repo-local first, then; global is a separate decision that needs an answer to th
 
 ### Already decided: the history keeps the old names
 
-The two references to internal repos are generalized in the working tree.
-Both remain in `README.md` throughout the history, and one remains in the commit message of `938f77c`.
-Rewriting 26 of 27 commits to hide a repo name was judged not worth losing the history over.
+The references to internal repos are generalized in the working tree.
+They remain in `README.md` throughout the history, and one remains in the commit message of `938f77c`.
+Rewriting nearly every commit to hide a repo name was judged not worth losing the history over.
 
 That decision is reversible only up to the moment the repo goes public.
 Anyone minded to reconsider should reconsider now.
@@ -570,20 +570,20 @@ A merger written in awk would fail quietly on a nested key, which is the failure
 Three smaller pieces instead, in the order they are worth doing:
 
 - **Refuse rather than clobber.** If `~/.claude/settings.json` exists and is not already this repo's, skip it, print the block to paste, and carry on installing `CLAUDE.md` and the skill. Roughly fifteen lines, no JSON parsing, and it fails loudly instead of silently.
-- **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so all three gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
+- **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
 - **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON — which the uv gate's escaping already argues for.
 
 One thing to settle at the same time, because it arrives with Developer Mode rather than with a coworker.
 Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
 Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
-Keeping `settings.json` a copy while the other two are links is the simple answer.
+Keeping `settings.json` a copy while the rest are links is the simple answer.
 
 ### Split standing instructions between CLAUDE.md and skills
 
 Described under [What belongs here, and what belongs in a skill](#what-belongs-here-and-what-belongs-in-a-skill).
 
 Nothing is wrong today.
-`CLAUDE.md` is sixty lines and every entry in it earns being read every session.
+`CLAUDE.md` is short and every entry in it earns being read every session.
 The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case — with review checklists, commit conventions, and diagram style queued behind it.
 
 Three things to settle when it does:
@@ -595,7 +595,7 @@ Three things to settle when it does:
 ### Prune `~/.claude/backups/`
 
 Every install adds a copy of whatever it replaced and nothing removes the old ones.
-Harmless while the tree is three small things, and worth a `--keep N` or a date cutoff before the directory turns into somewhere nobody looks.
+Harmless while the tree is small, and worth a `--keep N` or a date cutoff before the directory turns into somewhere nobody looks.
 
 ## What else could live here
 
@@ -607,12 +607,12 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 - **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
 - **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher earns its keep.
 - **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
-- **More hooks** — the same `PreToolUse` mechanism as the three gates above can auto-format after edits, block writes to protected paths, or log what ran.
+- **More hooks** — the same `PreToolUse` mechanism as the gates above can auto-format after edits, block writes to protected paths, or log what ran.
 
 ### Shared repo scaffolding
 
-Three of my other repos already repeat the same files by hand.
-`.gitignore` is in all three; `.gitattributes` with `* text=auto eol=lf` is in two and had to be written twice; `cspell.json` exists in one and will want to exist in the others.
+Several of my other repos already repeat the same files by hand.
+`.gitignore` is in all of them; `.gitattributes` with `* text=auto eol=lf` had to be written from scratch more than once; `cspell.json` exists in only one so far and will want to exist in the rest.
 
 Two ways to stop copying them around:
 
@@ -631,7 +631,7 @@ Global git config also carries aliases, `pull.rebase`, `init.defaultBranch`, and
 
 This is the next thing to pull in, so it gets more than a bullet.
 
-The three files worth versioning all live in one directory — `%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux:
+The files worth versioning all live in one directory — `%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux:
 
 - `settings.json` — the bulk of it
 - `keybindings.json`
@@ -656,7 +656,7 @@ Add keybindings once there are any worth keeping, and the extensions list once a
 Then pick a single source of truth, and let it be the repo.
 This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
-The UI-edited file is not lost — `backup()` moves it to `backup()` moves it into `backups/` first — but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
+The UI-edited file is not lost — `backup()` moves it into `backups/` first — but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
 So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
 If a setting gets changed through the UI by reflex — and it will — copy it back into the repo before the next install rather than after.
 
