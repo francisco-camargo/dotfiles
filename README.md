@@ -261,7 +261,6 @@ This is the gate that argued for the escaping rule at the top of this section: t
 ## Skills
 
 A skill pairs a script with the description that tells Claude when to reach for it.
-One is here so far.
 
 ### The md-to-pdf skill
 
@@ -279,10 +278,7 @@ See `claude/skills/md-to-pdf/SKILL.md` for details.
 A skill installed here lands in `~/.claude/skills/` and is available in every project.
 A skill committed to a repo's own `.claude/skills/` is available only in that repo.
 When the same skill name exists in both, the project copy wins.
-
-`md-to-pdf` currently exists in both places — here, and in another repo's own `.claude/skills/`.
-The copies are identical so nothing misbehaves, but there are two sources of truth.
-Worth deleting the project copy at some point and letting this repo own it.
+Two copies of one skill is a problem to fix by deleting one, not by keeping them both.
 
 ## Standing instructions
 
