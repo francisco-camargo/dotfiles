@@ -803,6 +803,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 
 Several of my other repos already repeat the same files by hand.
 `.gitignore` is in all of them; `.gitattributes` with `* text=auto eol=lf` had to be written from scratch more than once; `cspell.json` exists in only one so far and will want to exist in the rest.
+`.editorconfig` is in none of them, and is the piece of editor setup that any editor honors — worth writing here rather than waiting on the VS Code question below.
 
 Two ways to stop copying them around:
 
