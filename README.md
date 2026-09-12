@@ -650,6 +650,24 @@ Claude Code writes `~/.claude/settings.json` itself, the first time you change a
 Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
 Keeping `settings.json` a copy while the rest are links is the simple answer.
 
+### Revisit the install experience
+
+[Merge `settings.json` instead of replacing it](#merge-settingsjson-instead-of-replacing-it) fixes the worst single case.
+The wider question is what running this script should feel like on a machine whose config someone already cares about — a question that changed weight the moment people who did not write it started running it.
+
+As it stands, `./install.sh` with no arguments writes immediately.
+It reports each move as it makes it, so you learn what happened once it has happened, and seeing first depends on already knowing `--dry-run` is there.
+[Install on a new machine](#install-on-a-new-machine) now opens with a warning paragraph and that flag, which is prose compensating for a default — and that is the tell that the default is wrong.
+
+Worth weighing together rather than one at a time:
+
+- **Preview by default.** A bare `./install.sh` previews, and writing takes an explicit `--apply`. It costs one word on every real install, and removes every case where someone loses settings by pasting a command from a README.
+- **Summarize, then act.** Print the whole plan — what is replaced, what is backed up, where — as one block to read, rather than narrating it move by move once it is too late.
+- **Say how to undo it.** Backups land in `~/.claude/backups/` and nothing says how to put one back, so the safety net is write-only. An `--undo` restoring the newest set would answer the question the backups exist to answer.
+
+The counterweight is the one that applies to everything here: this script should stay readable in a single sitting.
+Any of these that turns it into an install framework is the wrong trade, and refusing to clobber is worth more than all three.
+
 ### Split standing instructions between CLAUDE.md and skills
 
 Described under [What belongs here, and what belongs in a skill](#what-belongs-here-and-what-belongs-in-a-skill).
