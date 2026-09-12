@@ -86,15 +86,31 @@ place "$repo/claude/skills/md-to-pdf"   "$dest/skills/md-to-pdf"
 # inert until something writes the hook into this clone. This is that step, and
 # it touches only this repo -- no global core.hooksPath, which would override
 # the hooks of every other repo on the machine.
+gates=on
 say
 if [ "$dry" -eq 1 ]; then
   say "  would: pre-commit install"
 elif command -v pre-commit >/dev/null 2>&1; then
   (cd "$repo" && pre-commit install)
 else
-  say "pre-commit is not installed, so this repo's commit gates are off:"
-  say "  uv tool install pre-commit && pre-commit install"
+  gates=off
 fi
 
 say
 say "done. Restart Claude Code (or open /hooks once) so it reloads settings."
+
+# Deliberately the last thing printed, and deliberately not a quiet line in the
+# middle of the install. A gate nobody knows is off is the failure mode the
+# README names: the layer misses "anyone who never enabled it". Installing a
+# global Python tool as a side effect of placing config files would be the
+# wrong fix -- saying so where it cannot be missed is the right one.
+if [ "$gates" = off ]; then
+  say
+  say "!! This repo's commit gates are NOT active -- pre-commit is not installed."
+  say "!! Nothing here will stop a credential being committed."
+  say "!!"
+  say "!!   uv tool install pre-commit && pre-commit install"
+  say "!!"
+  say "!! The first run downloads roughly 340 MB into ~/.cache/pre-commit,"
+  say "!! most of it the Go toolchain that gitleaks needs."
+fi
