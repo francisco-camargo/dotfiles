@@ -136,7 +136,7 @@ Turn Developer Mode on and you get real symlinks, and edits propagate on their o
 
 The copy fallback has a second failure mode, and it is easier to hit than the first.
 Because `~/.claude/skills/md-to-pdf/` is an ordinary directory and not a link, editing a skill in place — which is what Claude does when asked to change a global skill — leaves this repo clean.
-`git status` reports nothing, so the change looks like it was never made, and the next `./install.sh` quietly replaces it with the repo's older copy.
+`git status` reports nothing, so the change looks like it was never made, and the next `./install.sh` replaces it with the repo's older copy.
 The overwritten directory does get moved into `~/.claude/backups/`, so the work is recoverable, but only if you notice in time to go looking for it.
 
 This has already happened once.
@@ -194,7 +194,7 @@ Keep it that way, or a hook will silently stop firing on a machine that lacks th
 
 **Test the pattern after JSON escaping, not before.**
 Each pattern is a string inside `settings.json`, so an alternation written `\|\|` at a shell prompt has to survive as `\\|\\|`, and `\.` as `\\.`.
-Get that wrong and the pattern still parses, still exits 0, and quietly matches nothing.
+Get that wrong and the pattern still parses, still exits 0, and matches nothing.
 Test the string pulled back out of `settings.json`, not the one typed into the shell.
 
 To drop any one gate, delete its entry in `hooks.PreToolUse`.
@@ -217,7 +217,7 @@ This gate denies `sed` edits outright.
 Unlike the git gate it does not prompt, because there is no case where the answer is yes.
 
 sed rewrites a file by regex, and code is full of characters a regex reads as syntax — `.`, `*`, `[`, `$`, `/`.
-A pattern that looks literal quietly matches more than it says.
+A pattern that looks literal matches more than it says.
 `s/old/new/g` then replaces every match on every line rather than the one that was meant, `-i` writes the result straight over the file, and the command exits 0 either way.
 Run by hand that is survivable, because you read the diff before moving on.
 Run as one step in a longer task it is not: the mangled line becomes the base for the next several edits, and by the time it surfaces the diff is hard to untangle.
@@ -510,7 +510,7 @@ A `pre-commit` hook needs `core.hooksPath`, because `.git/hooks/` is not cloned.
 - **Global**, pointing at this repo from the global git config. This is the "solve it once, not once per repo" form the [Intent](#intent) section argues for.
 
 The trap is that a global `core.hooksPath` overrides per-repo hooks everywhere.
-Any repo shipping its own `pre-commit` quietly stops running it, with nothing to say so.
+Any repo shipping its own `pre-commit` stops running it, with nothing to say so.
 Repo-local first, then; global is a separate decision that needs an answer to that objection before it is worth taking.
 
 ### Already decided: the history keeps the old names
