@@ -459,7 +459,32 @@ A pre-commit hook running `gitleaks` or `trufflehog` blocks the accidental commi
 Overkill at the current size — there is nothing here to catch.
 Worth adding once the repo grows to shell profiles and git config, which is where credentials genuinely creep in: a remote URL with a token embedded in it, an alias carrying a password, an exported key in `.bashrc`.
 
-That "once" has arrived: see [Before this repo goes public](#before-this-repo-goes-public).
+That "once" arrived, and the gates are in — see [the commit gates](#the-commit-gates).
+
+### The commit gates
+
+`.pre-commit-config.yaml` holds what runs before a commit is created, and `install.sh` writes the hook into the clone.
+
+| Gate | What it stops |
+| --- | --- |
+| `gitleaks` | A recognized credential anywhere in the staged diff |
+| `detect-private-key` | A private key pasted into a tracked file |
+| `check-added-large-files` | A stray blob, which is usually a dump or an archive |
+| `check-merge-conflict` | Conflict markers committed by accident |
+| `end-of-file-fixer`, `trailing-whitespace` | Whitespace that would otherwise show up in someone else's diff |
+| `scripts/check-anchors.sh` | A Markdown link to a heading that is not there |
+
+Both directions are tested rather than assumed: a planted AWS key pair is caught as `aws-access-token` and `generic-api-key`, and a broken anchor fails the commit.
+
+The framework rather than the hand-written script this repo first planned, for two reasons.
+`gitleaks` detects far more than any amount of `grep` I would write, and people who watch credential formats change maintain it.
+And `.pre-commit-config.yaml` is an ordinary tracked file, so it clones; only the hook that calls it has to be written per clone, which is the one thing `install.sh` adds.
+
+The anchor check is here because a heading rename leaves broken links behind and nothing reports them.
+That is not a security gate, but it is the same shape of problem: a change that quietly invalidates something elsewhere in the repo.
+
+`--no-verify` still skips all of it, and none of it runs for someone who never ran `install.sh`.
+That is the right trade when the thing being defended against is an accident rather than an attacker.
 
 ## Before this repo goes public
 
@@ -491,8 +516,8 @@ Going public while growing into them is that moment.
 | --- | --- | --- | --- |
 | GitHub push protection | Recognized credential formats, server side, blocks the push | Passwords, host names, anything without a known token shape | A checkbox |
 | Hardened `.gitignore` | Whole files — `.credentials.json`, `.env`, private keys | `git add -f`, and secrets pasted inside tracked files | A list of filenames |
-| A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | Forty lines plus setup |
-| `gitleaks` in Actions | The best detection of the four | Runs after the push — on a public repo, after it is already published | A workflow file |
+| A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | A config file, and `pre-commit` on the machine |
+| `gitleaks` in Actions | Whatever reached the remote anyway, `--no-verify` included | Runs after the push — on a public repo, after it is already published | A workflow file |
 
 Push protection is the one to reach for first, and it is free.
 Secret scanning runs automatically on public repositories at no cost.
@@ -514,6 +539,13 @@ The trap is that a global `core.hooksPath` overrides per-repo hooks everywhere.
 Any repo shipping its own `pre-commit` stops running it, with nothing to say so.
 Repo-local first, then; global is a separate decision that needs an answer to that objection before it is worth taking.
 
+Settled, and the trap turned out to be avoidable.
+Using [the framework](#the-commit-gates) means no `core.hooksPath` at all: `pre-commit install` writes an ordinary `.git/hooks/pre-commit` into this clone, so nothing is redirected and no other repo is touched.
+
+The global form is still there when the appetite arrives, and it has no trap either.
+`pre-commit init-templatedir` sets `init.templateDir`, so every repo cloned or created afterwards gets a real hook of its own rather than a redirect.
+The catch is only that it reaches new clones, not the repos already sitting on the machine.
+
 ### Already decided: the history keeps the old names
 
 The references to internal repos are generalized in the working tree.
@@ -525,9 +557,9 @@ Anyone minded to reconsider should reconsider now.
 
 ### The order to do it in
 
-1. **Turn on push protection.** Highest value, and the only item here that no commit can do for you.
-2. **Add the `pre-commit` hook**, `sed` and `grep` only, wired up repo-local by `install.sh`.
-3. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim.
+1. **Turn on push protection.** Highest value, and the only item here that no commit can do for you. Still outstanding.
+2. **Add the `pre-commit` hook.** Done — [the commit gates](#the-commit-gates). It runs `gitleaks` rather than the `sed` and `grep` this list first imagined, which is a better gate for less code.
+3. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim. Done.
 4. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
 
 Then the switch.
