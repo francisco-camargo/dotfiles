@@ -8,7 +8,7 @@ Every item is summarized in one line here and argued properly in [README.md](REA
 Gated, because publishing is the step no later commit can undo — [Before this repo goes public](README.md#before-this-repo-goes-public).
 
 - [ ] Turn on GitHub push protection — a checkbox, highest value, and the only item no commit can do ([four layers](README.md#four-layers-and-what-each-one-misses))
-- [ ] Harden `.gitignore` against the files that would actually cost something ([the leak that is actually likely](README.md#the-leak-that-is-actually-likely))
+- [x] Harden `.gitignore` against the files that would actually cost something ([how a secret would get out](README.md#how-a-secret-would-actually-get-out))
 - [ ] Add a repo-local `pre-commit` hook, `sed` and `grep` only ([repo-local or global](README.md#repo-local-hooks-or-global-and-the-trap-in-the-global-one))
 - [ ] Audit the full history once more, deliberately ([the order to do it in](README.md#the-order-to-do-it-in))
 - [ ] Turn on branch protection — public means strangers can propose changes to a script you execute ([this repo runs code](README.md#this-repo-runs-code-on-every-machine-that-installs-it))
