@@ -28,6 +28,7 @@ Started and unfinished, as opposed to speculative — [Open items](README.md#ope
 - [ ] Prune `~/.claude/backups/`, with a `--keep N` or a date cutoff ([prune backups](README.md#prune-claudebackups))
 - [ ] Delete the duplicate `md-to-pdf` in the other repo and let this one own it ([skill scope, and duplicates](README.md#skill-scope-and-duplicates))
 - [ ] Consolidate this `.pre-commit-config.yaml` with the Python one, and audit what each is missing ([consolidate the two configs](README.md#consolidate-the-two-pre-commit-configs))
+- [ ] Settle how spelling gets checked — `codespell` at commit time, `cspell` in the editor, or both ([settle how spelling gets checked](README.md#settle-how-spelling-gets-checked))
 
 ## Someday
 
