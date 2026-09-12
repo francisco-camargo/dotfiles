@@ -10,7 +10,7 @@ I am exploring dotfiles because I want to solve a problem **once**.
 Not once per repo, and not once per machine.
 When something takes real thought to work out, I want the result to still be there the next time I hit it — in a different project, or on a different computer — rather than re-derived from scratch or half-remembered.
 
-That is the lens I want applied to work here.
+That is the test I want applied to work here.
 The question about any fix is not only "does this work" but "where does this belong so it keeps working elsewhere":
 
 - A fix that only helps in the repo I happen to be sitting in is a fix I will have to make again. Prefer the general form.
@@ -20,7 +20,7 @@ The question about any fix is not only "does this work" but "where does this bel
 **Claude, when we work here:** default to generalizing.
 If something we are fixing in another repo would help in every repo, or on every machine, say so and propose lifting it here instead of solving it locally and moving on.
 Treat a local one-off as a deliberate choice needing a reason, not the default.
-And when this repo's own mechanics undermine the goal — copies drifting out of sync, two sources of truth for one skill — treat that as a real problem rather than a papercut, because it defeats the entire point of the repo.
+And when this repo's own mechanics undermine the goal — copies drifting out of sync, two sources of truth for one skill — treat that as a real problem and not a small annoyance, because it defeats the entire point of the repo.
 
 The counterweight: scope grows when repetition justifies it, not in anticipation.
 Something earns a place here once I have hit it twice — not the first time I imagine I might.
@@ -449,7 +449,7 @@ That makes write access to this repo equivalent to code execution on all your ma
 - Read the diff before `git pull && ./install.sh` on another machine, the same way you would for any script handed to you.
 - If this repo is ever shared or made public, treat a pull request against it as a change to a security-sensitive script, not a config tweak.
 
-### A guardrail, if it earns its keep
+### A secret scanner, once it is worth the setup
 
 A pre-commit hook running `gitleaks` or `trufflehog` blocks the accidental commit before it happens.
 Overkill at the current size — there is nothing here to catch.
@@ -459,7 +459,7 @@ That "once" has arrived: see [Before this repo goes public](#before-this-repo-go
 
 ## Before this repo goes public
 
-Going public is a one-way door.
+Going public cannot be undone.
 A private repo nobody has fetched can still be rewritten; a public one cannot be un-published, because clones and forks are outside your control ([Git history does not forget](#git-history-does-not-forget)).
 Everything below wants deciding first rather than afterwards.
 
@@ -478,7 +478,7 @@ Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest
 [What else could live here](#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
-[A guardrail, if it earns its keep](#a-guardrail-if-it-earns-its-keep) called a scanner overkill at this size, and said to revisit that once the repo grew into those files.
+[A secret scanner, once it is worth the setup](#a-secret-scanner-once-it-is-worth-the-setup) called a scanner overkill at this size, and said to revisit that once the repo grew into those files.
 Going public while growing into them is that moment.
 
 ### Four layers, and what each one misses
@@ -496,7 +496,7 @@ Push protection is a separate switch: repository-level is off by default, and an
 It blocks the push and says why.
 Anyone with write access can bypass it by giving a reason, which is the right trade when the thing being defended against is an accident rather than an attacker.
 
-The Actions scan is a backstop rather than a gate.
+The Actions scan reports; it does not block.
 By the time it fires on a public repo, the commit is already published.
 
 ### Repo-local hooks, or global, and the trap in the global one
@@ -603,7 +603,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 ### More Claude Code configuration
 
 - **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
-- **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher earns its keep.
+- **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher proves worth the setup.
 - **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
 - **More hooks** — the same `PreToolUse` mechanism as the gates above can auto-format after edits, block writes to protected paths, or log what ran.
 
