@@ -687,6 +687,28 @@ Three things to settle when it does:
 Every install adds a copy of whatever it replaced and nothing removes the old ones.
 Harmless while the tree is small, and worth a `--keep N` or a date cutoff before the directory turns into somewhere nobody looks.
 
+### Consolidate the two pre-commit configs
+
+The config here is not the only one I maintain.
+[`francisco-camargo/francisco-camargo`](https://github.com/francisco-camargo/francisco-camargo/blob/master/src/python/pre-commit/.pre-commit-config.yaml) carries a fuller one for Python work, and the two were written without reference to each other.
+
+They agree on the part that matters least and differ on the part that matters most.
+Both pin `pre-commit/pre-commit-hooks` at the same revision and share most of its hygiene hooks.
+Then each is missing what the other has where it counts: `gitleaks` runs only here, though the Python config is the one sitting in front of dependency files and API clients, and `codespell` runs only there, though this repo is mostly prose.
+
+Three layers, once they are pulled apart:
+
+- **Wanted everywhere, language-agnostic.** The hygiene hooks, `detect-private-key`, `check-shebang-scripts-are-executable`, `gitleaks`, `codespell`.
+- **Python only.** `black`, `flake8`, `isort`, `mypy`, `bandit`, `interrogate`, `pip-audit`, `add-trailing-comma`.
+- **Repo-specific.** The anchor check, which nothing outside this repo needs.
+
+While the two are side by side, the cheap question is what each is missing.
+`check-json` and `check-toml` are in the Python config and not here; `codespell` would have caught more than one wobble in this README; `mixed-line-ending` overlaps what `.gitattributes` already does, so it may be redundant rather than missing.
+
+The obstacle is that `pre-commit` has no include or extends.
+One config cannot inherit another, so sharing a base means choosing between a block documented in one place and copied by hand — the drift this repo exists to end — and generating the file, which trades the drift for a build step.
+Worth settling before a third config turns up and makes the same choice a third time.
+
 ## What else could live here
 
 Nothing below is set up yet.

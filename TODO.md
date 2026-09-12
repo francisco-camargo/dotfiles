@@ -27,6 +27,7 @@ Started and unfinished, as opposed to speculative — [Open items](README.md#ope
 - [ ] Decide what stays in `CLAUDE.md` and what becomes a skill — writing style is the first case, not the only one ([split standing instructions](README.md#split-standing-instructions-between-claudemd-and-skills))
 - [ ] Prune `~/.claude/backups/`, with a `--keep N` or a date cutoff ([prune backups](README.md#prune-claudebackups))
 - [ ] Delete the duplicate `md-to-pdf` in the other repo and let this one own it ([skill scope, and duplicates](README.md#skill-scope-and-duplicates))
+- [ ] Consolidate this `.pre-commit-config.yaml` with the Python one, and audit what each is missing ([consolidate the two configs](README.md#consolidate-the-two-pre-commit-configs))
 
 ## Someday
 
