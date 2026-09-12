@@ -470,6 +470,7 @@ That "once" arrived, and the gates are in — see [the commit gates](#the-commit
 | --- | --- |
 | `gitleaks` | A recognized credential anywhere in the staged diff |
 | `detect-private-key` | A private key pasted into a tracked file |
+| `check-shebang-scripts-are-executable` | A script committed without its executable bit, which `core.filemode=false` makes easy to do on Windows and impossible to notice there |
 | `check-added-large-files` | A stray blob, which is usually a dump or an archive |
 | `check-merge-conflict` | Conflict markers committed by accident |
 | `end-of-file-fixer`, `trailing-whitespace` | Whitespace that would otherwise show up in someone else's diff |
