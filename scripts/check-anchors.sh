@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 # Fail if a Markdown link points at a heading that is not there.
 #
-# This is the staleness a rename leaves behind: the heading moves, the links
-# keep the old slug, and nothing says so until a reader clicks one. A commit
-# that renames a heading should fix its links in the same commit.
+# Every heading doubles as a place to link to. GitHub turns the heading text
+# into a short name, its slug, and a link ending in "#" plus that slug jumps to
+# the heading. Such a link is an anchor link:
+#
+#   ### The commit gates                    a heading
+#   the-commit-gates                        its slug
+#   [the commit gates](#the-commit-gates)   an anchor link that reaches it
+#
+# This is the staleness a rename leaves behind: the heading moves, its slug
+# changes with it, the links keep the old one, and nothing says so until a
+# reader clicks. A commit that renames a heading should fix its links in the
+# same commit.
 set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
