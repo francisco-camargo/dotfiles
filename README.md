@@ -69,7 +69,8 @@ Small scope on purpose — it starts with what actually gets used and grows when
 Edit a file in this repo, commit it, and on any other machine `git pull`.
 With symlinks the change is live immediately.
 
-On this Windows machine it is not, because Developer Mode is off and `install.sh` falls back to copying — and copies do not track edits.
+On Windows it is not, until someone turns on Developer Mode.
+A Windows machine out of the box refuses symlinks to an ordinary user, so `install.sh` falls back to copying — and copies do not track edits.
 Until that changes, re-run `./install.sh` after editing anything here, or the change stays in the repo and never reaches `~/.claude/`.
 Details in [Symlinks on Windows](#symlinks-on-windows).
 
@@ -80,17 +81,24 @@ Committing to this repo also wants `pre-commit`, which runs the [gates](#the-com
 There is nothing here that ties the repo to one operating system:
 
 - **macOS and Linux** work as-is, and get real symlinks by default — no Developer Mode step, so the [working loop](#the-working-loop) above is the live-edit one rather than the re-run-`install.sh` one.
-- **Windows** works through Git Bash. `.gitattributes` normalizes line endings to LF so the scripts stay executable everywhere.
+- **Windows** works through Git Bash. `.gitattributes` normalizes line endings to LF so the scripts stay executable everywhere. Symlinks need Developer Mode, which is off on a new machine, so that is a step to do before the first install — [Symlinks on Windows](#symlinks-on-windows).
 
 The Windows-specific pieces are inert elsewhere rather than broken: the `PowerShell(...)` entries in `permissions.ask` name a tool that does not exist on macOS, `md2pdf.sh` guards its `cygpath` calls behind `command -v`, and its browser search list already includes the `/Applications/` paths alongside the `C:\Program Files\` ones.
 
 Where the sections below say "this Windows machine", they are reporting where the config happens to run today, not stating a requirement.
+Developer Mode is the exception: it is off on every new Windows machine, so anyone installing on Windows meets it, not just me.
 
 ## Install on a new machine
 
 Read this paragraph before running anything.
 `install.sh` writes into `~/.claude/`, and it replaces `settings.json` rather than merging with one you already have.
 If that directory has a history, [`install.sh` replaces `settings.json` wholesale](#installsh-replaces-settingsjson-wholesale) is the section to read first — every `permissions.allow` rule you have built up answering "Yes, and don't ask again" lives in that file.
+
+**On Windows, turn on Developer Mode before the first run.**
+Settings → For developers → Developer Mode on — under System on Windows 11, under Update & Security on Windows 10 — then restart Git Bash.
+Windows will not let an ordinary user create a symlink without it, and every new machine arrives with it off, so `install.sh` reports the refusal and copies instead.
+Copies work, but each edit here then needs another `./install.sh` to reach `~/.claude/`, and a file edited under `~/.claude` can be overwritten on the next run ([copies drift both ways](#copies-drift-both-ways)).
+Turning it on takes an administrator; running the install from an elevated shell does the same job for one run.
 
 See what it would do first. `--dry-run` changes nothing:
 
@@ -150,8 +158,9 @@ Until the guard lands — [Merge `settings.json` instead of replacing it](#merge
 
 ### Symlinks on Windows
 
-Windows only allows symlinks with Developer Mode on (Settings → System → For developers) or an elevated shell.
-Without it the script notices, says so, and copies instead.
+Creating a symlink on Windows is a privilege ordinary users do not hold, and Developer Mode — which grants it — is off on a machine out of the box.
+So copying is what Windows does by default, on any new machine rather than on this one in particular, until someone turns Developer Mode on or runs the install elevated.
+Without the privilege the script notices, says so, and copies instead.
 
 Git Bash adds a second requirement that is easy to miss.
 Its `ln -s` copies the file and exits 0 unless `MSYS=winsymlinks:nativestrict` is set, so no link is attempted and nothing reports a problem — turning Developer Mode on by itself would not have changed the outcome.
@@ -615,6 +624,7 @@ Each of these is known to be missing, not merely imagined.
 ### Turn on Developer Mode
 
 The one item that needs a person rather than a commit.
+It is also a setup step for anyone on Windows rather than a chore particular to this machine, which is why [Install on a new machine](#install-on-a-new-machine) now says so up front.
 `install.sh` now asks Git Bash for a real symlink instead of letting it copy in silence ([Symlinks on Windows](#symlinks-on-windows)), so the only thing still in the way is the OS.
 Developer Mode is off on this machine — `AllowDevelopmentWithoutDevLicense` is unset under `HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock` — and the shell is not elevated, so a native link fails with "operation not permitted" and the installer copies instead.
 
