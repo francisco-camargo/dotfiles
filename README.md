@@ -834,7 +834,7 @@ Read [Commit the reference, not the secret](#commit-the-reference-not-the-secret
 
 - **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](#install-what-this-config-already-assumes) — it starts with the tools this repo's own config depends on.
 - **Editor settings** — VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
-- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks.
+- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](#symlinks-on-windows)).
 
 ### VS Code settings
 
