@@ -13,6 +13,7 @@ dest="${CLAUDE_HOME:-$HOME/.claude}"
 stamp="$(date +%Y%m%d-%H%M%S)"
 mode=link
 dry=0
+fell_back=0
 
 # Parsed with a shift loop rather than `for arg in "$@"`: bash 3.2 -- still the
 # system bash on macOS -- treats an empty "$@" as unbound under `set -u`.
@@ -69,6 +70,7 @@ place() {
       return 0
     fi
     rm -rf "$target"
+    fell_back=1
     say "  (symlink unavailable -- copying instead)"
   fi
   run cp -r "$src" "$target"
@@ -98,6 +100,16 @@ fi
 
 say
 say "done. Restart Claude Code (or open /hooks once) so it reloads settings."
+
+# Windows refuses symlinks to an ordinary user until Developer Mode is on, which
+# is the state every new machine is in. Naming the fix here beats leaving someone
+# to work out why "copying instead" appeared and what it costs them.
+if [ "$fell_back" -eq 1 ]; then
+  say
+  say "Note: links were refused, so these are copies -- edits here will NOT reach $dest."
+  say "  Turn on Developer Mode (Settings -> For developers), then re-run this script."
+  say "  Until then, re-run it after every edit, and edit only in the repo."
+fi
 
 # Deliberately the last thing printed, and deliberately not a quiet line in the
 # middle of the install. A gate nobody knows is off is the failure mode the
