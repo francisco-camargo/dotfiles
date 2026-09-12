@@ -862,6 +862,11 @@ The extensions list is the odd one out: it is a script input rather than a symli
 Start with `settings.json` alone.
 Add keybindings once there are any worth keeping, and the extensions list once a second machine exists to replay it onto — that file is the one that pays off only on a fresh install.
 
+One argument cuts the other way, and it is the new-machine one.
+Redoing `settings.json` by hand takes a minute; rebuilding the extension set takes an afternoon, and what is missing from it only shows up when something stops working.
+`code --list-extensions > vscode/extensions.txt` costs nothing to keep current, and it cannot drift the way `settings.json` does, because no UI writes back to it.
+So take the extensions list first if the next machine is nearer than the next settings change.
+
 Then pick a single source of truth, and let it be the repo.
 This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
