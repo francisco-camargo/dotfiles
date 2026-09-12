@@ -797,6 +797,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 - **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
 - **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher proves worth the setup.
 - **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
+- **`~/.claude/keybindings.json`** — key bindings, which is the file nobody rebuilds from memory on a new machine.
 - **More hooks** — the same `PreToolUse` mechanism as the gates above can auto-format after edits, block writes to protected paths, or log what ran.
 
 ### Shared repo scaffolding
