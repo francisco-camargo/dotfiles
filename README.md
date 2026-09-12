@@ -59,7 +59,7 @@ The payoff is the ordinary git workflow applied to config:
 
 ### What is here today
 
-Three things: `claude/settings.json`, holding the model choice, the three-layer [git approval gate](#the-git-approval-gate), and the [sed gate](#the-sed-gate); `claude/CLAUDE.md`, the [standing instructions](#a-global-claudemd) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
+Three things: `claude/settings.json`, holding the model choice, the three-layer [git approval gate](#the-git-approval-gate), the [sed gate](#the-sed-gate), and the [uv gate](#the-uv-gate); `claude/CLAUDE.md`, the [standing instructions](#a-global-claudemd) read at the start of every session; and the [`md-to-pdf` skill](#the-md-to-pdf-skill).
 Small scope on purpose — it starts with what actually gets used and grows when repetition justifies it.
 [What else could live here](#what-else-could-live-here) lists the likely additions.
 
@@ -177,7 +177,7 @@ If the commit just goes through, the settings have not reloaded yet.
 
 | Path | Goes to | What it is |
 | --- | --- | --- |
-| `claude/settings.json` | `~/.claude/settings.json` | Model choice, the git approval gate, and the sed gate below |
+| `claude/settings.json` | `~/.claude/settings.json` | Model choice, the git approval gate, and the sed and uv gates below |
 | `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | Standing instructions for every session, everywhere |
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | Renders a Markdown file to a print-ready PDF |
 
@@ -219,6 +219,35 @@ Any description containing `files,` or `functions,` then reads as an `s,` substi
 The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, which is what stops it.
 
 To drop the gate, delete the second entry in `hooks.PreToolUse`.
+To make it a prompt rather than a refusal, change `"permissionDecision": "deny"` to `"ask"`.
+
+## The uv gate
+
+The third `PreToolUse` hook denies a bare `python`, `python3`, or `py`.
+Like the sed gate it refuses outright rather than prompting, because the answer never changes: run it through `uv`.
+
+The reason is not taste.
+On this machine `python` and `python3` on `PATH` are symlinks to `AppInstallerPythonRedirector.exe` — the Microsoft Store redirector, which opens a Store page rather than running anything.
+There is no Python installed outside uv; the only real interpreter is the one under `%APPDATA%\uv\python\`.
+So `python script.py` cannot succeed here, and the cost of trying is a wasted turn spent reading a failure that looks like a missing file rather than a missing interpreter.
+
+The hook matches those names in command position — at the start, or after `;`, `&&`, `||`, `|`, or `(`.
+That anchoring is what makes it worth a hook rather than a permission rule, for the same reason the git gate needs one: it catches `cd src && python app.py`, which prefix matching misses.
+
+It deliberately leaves alone anything under `uv run`, including `uv run python -c ...`, where `python` is an argument rather than the command.
+It also leaves an explicit interpreter path such as `.venv/Scripts/python.exe` alone, which is a deliberate choice rather than the habit being corrected, and `python` used as an argument or inside a filename — `which python`, `grep -r python src/`, `cat python_notes.md`.
+`pytest` is untouched too, despite sharing its first two letters with the `py` launcher.
+
+The refusal names the `uv` forms to use, so the correction arrives in the same turn and the next attempt is `uv run` rather than a hunt for the interpreter.
+
+One detail worth keeping if this is ever edited: the alternation `\|\|` and the escaped `\.` have to survive being written into JSON as `\\|\\|` and `\\.`.
+Get that wrong and the pattern still parses, still exits 0, and quietly matches nothing.
+Test the string pulled back out of `settings.json`, not the one typed into the shell.
+
+`pip` is not covered.
+`pip install` reaches for the same missing interpreter, and `uv pip` or `uv add` is the replacement — the omission is scope, not a finding that it is safe.
+
+To drop the gate, delete the third entry in `hooks.PreToolUse`.
 To make it a prompt rather than a refusal, change `"permissionDecision": "deny"` to `"ask"`.
 
 ## The md-to-pdf skill
@@ -523,8 +552,8 @@ A merger written in awk would fail quietly on a nested key, which is the failure
 Three smaller pieces instead, in the order they are worth doing:
 
 - **Refuse rather than clobber.** If `~/.claude/settings.json` exists and is not already this repo's, skip it, print the block to paste, and carry on installing `CLAUDE.md` and the skill. Roughly fifteen lines, no JSON parsing, and it fails loudly instead of silently.
-- **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the git gate and the sed gate work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
-- **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh` and `claude/hooks/sed-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON.
+- **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so all three gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
+- **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON — which the uv gate's escaping already argues for.
 
 One thing to settle at the same time, because it arrives with Developer Mode rather than with a coworker.
 Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
@@ -560,7 +589,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 - **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
 - **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher earns its keep.
 - **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
-- **More hooks** — the same `PreToolUse` mechanism as the git and sed gates can auto-format after edits, block writes to protected paths, or log what ran.
+- **More hooks** — the same `PreToolUse` mechanism as the three gates above can auto-format after edits, block writes to protected paths, or log what ran.
 
 ### Shared repo scaffolding
 
