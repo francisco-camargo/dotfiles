@@ -75,7 +75,8 @@ Details in [Symlinks on Windows](#symlinks-on-windows).
 
 ## Platform support
 
-`bash` and `git` are the only requirements.
+`bash` and `git` are the only requirements for installing the config.
+Committing to this repo also wants `pre-commit`, which runs the [gates](#the-commit-gates) — `install.sh` says so and carries on without it, so a machine that only consumes the config needs nothing extra.
 There is nothing here that ties the repo to one operating system:
 
 - **macOS and Linux** work as-is, and get real symlinks by default — no Developer Mode step, so the [working loop](#the-working-loop) above is the live-edit one rather than the re-run-`install.sh` one.
