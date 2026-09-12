@@ -739,6 +739,18 @@ That last part is what the word list is waiting on — it was written by reading
 Running both means two lists of exceptions that drift apart, because each tool has to be told its own.
 The order worth trying: take `codespell` with the config consolidation, leave `cspell` as an editor underline, and add the `cspell` hook only if a misspelling gets past `codespell` or the word list turns out to need checking.
 
+### Install what this config already assumes
+
+The [uv gate](#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](#the-commit-gates) need `pre-commit`.
+A new machine has neither.
+So the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off — the repo naming a hole it could fill.
+
+What closes it is a list of what a machine needs, kept as a file rather than a run of install lines: git, `gh`, `uv`, `pre-commit`, VS Code.
+`winget export` writes that list from a machine that already works and `winget import` replays it, which keeps it a file you can read and diff rather than a script you have to run to find out what it does — the same reason the VS Code extensions list below is a file.
+
+It stays separate from `install.sh`.
+Installing tools onto a machine is a larger claim than placing config files, and making it a side effect of the second is the trade `install.sh` already refuses when it declines to install `pre-commit` for you.
+
 ## What else could live here
 
 Nothing below is set up yet.
@@ -765,7 +777,7 @@ Global git config also carries aliases, `pull.rebase`, `init.defaultBranch`, and
 
 ### Machine setup
 
-- **A bootstrap script** listing what a machine needs — `winget install` or `scoop install` lines for gh, Git, VS Code, a PDF viewer. Turns "set up a new laptop" into one command.
+- **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](#install-what-this-config-already-assumes) — it starts with the tools this repo's own config depends on.
 - **Editor settings** — VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
 - **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks.
 

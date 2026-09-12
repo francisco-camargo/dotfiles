@@ -29,6 +29,7 @@ Started and unfinished, as opposed to speculative — [Open items](README.md#ope
 - [ ] Delete the duplicate `md-to-pdf` in the other repo and let this one own it ([skill scope, and duplicates](README.md#skill-scope-and-duplicates))
 - [ ] Consolidate this `.pre-commit-config.yaml` with the Python one, and audit what each is missing ([consolidate the two configs](README.md#consolidate-the-two-pre-commit-configs))
 - [ ] Settle how spelling gets checked — `codespell` at commit time, `cspell` in the editor, or both ([settle how spelling gets checked](README.md#settle-how-spelling-gets-checked))
+- [ ] Install what this config already assumes — a new machine has neither `uv` nor `pre-commit` ([install what this config assumes](README.md#install-what-this-config-already-assumes))
 
 ## Someday
 
