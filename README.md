@@ -426,7 +426,9 @@ Don't.
 Set the variable in the shell profile or the OS environment and let the config refer to it by name.
 The same rule covers every future addition: API keys, tokens, `~/.ssh/` private keys, `.env` files, anything with a password in it.
 
-`.gitignore` already excludes `*.bak`, which is where `install.sh` parks whatever it replaced — those backups are copies of real local config and should never be committed.
+Backups are covered by where they land rather than by a rule.
+`install.sh` moves whatever it replaced into `~/.claude/backups/`, outside this repo, so those copies of real local config are not somewhere git can pick them up.
+`.gitignore` still carries `*.bak` from when backups sat beside the original, and guards nothing now.
 
 ### Git history does not forget
 
