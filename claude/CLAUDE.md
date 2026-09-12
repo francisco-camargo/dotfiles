@@ -7,11 +7,7 @@ Keep this file portable: no absolute paths, host names, or anything else that is
 
 Write one sentence per line.
 Break at sentence boundaries only — never mid-sentence, and never to satisfy a column limit.
-A paragraph is a run of consecutive sentence lines with a blank line on either side; Markdown joins them back into one paragraph when rendered.
-
-The reason is diff granularity.
-Hard wrapping to 80 columns means a one-word edit reflows every line after it, so the diff reports a whole paragraph changed when one word did.
-One sentence per line keeps the changed unit equal to the edited unit.
+A paragraph is a run of consecutive sentence lines with a blank line on either side.
 
 Exceptions: list items are one line each regardless of length, and tables and code blocks are left alone.
 
@@ -31,48 +27,37 @@ Follow Orwell's six rules, from *Politics and the English Language*:
 
 They apply to everything written here: documentation, commit messages, code comments, and replies in the session.
 
-Rule 6 is not decoration.
-The first five are habits to catch yourself breaking, not a filter that outranks being clear or being accurate.
-Where a technical term is the precise word, use it — the target is the jargon reached for out of habit, not the vocabulary the subject actually requires.
+Rule 6 outranks the other five: being clear and being accurate come first.
+Where a technical term is the precise word, use it.
 
 ### No litotes
 
 Do not state a thing by denying its opposite.
-"Not uncommon" means common, "no small feat" means a hard one, "not a bad idea" means a good one.
-Say the plain word instead.
+Say the plain word: "not uncommon" means common, "no small feat" means a hard one, "not a bad idea" means a good one.
+Also out: "not unlike", "not without merit", "it would not be unreasonable to", "this is no accident".
 
-Orwell goes after one form of this in the same essay, the "not un-" construction, and prescribes a cure: memorize "A not unblack dog was chasing a not unsmall rabbit across a not ungreen field."
-The construction costs the reader a step and delivers a hedge, which is usually why writers reach for it.
-
-The rule targets understatement, not negation.
-"This does not work" and "nothing copies it today" are plain negatives and stay as they are.
-What goes is the negated opposite standing in for a word that already exists: "not unlike", "not without merit", "it would not be unreasonable to", "this is no accident".
+Plain negatives stay as they are: "this does not work", "nothing copies it today".
 
 ### No details that go stale
 
-Do not restate in prose what a reader could look up.
-A count of what a directory holds, a file's line count, an entry's position in a list, how many repos do something — each is right when written and quietly wrong later, because nothing fails when the thing it describes changes.
+Do not restate in prose what a reader could look up: a count of what a directory holds, a file's line count, an entry's position in a list, how many repos do something.
 
-The test is: if this claim went false, what would say so?
-A list or table in the same section answers that, since the reader sees the mismatch and whoever adds a row fixes the count in the same edit.
-Nothing answers it for a claim about a file the reader is not looking at.
-
-So name things rather than counting them, and describe them by what they are rather than where they sit.
+Name things rather than counting them, and describe them by what they are rather than where they sit.
 Prefer "the gates below" to "the three gates below".
-Prefer "this gate denies sed edits" to "the second hook denies sed edits", which reordering a file makes false in silence.
+Prefer "this gate denies sed edits" to "the second hook denies sed edits".
 Prefer "while it stays short" to "at sixty lines".
 
+The test: if the claim went false, what would say so?
+A list or table in the same section answers that; nothing answers it for a claim about another file.
+
 Keep a count an adjacent list makes self-evident, a count that carries an argument, a fixed outside fact, and identifiers that do not drift, such as a commit hash.
-Links and names are fine: a renamed heading breaks a link, where a stale number still reads as true.
+Links and references by name are fine.
 
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
 
 In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting.
-The PowerShell here-string `@'...'@` is not Bash syntax and will not fail — Bash passes the `@` through as an ordinary character, silently embedding it in the text.
-A commit written that way succeeds with `@ ` glued to the front of the subject and a stray `@` on the last line, and looks fine until the log is read back.
+The PowerShell here-string `@'...'@` is not Bash syntax and does not fail — Bash passes the `@` through as an ordinary character, silently embedding it in the text.
 
 In the PowerShell tool the reverse holds, and `&&` and `||` are parse errors in Windows PowerShell 5.1.
-
-<!-- cspell:ignore unblack unsmall ungreen -->
