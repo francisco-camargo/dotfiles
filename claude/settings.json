@@ -44,6 +44,17 @@
             "statusMessage": "Checking for sed edits"
           }
         ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sed -n 's/.*\"command\"[[:space:]]*:[[:space:]]*\"//p' | sed 's/\"[,}].*$//' | grep -Eq '(^|[;&|(]|&&|\\|\\|)[[:space:]]*(python[0-9]*(\\.[0-9]+)?|pythonw|py)([[:space:]]|$)' && printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Run Python through uv: uv run script.py, uv run -m pytest, uv run python -V. A bare python, python3 or py is not reliably on PATH on this machine, so trying one wastes a turn. An explicit interpreter path such as .venv/Scripts/python.exe is still allowed.\"}}'; exit 0",
+            "timeout": 10,
+            "statusMessage": "Checking for bare python invocations"
+          }
+        ]
       }
     ]
   }
