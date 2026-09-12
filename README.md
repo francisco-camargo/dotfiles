@@ -485,6 +485,14 @@ And `.pre-commit-config.yaml` is an ordinary tracked file, so it clones; only th
 The anchor check is here because a heading rename leaves broken links behind and nothing reports them.
 That is not a security gate, but it is the same shape of problem: a change that quietly invalidates something elsewhere in the repo.
 
+The cost is paid once per machine rather than once per repo, and it is larger than it looks.
+The first hook run builds roughly 340 MB of cached environments under `~/.cache/pre-commit`, most of it the Go toolchain `gitleaks` is built with.
+`pre-commit clean` empties it.
+
+`install.sh` does not install `pre-commit` itself, because placing config files should not drag a global Python tool onto a machine as a side effect.
+It checks for the tool, and when it is missing it says so as the very last thing it prints.
+That placement is the point: a gate nobody knows is off is exactly what this layer is otherwise blind to.
+
 `--no-verify` still skips all of it, and none of it runs for someone who never ran `install.sh`.
 That is the right trade when the thing being defended against is an accident rather than an attacker.
 
