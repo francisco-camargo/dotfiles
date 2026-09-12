@@ -35,6 +35,19 @@ Rule 6 is not decoration.
 The first five are habits to catch yourself breaking, not a filter that outranks being clear or being accurate.
 Where a technical term is the precise word, use it — the target is the jargon reached for out of habit, not the vocabulary the subject actually requires.
 
+### No litotes
+
+Do not state a thing by denying its opposite.
+"Not uncommon" means common, "no small feat" means a hard one, "not a bad idea" means a good one.
+Say the plain word instead.
+
+Orwell goes after one form of this in the same essay, the "not un-" construction, and prescribes a cure: memorize "A not unblack dog was chasing a not unsmall rabbit across a not ungreen field."
+The construction costs the reader a step and delivers a hedge, which is usually why writers reach for it.
+
+The rule targets understatement, not negation.
+"This does not work" and "nothing copies it today" are plain negatives and stay as they are.
+What goes is the negated opposite standing in for a word that already exists: "not unlike", "not without merit", "it would not be unreasonable to", "this is no accident".
+
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
@@ -44,3 +57,5 @@ The PowerShell here-string `@'...'@` is not Bash syntax and will not fail — Ba
 A commit written that way succeeds with `@ ` glued to the front of the subject and a stray `@` on the last line, and looks fine until the log is read back.
 
 In the PowerShell tool the reverse holds, and `&&` and `||` are parse errors in Windows PowerShell 5.1.
+
+<!-- cspell:ignore unblack unsmall ungreen -->

@@ -367,7 +367,7 @@ Keep it to preferences and conventions, and it stays portable to the next machin
 ### What belongs here, and what belongs in a skill
 
 Everything in this file is read at the start of every session in every project, whether or not that session touches the subject.
-At 46 lines it costs nothing.
+At sixty lines it costs nothing.
 A long guide would cost something every time, including in the sessions that never write a word of prose.
 
 A skill is the other half of the pair.
@@ -465,17 +465,18 @@ Going public is a one-way door.
 A private repo nobody has fetched can still be rewritten; a public one cannot be un-published, because clones and forks are outside your control ([Git history does not forget](#git-history-does-not-forget)).
 Everything below wants deciding first rather than afterwards.
 
-### The leak that is actually likely
+### How a secret would actually get out
 
-Not a password typed into `settings.json`.
-Two routes matter, and both open as the repo grows.
+Nobody is going to type a password into `settings.json`.
+The realistic leak is this repo starting to track a file that already holds a credential.
+Two places it could come from, and the repo is growing toward both.
 
-**One: a bulk copy takes the auth token.**
-`~/.claude/.credentials.json` holds that token, and it sits in the directory this repo mirrors.
+**One: the auth token, which already sits in the directory this repo mirrors.**
+`~/.claude/.credentials.json` holds it.
 Nothing copies it today, because `install.sh` names every file it places ([The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets)).
 Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest.
 
-**Two: the new files arrive with secrets already in them.**
+**Two: the config files queued up to arrive next.**
 [What else could live here](#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
@@ -582,7 +583,7 @@ Keeping `settings.json` a copy while the other two are links is the simple answe
 Described under [What belongs here, and what belongs in a skill](#what-belongs-here-and-what-belongs-in-a-skill).
 
 Nothing is wrong today.
-`CLAUDE.md` is 46 lines and every entry in it earns being read every session.
+`CLAUDE.md` is sixty lines and every entry in it earns being read every session.
 The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case — with review checklists, commit conventions, and diagram style queued behind it.
 
 Three things to settle when it does:
