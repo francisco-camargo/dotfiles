@@ -427,7 +427,7 @@ The same rule covers every future addition: API keys, tokens, `~/.ssh/` private 
 
 Backups are covered by where they land, not by a rule.
 `install.sh` moves whatever it replaced into `~/.claude/backups/`, outside this repo, so those copies of real local config are not somewhere git can pick them up.
-`.gitignore` still carries `*.bak` from when backups sat beside the original, and guards nothing now.
+`.gitignore` covers the other direction, naming the credential files that would cost something if one ever landed here.
 
 ### Git history does not forget
 
@@ -489,7 +489,6 @@ Going public while growing into them is that moment.
 | Layer | Catches | Misses | Cost |
 | --- | --- | --- | --- |
 | GitHub push protection | Recognized credential formats, server side, blocks the push | Passwords, host names, anything without a known token shape | A checkbox |
-| Hardened `.gitignore` | Whole files — `.credentials.json`, `.env`, private keys | `git add -f`, and secrets pasted inside tracked files | Ten lines |
 | A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | Forty lines plus setup |
 | `gitleaks` in Actions | The best detection of the four | Runs after the push — on a public repo, after it is already published | A workflow file |
 
@@ -525,10 +524,9 @@ Anyone minded to reconsider should reconsider now.
 ### The order to do it in
 
 1. **Turn on push protection.** Highest value, and the only item here that no commit can do for you.
-2. **Harden `.gitignore`** with the filenames that would actually cost something.
-3. **Add the `pre-commit` hook**, `sed` and `grep` only, wired up repo-local by `install.sh`.
-4. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim.
-5. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
+2. **Add the `pre-commit` hook**, `sed` and `grep` only, wired up repo-local by `install.sh`.
+3. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim.
+4. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
 
 Then the switch.
 
