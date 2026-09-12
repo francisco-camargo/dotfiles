@@ -236,7 +236,7 @@ The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, w
 
 ### The uv gate
 
-This gate denies a bare `python`, `python3`, or `py`.
+This gate denies a bare `python`, `pythonw`, or `py`, and any version suffix on the first of those — `python3`, `python3.12`.
 Like the sed gate it refuses outright rather than prompting, because the answer never changes: run it through `uv`.
 
 The reason is not taste.
