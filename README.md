@@ -490,6 +490,7 @@ Going public while growing into them is that moment.
 | Layer | Catches | Misses | Cost |
 | --- | --- | --- | --- |
 | GitHub push protection | Recognized credential formats, server side, blocks the push | Passwords, host names, anything without a known token shape | A checkbox |
+| Hardened `.gitignore` | Whole files — `.credentials.json`, `.env`, private keys | `git add -f`, and secrets pasted inside tracked files | A list of filenames |
 | A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | Forty lines plus setup |
 | `gitleaks` in Actions | The best detection of the four | Runs after the push — on a public repo, after it is already published | A workflow file |
 
