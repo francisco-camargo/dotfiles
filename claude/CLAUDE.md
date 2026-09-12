@@ -53,6 +53,18 @@ A list or table in the same section answers that; nothing answers it for a claim
 Keep a count an adjacent list makes self-evident, a count that carries an argument, a fixed outside fact, and identifiers that do not drift, such as a commit hash.
 Links and references by name are fine.
 
+## Commits
+
+Commit small and often.
+One idea per commit: if the subject needs an "and", it is two commits.
+Commit each piece as it is finished rather than collecting a session's work into one.
+
+Write the subject in the imperative, under about 50 characters, with no trailing period.
+
+Most commits need no body at all.
+Add one only when the subject cannot carry the reason, and hold it to a sentence or two saying why — the diff already says what.
+Wrap a body at 72 characters.
+
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
