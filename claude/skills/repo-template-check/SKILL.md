@@ -33,7 +33,7 @@ If the clone is behind or has uncommitted changes, say so before going on, since
 Present them in one question (AskUserQuestion, multiSelect), with a line on what each file does.
 Before asking, leave out or flag the ones that do not fit:
 
-- **`SECURITY.md`** sends reports through private vulnerability reporting, which GitHub offers only on public repos. In a private repo, or when visibility is unknown, mention that and do not offer it.
+- **`SECURITY.md`** belongs in every repo, private ones included, so it is in place if a repo goes public. It sends reports through private vulnerability reporting, which GitHub offers only on public repos, so in a private repo say it does nothing until the repo is made public and reporting is turned on.
 - **`.env.example`** does not fit a repo that already has the same file under another name, such as `.env.template`, or that reads no environment variables.
 - **`.pre-commit-config.yaml`** brings gates that fail on existing problems; see step 4 before copying it.
 
@@ -63,6 +63,7 @@ When `.pre-commit-config.yaml` was copied or changed:
 - Expect `pre-commit run --all-files` to fail at first: the whitespace and end-of-file fixers rewrite old files, and lychee reports links that were already broken. The fixes make a cleanup commit of their own.
 - The gitleaks hook scans only staged changes, so suggest `gitleaks git` once to check the history.
 
-For a public repo, point at the GitHub settings in repo-template's README, under "Use it": push protection, a branch ruleset, and private vulnerability reporting.
+Point at the GitHub settings in repo-template's README, under "Use it": push protection, a branch ruleset, and private vulnerability reporting.
+A public repo needs them now; a private one needs them the day it is made public.
 
 Commit nothing without the user; follow their commit conventions.
