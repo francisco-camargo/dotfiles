@@ -510,7 +510,7 @@ Three layers, once they are pulled apart:
 
 - **Wanted everywhere, language-agnostic.** The hygiene hooks, `detect-private-key`, `check-shebang-scripts-are-executable`, `gitleaks`, `codespell`.
 - **Python only.** `black`, `flake8`, `isort`, `mypy`, `bandit`, `interrogate`, `pip-audit`, `add-trailing-comma`.
-- **Repo-specific.** The anchor check, which nothing outside this repo needs.
+- **Repo-specific, at first.** The anchor check, written for this repo and now also in [repo-template](https://github.com/francisco-camargo/repo-template).
 
 While the two are side by side, the cheap question is what each is missing.
 `check-json` and `check-toml` are in the Python config and not here; `codespell` would have caught more than one wobble in this README; `mixed-line-ending` overlaps what `.gitattributes` already does, so it may be redundant rather than missing.
