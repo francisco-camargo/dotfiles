@@ -132,7 +132,7 @@ Nothing is destroyed, but getting it back means merging two JSON files by hand, 
 
 This costs nothing on a machine already running this repo's settings, which is why it went unnoticed.
 It is a real hazard for anyone else, and for a future machine of mine that has a history before the first `./install.sh`.
-Until the guard lands — [Merge `settings.json` instead of replacing it](#merge-settingsjson-instead-of-replacing-it) — copy `~/.claude/settings.json` somewhere safe first, then merge the pieces back by hand afterwards.
+Until [Ask before replacing a file](#ask-before-replacing-a-file) lands, copy `~/.claude/settings.json` somewhere safe first, then merge the pieces back by hand afterwards.
 
 ### Symlinks on Windows
 
@@ -168,7 +168,7 @@ And before running the installer, diff the two trees so an in-place edit does no
 diff -r claude/skills/md-to-pdf ~/.claude/skills/md-to-pdf
 ```
 
-**To deal with next.** Both halves are tracked under [Open items](#open-items): turning on Developer Mode, which ends the copying, and a `--force` guard for machines where Developer Mode is not on offer.
+**To deal with next.** Both halves are tracked under [Open items](#open-items): turning on Developer Mode, which ends the copying, and [asking before replacing a file](#ask-before-replacing-a-file), which covers machines where Developer Mode is not on offer.
 A copy-mode install should not be able to silently destroy work, and right now it can.
 
 ### A backup can load as a skill
@@ -421,26 +421,55 @@ Settings → System → For developers → Developer Mode on, then re-run `./ins
 Turning it on takes an administrator, which is why no session can do it for you.
 After that the installed files are the repo files, edits propagate on their own, and the drift below stops being possible.
 
-### Stop a copy-mode install from overwriting newer work
+### Ask before replacing a file
 
-Described in full under [Copies drift both ways](#copies-drift-both-ways).
-While the installer copies, a skill edited in place in `~/.claude` is invisible to `git status`, and the next install replaces it with the repo's older version.
-Backups make that recoverable, not harmless.
-The guard is to refuse a destination whose contents differ from the repo unless passed `--force`.
-Developer Mode removes the need on this machine; the guard is what covers a machine where Developer Mode is not on offer.
+`install.sh` replaces whatever it finds, and the only notice is a "backing up existing" line as it goes.
+Nothing is deleted, but someone's `settings.json`, their own `CLAUDE.md`, or a skill edited in place ends up in `~/.claude/backups/`, and nothing says how to put it back.
+Nobody who runs this script should lose what was on their machine without being asked.
+
+For each file the installer places:
+
+| What is at the destination | What happens |
+| --- | --- |
+| Nothing, the same content, or a link into this repo | Place it without asking |
+| Anything else | Show what is there, and ask |
+
+The question offers:
+
+- **keep** the existing file and skip this one, which is the default
+- **replace** it, backing it up as today and printing the command that restores the backup
+- **diff** the two, then ask again
+- **quit**, leaving the rest untouched
+
+With no terminal to ask on, as when piped or run from another script, the answer is keep.
+Replacing without a terminal takes an explicit `--replace-existing`.
+
+Keeping `settings.json` means going without the hooks, so the installer says so and prints the block to paste in by hand.
+
+This one change covers three problems that were tracked apart:
+
+- **`settings.json` replaced wholesale** ([the warning](#installsh-replaces-settingsjson-wholesale)): a settings file someone already has stays unless they choose otherwise.
+- **Copy-mode drift** ([copies drift both ways](#copies-drift-both-ways)): a skill edited in place under `~/.claude` differs from the repo, so the next install asks instead of overwriting it.
+- **Writing before showing**: the question is the preview, so a bare `./install.sh` cannot change a file before its owner has seen what it would do, and `--dry-run` stops being something to know about in advance.
+
+Whether a destination matches the repo is the same check [the doctor script](#verify-the-machine-not-only-write-to-it) needs, so it should be written once.
+
+The limit is the one that applies to everything here: the script should stay readable in a single sitting.
+A question and a comparison fit that.
+An `--undo` or a separate plan-then-apply mode would not, and asking first makes both less needed.
 
 ### Merge `settings.json` instead of replacing it
 
 Described in full under [`install.sh` replaces `settings.json` wholesale](#installsh-replaces-settingsjson-wholesale).
-The installer overwrites a file that everything user-level shares, so anyone who already had settings loses them to a backup directory.
+[Ask before replacing a file](#ask-before-replacing-a-file) stops the installer taking someone's settings without asking.
+What is left is making the hooks easy to adopt for someone who keeps their own.
 
 A real merge is the wrong fix.
 It needs a JSON parser, and the rule that keeps the hooks portable — `sed` and `grep` only, no `jq`, no `node`, no `python` — is the same rule that makes merging JSON inside `install.sh` a bad idea.
 A merger written in awk would fail quietly on a nested key, which is the failure this repo keeps trying to design out.
 
-Three smaller pieces instead, in the order they are worth doing:
+Two smaller pieces instead:
 
-- **Refuse rather than clobber.** If `~/.claude/settings.json` exists and is not already this repo's, skip it, print the block to paste, and carry on installing `CLAUDE.md` and the skill. Roughly fifteen lines, no JSON parsing, and it fails loudly instead of silently.
 - **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
 - **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON — which the uv gate's escaping already argues for.
 
@@ -448,24 +477,6 @@ One thing to settle at the same time, because it arrives with Developer Mode rat
 Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
 Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
 Keeping `settings.json` a copy while the rest are links is the simple answer.
-
-### Revisit the install experience
-
-[Merge `settings.json` instead of replacing it](#merge-settingsjson-instead-of-replacing-it) fixes the worst single case.
-The wider question is what running this script should feel like on a machine whose config someone already cares about — a question that changed weight the moment people who did not write it started running it.
-
-As it stands, `./install.sh` with no arguments writes immediately.
-It reports each move as it makes it, so you learn what happened once it has happened, and seeing first depends on already knowing `--dry-run` is there.
-[Install on a new machine](#install-on-a-new-machine) now opens with a warning paragraph and that flag, which is prose compensating for a default — and that is the tell that the default is wrong.
-
-Worth weighing together rather than one at a time:
-
-- **Preview by default.** A bare `./install.sh` previews, and writing takes an explicit `--apply`. It costs one word on every real install, and removes every case where someone loses settings by pasting a command from a README.
-- **Summarize, then act.** Print the whole plan — what is replaced, what is backed up, where — as one block to read, rather than narrating it move by move once it is too late.
-- **Say how to undo it.** Backups land in `~/.claude/backups/` and nothing says how to put one back, so the safety net is write-only. An `--undo` restoring the newest set would answer the question the backups exist to answer.
-
-The counterweight is the one that applies to everything here: this script should stay readable in a single sitting.
-Any of these that turns it into an install framework is the wrong trade, and refusing to clobber is worth more than all three.
 
 ### Split standing instructions between CLAUDE.md and skills
 
@@ -555,7 +566,7 @@ A `doctor.sh` would report state and change nothing:
 - whether `uv` and `gh` are on PATH
 
 Two of those are worth more than a status line.
-The difference check is the detecting half of [the `--force` guard](#stop-a-copy-mode-install-from-overwriting-newer-work), so building it here means not building it twice.
+The difference check is the detecting half of [asking before replacing a file](#ask-before-replacing-a-file), so building it once serves both.
 And a doctor script is where the test that [Hooks](#hooks) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
 A gate that quietly stopped firing is the failure this repo keeps designing against, and nothing checks for it.
 
@@ -612,7 +623,7 @@ Git also solves here what `settings.json` could not, because a gitconfig can inc
     path = ~/git/dotfiles/git/gitconfig
 ```
 
-The install appends a line instead of replacing a file someone already owns, so [refuse rather than clobber](#merge-settingsjson-instead-of-replacing-it) stops being something to build.
+The install appends a line instead of replacing a file someone already owns, so [asking before replacing a file](#ask-before-replacing-a-file) has nothing to ask about there.
 Two more things fall out of the same mechanism.
 `includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](#per-machine-differences)).
 And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo, above.

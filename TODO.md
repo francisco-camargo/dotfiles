@@ -8,9 +8,8 @@ Every item is summarized in one line here and argued properly in [README.md](REA
 Started and unfinished, as opposed to speculative — [Open items](README.md#open-items).
 
 - [ ] Turn on Developer Mode, which ends the copying and makes edits propagate ([turn on Developer Mode](README.md#turn-on-developer-mode))
-- [ ] Guard a copy-mode install from overwriting newer work, with `--force` ([stop a copy-mode install](README.md#stop-a-copy-mode-install-from-overwriting-newer-work))
-- [ ] Stop `install.sh` replacing `settings.json` wholesale ([merge settings.json](README.md#merge-settingsjson-instead-of-replacing-it), [the warning](README.md#installsh-replaces-settingsjson-wholesale))
-- [ ] Revisit the install UX — preview by default, one plan to read before it acts, and a way to undo ([revisit the install experience](README.md#revisit-the-install-experience))
+- [ ] Ask before `install.sh` replaces a file that is already there, and keep it by default ([ask before replacing a file](README.md#ask-before-replacing-a-file))
+- [ ] Make the hooks easy to adopt for someone who keeps their own `settings.json` ([merge settings.json](README.md#merge-settingsjson-instead-of-replacing-it), [the warning](README.md#installsh-replaces-settingsjson-wholesale))
 - [ ] Decide what stays in `CLAUDE.md` and what becomes a skill — writing style is the first case, not the only one ([split standing instructions](README.md#split-standing-instructions-between-claudemd-and-skills))
 - [ ] Prune `~/.claude/backups/`, with a `--keep N` or a date cutoff ([prune backups](README.md#prune-claudebackups))
 - [ ] Delete the duplicate `md-to-pdf` in the other repo and let this one own it ([skill scope, and duplicates](README.md#skill-scope-and-duplicates))
