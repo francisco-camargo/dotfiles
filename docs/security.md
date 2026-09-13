@@ -86,7 +86,7 @@ That "once" arrived, and the gates are in — see [the commit gates](#the-commit
 | `check-added-large-files` | A stray blob, which is usually a dump or an archive |
 | `check-merge-conflict` | Conflict markers committed by accident |
 | `end-of-file-fixer`, `trailing-whitespace` | Whitespace that would otherwise show up in someone else's diff |
-| `scripts/check-anchors.sh` | A Markdown link to a heading that is not there |
+| `lychee` | A Markdown link to a file or heading that is not there |
 
 Both directions are tested rather than assumed: a planted AWS key pair is caught as `aws-access-token` and `generic-api-key`, and a broken anchor fails the commit.
 
@@ -94,7 +94,7 @@ The framework rather than the hand-written script this repo first planned, for t
 `gitleaks` detects far more than any amount of `grep` I would write, and people who watch credential formats change maintain it.
 And `.pre-commit-config.yaml` is an ordinary tracked file, so it clones; only the hook that calls it has to be written per clone, which is the one thing `install.sh` adds.
 
-The anchor check is here because a heading rename leaves broken links behind and nothing reports them.
+The link check is here because a heading rename leaves broken links behind and nothing reports them.
 That is not a security gate, but it is the same shape of problem: a change that quietly invalidates something elsewhere in the repo.
 
 The cost is paid once per machine rather than once per repo, and it is larger than it looks.
