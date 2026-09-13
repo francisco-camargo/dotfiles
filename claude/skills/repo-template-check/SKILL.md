@@ -30,7 +30,8 @@ If the clone is behind or has uncommitted changes, say so before going on, since
 
 ## 2. Offer the missing files
 
-Present them in one question (AskUserQuestion, multiSelect), with a line on what each file does.
+Present them in one question (AskUserQuestion, multiSelect), with a line on what each file does in its option's description.
+Put everything needed to answer inside the question and its options, since text written just before a question may not reach the user.
 Before asking, leave out or flag the ones that do not fit:
 
 - **`SECURITY.md`** belongs in every repo, private ones included, so it is in place if a repo goes public. It sends reports through private vulnerability reporting, which GitHub offers only on public repos, so in a private repo say it does nothing until the repo is made public and reporting is turned on.
@@ -65,5 +66,7 @@ When `.pre-commit-config.yaml` was copied or changed:
 
 Point at the GitHub settings in repo-template's README, under "Use it": push protection, a branch ruleset, and private vulnerability reporting.
 A public repo needs them now; a private one needs them the day it is made public.
+
+End with a message that repeats what was left out and why, and what still waits on the user, since explanations given between steps may not have reached them.
 
 Commit nothing without the user; follow their commit conventions.
