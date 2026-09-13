@@ -10,9 +10,9 @@ Gated, because publishing is the step no later commit can undo — [Before this 
 - [x] Harden `.gitignore` against the files that would actually cost something ([how a secret would get out](README.md#how-a-secret-would-actually-get-out))
 - [x] Add a repo-local `pre-commit` hook — the framework running `gitleaks`, not `sed` and `grep` ([the commit gates](README.md#the-commit-gates))
 - [x] Audit the full history once more, deliberately ([the order to do it in](README.md#the-order-to-do-it-in))
-- [ ] Turn on branch protection — public means strangers can propose changes to a script you execute ([this repo runs code](README.md#this-repo-runs-code-on-every-machine-that-installs-it))
 - [ ] Decide whether the `gitleaks` workflow earns its keep, after living with the local hook ([four layers](README.md#four-layers-and-what-each-one-misses))
 - [ ] Turn on GitHub push protection straight after publishing, before the next push, since a private repo cannot have it ([the order to do it in](README.md#the-order-to-do-it-in))
+- [ ] Turn on branch protection straight after publishing, for the same reason; public means strangers can propose changes to a script you execute ([this repo runs code](README.md#this-repo-runs-code-on-every-machine-that-installs-it))
 
 Already settled: the history keeps the old internal names, and that choice stops being reversible at the moment the repo is published — [already decided](README.md#already-decided-the-history-keeps-the-old-names).
 

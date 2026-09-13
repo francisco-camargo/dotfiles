@@ -601,9 +601,11 @@ gh api -X PATCH 'repos/{owner}/{repo}' \
 gh api 'repos/{owner}/{repo}' --jq .security_and_analysis
 ```
 
-One more that is not about secrets but shares the deadline.
+One more that is not about secrets but shares the timing.
 [This repo runs code on every machine that installs it](#this-repo-runs-code-on-every-machine-that-installs-it), so public means strangers can open pull requests against a script you execute.
 Turn on branch protection, and read every proposed change to `install.sh` or the hooks as what it is.
+It too waits for the switch: GitHub Free offers neither branch protection nor rulesets on a private repository.
+Strangers cannot open pull requests before then, so nothing is lost by waiting.
 
 ## Open items
 
