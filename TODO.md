@@ -8,17 +8,6 @@ Delete an item once it is done.
 Work that is started and unfinished, as opposed to [what else could live here](#what-else-could-live-here), which is speculative.
 Each of these is known to be missing, not merely imagined.
 
-### Turn on Developer Mode
-
-The one item that needs a person rather than a commit.
-It is also a setup step for anyone on Windows rather than a chore particular to this machine, which is why [Install on a new machine](README.md#install-on-a-new-machine) now says so up front.
-`install.sh` now asks Git Bash for a real symlink instead of letting it copy in silence ([Symlinks on Windows](README.md#symlinks-on-windows)), so the only thing still in the way is the OS.
-Developer Mode is off on this machine — `AllowDevelopmentWithoutDevLicense` is unset under `HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock` — and the shell is not elevated, so a native link fails with "operation not permitted" and the installer copies instead.
-
-Settings → System → For developers → Developer Mode on, then re-run `./install.sh`.
-Turning it on takes an administrator, which is why no session can do it for you.
-After that the installed files are the repo files, edits propagate on their own, and the drift below stops being possible.
-
 ### Ask before replacing a file
 
 `install.sh` replaces whatever it finds, and the only notice is a "backing up existing" line as it goes.
