@@ -83,6 +83,12 @@ Most commits need no body at all.
 Add one only when the subject cannot carry the reason, and hold it to a sentence or two saying why, since the diff already says what.
 Wrap a body at 72 characters.
 
+## Dotfiles
+
+These instructions come from a dotfiles repo, which holds configuration meant for every machine and every project.
+When a fix in any repo would help in every repo or on every machine, say so and propose moving it into the dotfiles repo.
+A fix kept local needs a reason.
+
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
