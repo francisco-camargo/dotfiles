@@ -165,7 +165,7 @@ Until it is fixed, the rule is: edit files in this repo, never in `~/.claude`, t
 And before running the installer, diff the two trees so an in-place edit does not get thrown away:
 
 ```bash
-diff -r claude/skills/md-to-pdf ~/.claude/skills/md-to-pdf
+diff -r claude/skills ~/.claude/skills
 ```
 
 **To deal with next.** Both halves are tracked under [Open items](TODO.md#open-items): turning on Developer Mode, which ends the copying, and [asking before replacing a file](TODO.md#ask-before-replacing-a-file), which covers machines where Developer Mode is not on offer.
