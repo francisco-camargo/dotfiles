@@ -5,7 +5,8 @@ Configuration files kept in one place so every machine behaves the same.
 ## Motivation
 
 This repo holds the configuration I want on every machine and in every project.
-Today that is Claude Code: its settings and hooks, the instructions it reads each session, and its skills.
+Today that is Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills).
+[What's here](#whats-here) lists each file and where it installs.
 [Candidates for later](#what-else-could-live-here) are git config, VS Code settings, a shell profile, and the files each repo repeats, such as `.gitignore` and `.gitattributes`.
 
 When I settle how a tool should behave, through a setting, a hook, or a rule for Claude, I want to do it **once**, not once per repo or once per machine.
@@ -16,49 +17,40 @@ The hook that makes Claude ask before `git commit` shows the idea: written once 
 
 ### What dotfiles are
 
-Most programs store their settings as plain files in your home directory.
-On Unix these traditionally start with a dot — `.bashrc`, `.gitconfig`, `.vimrc` — which hides them from a normal `ls`.
-That is where the name *dotfiles* comes from.
-`~/.claude/` is the same convention: the dot is on the directory, and `settings.json` sits inside it.
+Most programs keep their settings in plain files in your home directory.
+On Unix the names start with a dot, as in `.bashrc`, `.gitconfig` and `.vimrc`, which hides them from a plain `ls`.
+Hence the name *dotfiles*.
+`~/.claude/` follows the same convention, with the dot on the directory.
 
 ### The problem they solve
 
-Left alone, that config has three failure modes:
+Without a repo, such a config file
 
-1. **It is scattered and untracked.** You change a setting, it works, and six months later you cannot recall what you changed or why. There is no `git log` for a home directory.
-2. **It drifts between machines.** Laptop and desktop slowly diverge, and you only notice when something behaves differently on one of them.
-3. **It is lost on reinstall.** A new machine means re-deriving everything from memory.
+1. **Has no history.** Six months after changing a setting, you cannot recall what you changed or why.
+2. **Drifts between machines.** You notice only when something behaves differently on one of them.
+3. **Is lost on reinstall.** A new machine means rebuilding it from memory.
 
-### The inversion
+### Symlinks
 
-A dotfiles repo makes the git repo the real location and the home directory a set of pointers.
-`~/.claude/settings.json` becomes a **symlink** — a file that is really just a pointer to another path — aimed at `claude/settings.json` in this repo.
-Both paths are then the same file: edit through either one and you have edited the repo.
-Setting that up is all `install.sh` does.
+A dotfiles repo makes the repo the real location, and the home directory a set of links to it.
+`~/.claude/settings.json` becomes a **symlink**, a file that points to another path, here `claude/settings.json` in this repo.
+Editing either path edits the repo.
+`install.sh` creates the links.
 
-The payoff is the ordinary git workflow applied to config:
+That brings git to config:
 
-- **One source of truth.** No hunting for which copy is the current one.
-- **A history with reasons.** Every change is a commit, so `git log` answers "why is this set this way", and `git revert` undoes one that turned out badly.
-- **Reproducible machines.** `git clone`, then `./install.sh`, and the machine behaves like the others. No hand-copying, no half-configured laptop.
-- **Config that is readable.** The repo is also documentation. The sections below explain what each piece does, so you can read the setup later instead of reverse-engineering it.
-
-### What is here today
-
-Claude Code's user settings, carrying the [hooks](#hooks) that gate git, `sed`, and bare `python`; the [standing instructions](#standing-instructions) read at the start of every session; and a [skill](#skills) that prints Markdown.
-[What's here](#whats-here) gives the paths and where each one installs to.
-Small scope on purpose — it starts with what actually gets used and grows when repetition justifies it.
-[What else could live here](#what-else-could-live-here) lists the likely additions.
+- **One source of truth.** There is one copy, and it is the current one.
+- **A history.** Each change is a commit, so `git log` shows why a setting is what it is, and `git revert` undoes it.
+- **Reproducible machines.** `git clone` and `./install.sh` make a new machine behave like the others.
+- **Documentation.** The sections below explain what each piece does.
 
 ### The working loop
 
-Edit a file in this repo, commit it, and on any other machine `git pull`.
-With symlinks the change is live immediately.
+Edit a file here, commit it, and `git pull` on the other machines.
+With symlinks, the change takes effect at once.
 
-On Windows it is not, until someone turns on Developer Mode.
-A Windows machine out of the box refuses symlinks to an ordinary user, so `install.sh` falls back to copying — and copies do not track edits.
-Until that changes, re-run `./install.sh` after editing anything here, or the change stays in the repo and never reaches `~/.claude/`.
-Details in [Symlinks on Windows](#symlinks-on-windows).
+Windows refuses symlinks to an ordinary user until Developer Mode is on, so `install.sh` copies instead.
+Until then, run `./install.sh` again after each edit, or the change never reaches `~/.claude/` ([Symlinks on Windows](#symlinks-on-windows)).
 
 ## Platform support
 
