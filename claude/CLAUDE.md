@@ -38,6 +38,11 @@ Also out: "not unlike", "not without merit", "it would not be unreasonable to", 
 
 Plain negatives stay as they are: "this does not work", "nothing copies it today".
 
+### No em dashes
+
+Do not use em dashes.
+Where one would go, use a comma, colon, semicolon, parentheses, or a new sentence.
+
 ### No details that go stale
 
 Do not restate in prose what a reader could look up: a count of what a directory holds, a file's line count, an entry's position in a list, how many repos do something.
