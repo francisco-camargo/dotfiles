@@ -60,11 +60,6 @@ Two smaller pieces instead:
 - **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
 - **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON — which the uv gate's escaping already argues for.
 
-One thing to settle at the same time, because it arrives with Developer Mode rather than with a coworker.
-Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
-Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
-Keeping `settings.json` a copy while the rest are links is the simple answer.
-
 ### Split standing instructions between CLAUDE.md and skills
 
 Described under [What belongs here, and what belongs in a skill](README.md#what-belongs-here-and-what-belongs-in-a-skill).

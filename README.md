@@ -49,6 +49,11 @@ That brings git to config:
 Edit a file here, commit it, and `git pull` on the other machines.
 With symlinks, the change takes effect at once.
 
+The link works the other way too.
+Claude Code edits `~/.claude/settings.json` itself when you change a `/config` option stored in user settings, such as the theme.
+That shows up here as an uncommitted change to `claude/settings.json`, which can conflict on the next `git pull`.
+Commit it if every machine should have it, or `git restore` it if not.
+
 Windows refuses symlinks to an ordinary user until Developer Mode is on, so `install.sh` copies instead.
 Until then, run `./install.sh` again after each edit, or the change never reaches `~/.claude/` ([Symlinks on Windows](#symlinks-on-windows)).
 
