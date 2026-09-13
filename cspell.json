@@ -1,9 +1,6 @@
 {
   "version": "0.2",
   "language": "en",
-  // Markdown link targets are generated slugs, not prose: the anchor for
-  // "Prune ~/.claude/backups/" is #prune-claudebackups, and no word list
-  // should have to carry that.
   "ignoreRegExpList": [
     "/\\]\\([^)]*\\)/g"
   ],
