@@ -236,13 +236,19 @@ Two more things fall out of the same mechanism.
 `includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](#per-machine-differences)).
 And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo, above.
 
+Identity and credentials come with it.
+`user.email` should be GitHub's noreply address, which keeps the real one out of every commit.
+And no `credential.helper store`: it writes the token to `~/.git-credentials` in plain text.
+SSH keys, or the Git Credential Manager that Git for Windows sets up, keep the secret out of any file this repo could pick up.
+
 Read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit of one: a credential helper and a remote URL with a token in it both live in this file.
 
 ### Machine setup
 
 - **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](TODO.md#install-what-this-config-already-assumes) — it starts with the tools this repo's own config depends on.
 - **Editor settings** — VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
-- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](README.md#symlinks-on-windows)).
+- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](README.md#symlinks-on-windows)). GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
+- **WSL config** — `/etc/wsl.conf` inside a distro and `.wslconfig` in the Windows home directory. A hand-edited `/etc/resolv.conf` reverts because WSL regenerates it at startup; `generateResolvConf = false` under `[network]` in `wsl.conf` keeps the edit.
 
 ### VS Code settings
 
@@ -285,6 +291,11 @@ If a setting gets changed through the UI by reflex — and it will — copy it b
 Enabling Developer Mode and getting real symlinks removes the whole problem, and is the single change that makes versioning editor settings pleasant instead of fiddly.
 Worth doing first if you have the option.
 
+Settings Sync is a rival source of truth.
+If VS Code syncs settings through a GitHub account, Sync and a versioned `settings.json` overwrite each other.
+Turn Sync off for settings when the repo takes over, or decide Sync is enough and drop this item.
+Worth carrying over either way: the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
+
 Two things to expect.
 VS Code settings collect absolute paths — `python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine — and those are exactly what [Per-machine differences](#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
 And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit, not after.
@@ -294,6 +305,11 @@ And some extensions store tokens in `settings.json`, so read [Commit the referen
 The moment a second machine has a genuinely different setting, the single-file approach strains.
 The usual fix is a `hosts/<machine-name>/` directory that `install.sh` layers on top of the shared files after placing them, so shared config stays shared and only the differences are duplicated.
 Worth doing when the need actually appears, not before.
+
+### Point francisco-camargo's notes here
+
+[francisco-camargo](https://github.com/francisco-camargo/francisco-camargo) keeps learning notes, and some of them describe setup this repo would own once the items above land: the ssh-agent block and git credentials in its git notes, VS Code settings in its VS Code notes, and the WSL fixes in its Linux notes.
+As each lands here, replace the matching part of those notes with a link to this repo, so the steps live in one place.
 
 
 ### Before adding any of this
