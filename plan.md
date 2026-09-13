@@ -4,7 +4,8 @@ A new repo whose one job is to give a project its starting files, and to keep gi
 This file plans it from inside dotfiles, because much of what it would hold lives here today.
 Once the new repo exists, this plan moves there or goes away.
 
-The name is not settled; `<template>` stands in for it below.
+The repo is `francisco-camargo/repo-template`.
+The name shows up in every `copier copy` command and every `.copier-answers.yml`, so it stays fixed once projects use it.
 
 ## What someone does with it
 
@@ -28,7 +29,7 @@ The third shape is the recommendation.
 The session looks like this:
 
 ```sh
-uvx copier copy --trust gh:francisco-camargo/<template> my-project
+uvx copier copy --trust gh:francisco-camargo/repo-template my-project
 ```
 
 Copier asks its questions, writes the files into `my-project`, and runs the steps the template lists after copying, such as `git init` and `pre-commit install`.
@@ -130,7 +131,7 @@ That is what keeps one source of truth: the shared files are written once, in th
 ## Layout of the template repo
 
 ```
-<template>/
+repo-template/
   copier.yml
   README.md             what the template gives a project, and why
   TODO.md
@@ -154,7 +155,6 @@ The template repo runs its own gates on itself, so a broken hook config fails th
 
 ## To settle first
 
-- **The name.** It shows up in every `copier copy` command and every `.copier-answers.yml`, so renaming it later touches every project.
 - **Whether the anchor check belongs in every project.** dotfiles' README calls it repo-specific; every project from the template will have Markdown with links, which argues the other way.
 - **Global excludes against per-repo `.gitignore`.** [Global git config](README.md#global-git-config) plans a `core.excludesFile` that retires the copied `.gitignore`. OS clutter belongs in the global file, since it is about one person's machine; credentials and build output belong in each project, since they protect everyone who clones it.
 - **Whether copy steps may run `git init` and `pre-commit install`.** They need `--trust`, which asks the user to trust the template with a shell. Printing the commands instead costs two lines of typing.
