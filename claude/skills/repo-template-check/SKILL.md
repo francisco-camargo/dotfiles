@@ -52,6 +52,7 @@ Read both files, then for each file:
 - **Check each lacking line** for a form the project already has. A broader pattern covers a narrower one (`.env*` covers `.env.*`), and an empty `"words": []` means nothing next to a filled word list.
 - **Say what each real gap does** and whether this project seems to want it. repo-template's README and dotfiles' [docs/security.md](https://github.com/francisco-camargo/dotfiles/blob/main/docs/security.md) give the reasons behind the gates.
 - **Point out a project line that means something different** from the template's. `* text eol=lf` treats every file as text, so binaries need rules of their own; `* text=auto eol=lf` lets git detect them.
+- **Say what `eol=lf` would change**, here and when offering a missing `.gitattributes` in step 2, from `git ls-files --eol`. A file stored with CRLF (`i/crlf`) needs `git add --renormalize .` and a commit of its own. A file stored as LF but checked out as CRLF (`i/lf w/crlf`) comes back as LF on the next checkout, with nothing to commit.
 - **Leave the project's own lines alone.** Python ignore rules, a word list, or an extra hook are the project's, not drift.
 
 Suggest the user review the whole difference with `diff -u "<template>/<file>" "<project>/<file>"`, then offer to add the lines they choose.
