@@ -554,6 +554,7 @@ Anyone with write access can bypass it by giving a reason, which is the right tr
 
 The Actions scan reports; it does not block.
 By the time it fires on a public repo, the commit is already published.
+So this repo has no such workflow: `gitleaks` runs only in the local `pre-commit` hook, before a commit exists, and push protection guards the remote.
 
 ### Repo-local hooks, or global, and the trap in the global one
 
@@ -586,7 +587,7 @@ Anyone minded to reconsider should reconsider now.
 
 1. **Add the `pre-commit` hook.** Done — [the commit gates](#the-commit-gates). It runs `gitleaks` rather than the `sed` and `grep` this list first imagined, which is a better gate for less code.
 2. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim. Done.
-3. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
+3. **Decide on the `gitleaks` workflow.** Done: no workflow, and `gitleaks` stays in the local hook ([four layers](#four-layers-and-what-each-one-misses)).
 
 Then the switch, and straight after it, before the next push:
 
