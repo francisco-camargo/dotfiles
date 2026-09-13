@@ -403,9 +403,9 @@ The test is the same each time, and [Split standing instructions between CLAUDE.
 
 ## Security
 
-The repo is private, but private is not the same as safe.
-It gets cloned to every machine, sits in plain text in every backup, and is readable by anything running as you.
-Treat it as a file that leaks eventually and decide what goes in it on that basis.
+The repo is public: anyone can read every commit, past and present.
+It also gets cloned to every machine, sits in plain text in every backup, and is readable by anything running as you.
+Decide what goes in it on that basis.
 
 ### What is in here today
 
@@ -454,9 +454,7 @@ It stays in every clone, in every fork, and on GitHub's servers.
 The fix, in order:
 
 1. **Rotate the credential.** Assume it is burned. This is the step that actually matters.
-2. Rewrite the history with `git filter-repo` and force-push, as cleanup.
-
-Same reason to audit the full history rather than the working tree before ever flipping this repo public — going public publishes every commit ever made, not the current state.
+2. Rewrite the history with `git filter-repo` and force-push, as cleanup. The "Protect main" ruleset blocks that push, so turn it off for the push and back on after.
 
 ### This repo runs code on every machine that installs it
 
