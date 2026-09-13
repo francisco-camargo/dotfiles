@@ -8,7 +8,7 @@ Decide what goes in it on that basis.
 
 Nothing sensitive.
 `settings.json` holds a model name and permission rules, `install.sh` holds paths, the skill is shell, awk, and CSS.
-Searching the entire history — not just the current files — for key, token, and password patterns turns up only this README talking about them.
+Searching the entire history — not just the current files — for key, token, and password patterns turns up only this repo's own documentation talking about them.
 That is the state to preserve, and it is worth re-checking whenever the repo grows.
 
 ## The directory this installs into is full of secrets
