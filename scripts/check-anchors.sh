@@ -22,9 +22,11 @@ cd "$(git rev-parse --show-toplevel)"
 # hyphens.
 # Repeated headings would need -1, -2 suffixes; this repo has none, and the
 # duplicate check below keeps it that way.
+# A "#" line inside a fenced code block is a comment, not a heading.
 slugs() {
   awk '
-    /^#+ / {
+    /^[ \t]*(```|~~~)/ { fenced = !fenced; next }
+    !fenced && /^#+ / {
       heading = $0
       sub(/^#+[ \t]+/, "", heading)
       slug = tolower(heading)
