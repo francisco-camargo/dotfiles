@@ -614,24 +614,7 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 
 ### Shared repo scaffolding
 
-Several of my other repos already repeat the same files by hand.
-`.gitignore` is in all of them; `.gitattributes` with `* text=auto eol=lf` had to be written from scratch more than once; `cspell.json` exists in only one so far and will want to exist in the rest.
-`.editorconfig` is in none of them, and is the piece of editor setup that any editor honors — worth writing here rather than waiting on the VS Code question below.
-
-Ways to stop copying them around:
-
-- **Templates here** plus a small `new-repo.sh` that stamps them into a fresh repo. Simple, and each repo stays self-contained.
-- **Global git config** — `core.attributesFile` and `core.excludesFile` point at files in this repo, so the rules apply everywhere without any per-repo file. Nothing to copy, but the rules become invisible to anyone cloning a repo, which matters if the repos are ever shared.
-- **A repo of its own**, dedicated to starting new repos and marked as a GitHub template, so "Use this template" creates a repo with its files. Like the templates here, it copies once and does not keep a repo in sync afterwards. It keeps scaffolding for every project out of a repo about one person's machines.
-
-Whichever holds them, the files to start from:
-
-- `README.md`, a skeleton to fill in
-- `.gitignore`, with `.env` in it
-- `.env.example`, committed with variable names and no values, so the real `.env` never has to be ([Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret))
-- `SECURITY.md`, the policy this repo also needs ([Add a SECURITY.md](#add-a-securitymd))
-- `.gitattributes`, `.editorconfig`, and `cspell.json`
-- `.pre-commit-config.yaml`, the language-agnostic layer ([Consolidate the two pre-commit configs](#consolidate-the-two-pre-commit-configs))
+The files every repo starts with live in [repo-template](https://github.com/francisco-camargo/repo-template), because they concern every project and not one person's machines.
 
 ### Global git config
 
