@@ -12,21 +12,6 @@ When I settle how a tool should behave, through a setting, a hook, or a rule for
 The hook that makes Claude ask before `git commit` shows the idea: written once here, it holds in every repo on every machine that runs `install.sh`.
 `.gitattributes` shows the opposite: I have written it by hand in more than one repo.
 
-## Working here
-
-Ask of any fix where it belongs, so that it keeps working elsewhere.
-
-- Prefer the general form to a fix for one repo.
-- Prefer the portable form to a fix for one machine.
-- Prefer a fix the machine applies to one I must remember.
-
-Add a thing here once I have hit it twice, not before.
-
-**Claude, when we work here:** generalize by default.
-If a fix in another repo would help every repo or every machine, say so and propose moving it here.
-A local one-off needs a reason.
-Treat copies that drift apart, or two sources of truth for one skill, as a real problem.
-
 ## Introduction
 
 ### What dotfiles are
