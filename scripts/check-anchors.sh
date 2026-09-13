@@ -48,6 +48,11 @@ problems="$(
       target="${link%%#*}"
       anchor="${link#*#}"
 
+      # A web page's headings cannot be read without a network fetch.
+      case "$target" in
+        *://*) continue ;;
+      esac
+
       if [ -z "$target" ]; then
         dest="$file"
       else
