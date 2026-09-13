@@ -145,15 +145,14 @@ Its `ln -s` copies the file and exits 0 unless `MSYS=winsymlinks:nativestrict` i
 `install.sh` now sets that variable on the `ln` call, which makes the OS refusal visible for the `-L` check to catch.
 The variable means nothing to `ln` on macOS or Linux.
 
-As of this writing the fallback is still what happens on the main Windows machine.
-Developer Mode is off and the shell is not elevated, so a native symlink fails with "operation not permitted" and `install.sh` copies.
+With Developer Mode off and the shell not elevated, a native symlink fails with "operation not permitted" and `install.sh` copies.
 Copies work fine, but they do not track edits: after changing anything in this repo, re-run `./install.sh` to push the change back out.
 Turn Developer Mode on and you get real symlinks, and edits propagate on their own.
 
 ### Copies drift both ways
 
 The copy fallback has a second failure mode, and it is easier to hit than the first.
-Because `~/.claude/skills/md-to-pdf/` is an ordinary directory and not a link, editing a skill in place — which is what Claude does when asked to change a global skill — leaves this repo clean.
+When `~/.claude/skills/md-to-pdf/` is a copied directory and not a link, editing a skill in place — which is what Claude does when asked to change a global skill — leaves this repo clean.
 `git status` reports nothing, so the change looks like it was never made, and the next `./install.sh` replaces it with the repo's older copy.
 The overwritten directory does get moved into `~/.claude/backups/`, so the work is recoverable, but only if you notice in time to go looking for it.
 
@@ -168,7 +167,8 @@ And before running the installer, diff the two trees so an in-place edit does no
 diff -r claude/skills ~/.claude/skills
 ```
 
-**To deal with next.** Both halves are tracked under [Open items](TODO.md#open-items): turning on Developer Mode, which ends the copying, and [asking before replacing a file](TODO.md#ask-before-replacing-a-file), which covers machines where Developer Mode is not on offer.
+**To deal with next.** Turning on Developer Mode ends the copying on a machine that allows it.
+[Asking before replacing a file](TODO.md#ask-before-replacing-a-file), under Open items, covers machines where Developer Mode is not on offer.
 A copy-mode install should not be able to silently destroy work, and right now it can.
 
 ### A backup can load as a skill
