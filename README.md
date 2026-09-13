@@ -4,26 +4,21 @@ Configuration files kept in one place so every machine behaves the same.
 
 ## Intent
 
-Why this repo exists, in my own words, for anyone who works here next, including Claude in a later session.
+I want to solve each problem **once**, not once per repo or once per machine.
+When a problem takes real thought, the answer should be here the next time I meet it.
 
-I am exploring dotfiles so that I solve each problem **once**: not once per repo, and not once per machine.
-When a problem takes real thought, I want the answer to be there the next time I meet it, in another project or on another computer, rather than worked out again or half remembered.
+Ask of any fix where it belongs, so that it keeps working elsewhere.
 
-That is the test for work here.
-Ask of any fix both "does it work?" and "where does it belong, so that it keeps working elsewhere?"
-
-- A fix that helps only in the current repo is one I will have to make again. Prefer the general form.
-- A fix that helps only on this machine is worse, because I will not notice it missing on the next one. Prefer the portable form.
-- A fix I must remember to apply is the least reliable. Prefer one the machine applies itself.
+- Prefer the general form to a fix for one repo.
+- Prefer the portable form to a fix for one machine.
+- Prefer a fix the machine applies to one I must remember.
 
 **Claude, when we work here:** generalize by default.
-If a fix in another repo would help in every repo or on every machine, say so, and propose moving it here rather than fixing it locally.
+If a fix in another repo would help every repo or every machine, say so and propose moving it here.
 A local one-off needs a reason.
-When this repo's own setup works against that goal, as when copies drift apart or one skill has two sources of truth, treat it as a real problem, since it defeats the purpose of the repo.
+Treat copies that drift apart, or two sources of truth for one skill, as a real problem.
 
-The limit: add scope when a problem recurs, not in advance.
-A thing belongs here once I have hit it twice, not when I first imagine I might.
-Generalize what has recurred, and leave the rest alone.
+Add a thing here once I have hit it twice, not before.
 
 ## Introduction
 
