@@ -30,14 +30,14 @@ Set `MD2PDF_BROWSER` to a Chrome/Edge executable if the script cannot find one.
 2. `assets/print.css` is inlined into that HTML.
 3. A headless Chrome or Edge prints it with `--print-to-pdf`.
 
-No pandoc, node, or python needed — only `awk` and an installed Chromium-family
+No pandoc, node, or python needed: only `awk` and an installed Chromium-family
 browser. This matters: none of the usual converters are installed on the
 machine this config is installed on.
 
 ## Scope of the converter
 
 `md2html.awk` is intentionally small. It handles headings, GFM pipe tables,
-paragraphs, `**bold**`, and `` `code` `` — which is all the target documents
+paragraphs, `**bold**`, and `` `code` ``, which is all the target documents
 use. Anything else (lists, links, images, block quotes, fenced code) passes
 through as literal text. If a document starts needing those, extend the awk
 script rather than reaching for a heavier toolchain.
