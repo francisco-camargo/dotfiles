@@ -83,6 +83,7 @@ say "installing from $repo into $dest"
 place "$repo/claude/settings.json"      "$dest/settings.json"
 place "$repo/claude/CLAUDE.md"          "$dest/CLAUDE.md"
 place "$repo/claude/skills/md-to-pdf"   "$dest/skills/md-to-pdf"
+place "$repo/claude/skills/repo-template-check" "$dest/skills/repo-template-check"
 
 # Git does not clone .git/hooks/, so the gates in .pre-commit-config.yaml are
 # inert until something writes the hook into this clone. This is that step, and

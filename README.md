@@ -95,7 +95,7 @@ It prints every move it would make. When that reads the way you want, drop the f
 Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 
 `git` and `bash` are the whole requirement for this much.
-`install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and `claude/skills/md-to-pdf` into `~/.claude/`.
+`install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
 Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
 Use `--copy` to force copies instead of links.
 
@@ -198,6 +198,7 @@ If the commit just goes through, the settings have not reloaded yet.
 | `claude/settings.json` | `~/.claude/settings.json` | Model choice, and the [hooks](#hooks) below |
 | `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | [Standing instructions](#standing-instructions) for every session, everywhere |
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](#skills) that renders a Markdown file to a print-ready PDF |
+| `claude/skills/repo-template-check/` | `~/.claude/skills/repo-template-check/` | A [skill](#skills) that checks a repo against repo-template |
 
 ## Hooks
 
@@ -290,6 +291,18 @@ Converts Markdown to HTML with a small awk script, inlines `assets/print.css`, a
 No pandoc or node needed.
 Layout, including page breaks and repeated table headers, is all in the stylesheet.
 See `claude/skills/md-to-pdf/SKILL.md` for details.
+
+### The repo-template-check skill
+
+Ask Claude to check a repo against [repo-template](https://github.com/francisco-camargo/repo-template), which holds the files every project starts with.
+
+```bash
+~/.claude/skills/repo-template-check/scripts/check.sh some-project
+```
+
+The script does what code can settle: which template files the project lacks, which match, and which template lines a differing copy lacks.
+Claude does the rest: it offers the missing files, explains each gap, and suggests what to adopt, changing nothing until asked.
+See `claude/skills/repo-template-check/SKILL.md` for details.
 
 ### Skill scope, and duplicates
 
