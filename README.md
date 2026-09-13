@@ -545,9 +545,10 @@ Going public while growing into them is that moment.
 | A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | A config file, and `pre-commit` on the machine |
 | `gitleaks` in Actions | Whatever reached the remote anyway, `--no-verify` included | Runs after the push — on a public repo, after it is already published | A workflow file |
 
-Push protection is the one to reach for first, and it is free.
+Push protection is the one to reach for first, and it is free on a public repository.
+GitHub does not offer it on a private repository owned by a personal account, so it has to wait until this repo is public.
 Secret scanning runs automatically on public repositories at no cost.
-Push protection is a separate switch: repository-level is off by default, and an administrator turns it on under Settings → Code security.
+Push protection is a separate switch: repository-level is off by default, and an administrator turns it on under Settings → Advanced Security (formerly Code security).
 It blocks the push and says why.
 Anyone with write access can bypass it by giving a reason, which is the right trade when the thing being defended against is an accident rather than an attacker.
 
@@ -583,12 +584,22 @@ Anyone minded to reconsider should reconsider now.
 
 ### The order to do it in
 
-1. **Turn on push protection.** Highest value, and the only item here that no commit can do for you. Still outstanding.
-2. **Add the `pre-commit` hook.** Done — [the commit gates](#the-commit-gates). It runs `gitleaks` rather than the `sed` and `grep` this list first imagined, which is a better gate for less code.
-3. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim. Done.
-4. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
+1. **Add the `pre-commit` hook.** Done — [the commit gates](#the-commit-gates). It runs `gitleaks` rather than the `sed` and `grep` this list first imagined, which is a better gate for less code.
+2. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim. Done.
+3. **Decide on the `gitleaks` workflow** once the local hook has been lived with for a while.
 
-Then the switch.
+Then the switch, and straight after it, before the next push:
+
+4. **Turn on push protection.** Highest value, and the only item here that no commit can do for you. It cannot come earlier, because GitHub does not offer it while the repo is private. Still outstanding.
+
+From inside the clone:
+
+```sh
+gh api -X PATCH 'repos/{owner}/{repo}' \
+  -f 'security_and_analysis[secret_scanning][status]=enabled' \
+  -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled'
+gh api 'repos/{owner}/{repo}' --jq .security_and_analysis
+```
 
 One more that is not about secrets but shares the deadline.
 [This repo runs code on every machine that installs it](#this-repo-runs-code-on-every-machine-that-installs-it), so public means strangers can open pull requests against a script you execute.
