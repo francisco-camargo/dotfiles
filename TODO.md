@@ -1,24 +1,206 @@
 # TODO
 
-A short index of what could come next.
-Every item is summarized in one line here and argued properly in [README.md](README.md) — follow the link before acting on one.
+What could come next, and the case for each.
+Delete an item once it is done.
 
 ## Open items
 
-Started and unfinished, as opposed to speculative — [Open items](README.md#open-items).
+Work that is started and unfinished, as opposed to [what else could live here](README.md#what-else-could-live-here), which is speculative.
+Each of these is known to be missing, not merely imagined.
 
-- [ ] Turn on Developer Mode, which ends the copying and makes edits propagate ([turn on Developer Mode](README.md#turn-on-developer-mode))
-- [ ] Ask before `install.sh` replaces a file that is already there, and keep it by default ([ask before replacing a file](README.md#ask-before-replacing-a-file))
-- [ ] Make the hooks easy to adopt for someone who keeps their own `settings.json` ([merge settings.json](README.md#merge-settingsjson-instead-of-replacing-it), [the warning](README.md#installsh-replaces-settingsjson-wholesale))
-- [ ] Decide what stays in `CLAUDE.md` and what becomes a skill — writing style is the first case, not the only one ([split standing instructions](README.md#split-standing-instructions-between-claudemd-and-skills))
-- [ ] Prune `~/.claude/backups/`, with a `--keep N` or a date cutoff ([prune backups](README.md#prune-claudebackups))
-- [ ] Delete the duplicate `md-to-pdf` in the other repo and let this one own it ([skill scope, and duplicates](README.md#skill-scope-and-duplicates))
-- [ ] Consolidate this `.pre-commit-config.yaml` with the Python one, and audit what each is missing ([consolidate the two configs](README.md#consolidate-the-two-pre-commit-configs))
-- [ ] Settle how spelling gets checked — `codespell` at commit time, `cspell` in the editor, or both ([settle how spelling gets checked](README.md#settle-how-spelling-gets-checked))
-- [ ] Install what this config already assumes — a new machine has neither `uv` nor `pre-commit` ([install what this config assumes](README.md#install-what-this-config-already-assumes))
-- [ ] Report the state of a machine with a `doctor.sh`, including whether each gate still fires ([verify the machine](README.md#verify-the-machine-not-only-write-to-it))
-- [ ] Put the new-machine steps in one order, authentication included ([one order](README.md#put-the-new-machine-steps-in-one-order))
-- [ ] Add a root `SECURITY.md` and turn on private vulnerability reporting ([add a SECURITY.md](README.md#add-a-securitymd))
+### Turn on Developer Mode
+
+The one item that needs a person rather than a commit.
+It is also a setup step for anyone on Windows rather than a chore particular to this machine, which is why [Install on a new machine](README.md#install-on-a-new-machine) now says so up front.
+`install.sh` now asks Git Bash for a real symlink instead of letting it copy in silence ([Symlinks on Windows](README.md#symlinks-on-windows)), so the only thing still in the way is the OS.
+Developer Mode is off on this machine — `AllowDevelopmentWithoutDevLicense` is unset under `HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock` — and the shell is not elevated, so a native link fails with "operation not permitted" and the installer copies instead.
+
+Settings → System → For developers → Developer Mode on, then re-run `./install.sh`.
+Turning it on takes an administrator, which is why no session can do it for you.
+After that the installed files are the repo files, edits propagate on their own, and the drift below stops being possible.
+
+### Ask before replacing a file
+
+`install.sh` replaces whatever it finds, and the only notice is a "backing up existing" line as it goes.
+Nothing is deleted, but someone's `settings.json`, their own `CLAUDE.md`, or a skill edited in place ends up in `~/.claude/backups/`, and nothing says how to put it back.
+Nobody who runs this script should lose what was on their machine without being asked.
+
+For each file the installer places:
+
+| What is at the destination | What happens |
+| --- | --- |
+| Nothing, the same content, or a link into this repo | Place it without asking |
+| Anything else | Show what is there, and ask |
+
+The question offers:
+
+- **keep** the existing file and skip this one, which is the default
+- **replace** it, backing it up as today and printing the command that restores the backup
+- **diff** the two, then ask again
+- **quit**, leaving the rest untouched
+
+With no terminal to ask on, as when piped or run from another script, the answer is keep.
+Replacing without a terminal takes an explicit `--replace-existing`.
+
+Keeping `settings.json` means going without the hooks, so the installer says so and prints the block to paste in by hand.
+
+This one change covers three problems that were tracked apart:
+
+- **`settings.json` replaced wholesale** ([the warning](README.md#installsh-replaces-settingsjson-wholesale)): a settings file someone already has stays unless they choose otherwise.
+- **Copy-mode drift** ([copies drift both ways](README.md#copies-drift-both-ways)): a skill edited in place under `~/.claude` differs from the repo, so the next install asks instead of overwriting it.
+- **Writing before showing**: the question is the preview, so a bare `./install.sh` cannot change a file before its owner has seen what it would do, and `--dry-run` stops being something to know about in advance.
+
+Whether a destination matches the repo is the same check [the doctor script](#verify-the-machine-not-only-write-to-it) needs, so it should be written once.
+
+The limit is the one that applies to everything here: the script should stay readable in a single sitting.
+A question and a comparison fit that.
+An `--undo` or a separate plan-then-apply mode would not, and asking first makes both less needed.
+
+### Merge `settings.json` instead of replacing it
+
+Described in full under [`install.sh` replaces `settings.json` wholesale](README.md#installsh-replaces-settingsjson-wholesale).
+[Ask before replacing a file](#ask-before-replacing-a-file) stops the installer taking someone's settings without asking.
+What is left is making the hooks easy to adopt for someone who keeps their own.
+
+A real merge is the wrong fix.
+It needs a JSON parser, and the rule that keeps the hooks portable — `sed` and `grep` only, no `jq`, no `node`, no `python` — is the same rule that makes merging JSON inside `install.sh` a bad idea.
+A merger written in awk would fail quietly on a nested key, which is the failure this repo keeps trying to design out.
+
+Two smaller pieces instead:
+
+- **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
+- **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON — which the uv gate's escaping already argues for.
+
+One thing to settle at the same time, because it arrives with Developer Mode rather than with a coworker.
+Claude Code writes `~/.claude/settings.json` itself, the first time you change a `/config` option stored in user settings — the theme, for instance.
+Once that file is a symlink into this repo, those writes land in the working tree: changing the theme becomes an uncommitted diff here, and can conflict on the next `git pull`.
+Keeping `settings.json` a copy while the rest are links is the simple answer.
+
+### Split standing instructions between CLAUDE.md and skills
+
+Described under [What belongs here, and what belongs in a skill](README.md#what-belongs-here-and-what-belongs-in-a-skill).
+
+Nothing is wrong today.
+`CLAUDE.md` is short and every entry in it earns being read every session.
+The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case — with review checklists, commit conventions, and diagram style queued behind it.
+
+Three things to settle when it does:
+
+- Where the line falls: a short core here, the long form in a skill, and this file pointing at it.
+- Whether a skill's `description` can trigger reliably for prose work, which is a vaguer trigger than "render this Markdown to PDF".
+- Whether the split runs per subject, or one `house-style` skill covers all of it.
+
+### Prune `~/.claude/backups/`
+
+Every install adds a copy of whatever it replaced and nothing removes the old ones.
+Harmless while the tree is small, and worth a `--keep N` or a date cutoff before the directory turns into somewhere nobody looks.
+
+### Delete the duplicate `md-to-pdf`
+
+Another repo keeps its own copy of the `md-to-pdf` skill.
+Delete that copy and let this repo own the skill, as [Skill scope, and duplicates](README.md#skill-scope-and-duplicates) says to.
+
+### Consolidate the two pre-commit configs
+
+The config here is not the only one I maintain.
+[`francisco-camargo/francisco-camargo`](https://github.com/francisco-camargo/francisco-camargo/blob/master/src/python/pre-commit/.pre-commit-config.yaml) carries a fuller one for Python work, and the two were written without reference to each other.
+
+They agree on the part that matters least and differ on the part that matters most.
+Both pin `pre-commit/pre-commit-hooks` at the same revision and share most of its hygiene hooks.
+Then each is missing what the other has where it counts: `gitleaks` runs only here, though the Python config is the one sitting in front of dependency files and API clients, and `codespell` runs only there, though this repo is mostly prose.
+
+Three layers, once they are pulled apart:
+
+- **Wanted everywhere, language-agnostic.** The hygiene hooks, `detect-private-key`, `check-shebang-scripts-are-executable`, `gitleaks`, `codespell`.
+- **Python only.** `black`, `flake8`, `isort`, `mypy`, `bandit`, `interrogate`, `pip-audit`, `add-trailing-comma`.
+- **Repo-specific, at first.** The anchor check, written for this repo and now also in [repo-template](https://github.com/francisco-camargo/repo-template).
+
+While the two are side by side, the cheap question is what each is missing.
+`check-json` and `check-toml` are in the Python config and not here; `codespell` would have caught more than one wobble in this README; `mixed-line-ending` overlaps what `.gitattributes` already does, so it may be redundant rather than missing.
+
+The obstacle is that `pre-commit` has no include or extends.
+One config cannot inherit another, so sharing a base means choosing between a block documented in one place and copied by hand — the drift this repo exists to end — and generating the file, which trades the drift for a build step.
+Worth settling before a third config turns up and makes the same choice a third time.
+
+### Settle how spelling gets checked
+
+`cspell.json` sits in the repo root and the VS Code extension finds it without being told to, so a misspelling is underlined as I type it.
+Nothing checks spelling when a commit is created, and nothing checks it at all for anyone who does not run that extension.
+
+Two tools could close that, and they work differently.
+`codespell` carries a list of known misspellings and flags only those, which keeps it quiet and spares it a word list.
+`cspell` works from dictionaries and flags anything absent from them, which is stricter and is why the word list in `cspell.json` had to be written before it was usable here.
+
+`codespell` is the cheaper of the two.
+It is a Python tool, `pre-commit` is itself a Python tool on this machine, and the Python config runs it, so [consolidating the two configs](#consolidate-the-two-pre-commit-configs) brings it here as part of a job already on this list.
+
+`cspell` costs a second runtime.
+Its hook is `language: node`, so `pre-commit` builds that environment by fetching a node runtime into `~/.cache/pre-commit`, the way it already fetches the Go toolchain for `gitleaks`.
+Nothing has to be installed on the machine for that, and the environment is reusable once built: `pre-commit run cspell --all-files` then runs the checker on demand, which is the only way anything here runs `cspell` outside the editor.
+That last part is what the word list is waiting on — it was written by reading the repo and judging what the dictionaries already cover, and no run has confirmed it.
+
+Running both means two lists of exceptions that drift apart, because each tool has to be told its own.
+The order worth trying: take `codespell` with the config consolidation, leave `cspell` as an editor underline, and add the `cspell` hook only if a misspelling gets past `codespell` or the word list turns out to need checking.
+
+### Install what this config already assumes
+
+The [uv gate](README.md#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](docs/security.md#the-commit-gates) need `pre-commit`.
+A new machine has neither.
+So the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off — the repo naming a hole it could fill.
+
+What closes it is a list of what a machine needs, kept as a file rather than a run of install lines: git, `gh`, `uv`, `pre-commit`, VS Code.
+`winget export` writes that list from a machine that already works and `winget import` replays it, which keeps it a file you can read and diff rather than a script you have to run to find out what it does — the same reason the VS Code extensions list below is a file.
+
+It stays separate from `install.sh`.
+Installing tools onto a machine is a larger claim than placing config files, and making it a side effect of the second is the trade `install.sh` already refuses when it declines to install `pre-commit` for you.
+
+### Verify the machine, not only write to it
+
+`install.sh` places files and reports what it did.
+Nothing answers the question that comes next on a new machine: is this right yet?
+Today you answer it by reading this README and checking by hand.
+
+A `doctor.sh` would report state and change nothing:
+
+- link or copy, for each installed target
+- whether Developer Mode is on
+- which installed copies differ from the repo
+- whether this clone has a `pre-commit` hook in `.git/hooks/`
+- whether `uv` and `gh` are on PATH
+
+Two of those are worth more than a status line.
+The difference check is the detecting half of [asking before replacing a file](#ask-before-replacing-a-file), so building it once serves both.
+And a doctor script is where the test that [Hooks](README.md#hooks) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
+A gate that quietly stopped firing is the failure this repo keeps designing against, and nothing checks for it.
+
+`sed` and `grep` only, for the reason the hooks are.
+
+### Put the new-machine steps in one order
+
+The steps are all written down and none of them are together.
+Developer Mode opens [Install on a new machine](README.md#install-on-a-new-machine), `pre-commit` arrives in `install.sh`'s closing warning, restarting Claude Code is the line after the install command, and authenticating to GitHub is nowhere, because cloning is where the instructions start.
+Someone setting up a machine wants the sequence once, in one place:
+
+1. Developer Mode, first, because it decides whether the install links or copies
+2. git, and the tools the config assumes
+3. authentication — `gh auth login`, or an SSH key
+4. clone, `./install.sh --dry-run`, then `./install.sh`
+5. restart Claude Code
+
+Each step already has a section arguing it.
+The list is a table of contents for one afternoon, not a replacement for them.
+
+### Add a SECURITY.md
+
+GitHub treats a `SECURITY.md` in the root, `docs/` or `.github/` as the repo's security policy.
+It appears under Security and quality → Security policy, and GitHub points to it when someone opens an issue.
+Its job is to tell a stranger how to report a vulnerability without posting it in public.
+
+This repo needs one because [it runs code on every machine that installs it](docs/security.md#this-repo-runs-code-on-every-machine-that-installs-it): the hooks run on every tool call, and anyone who finds a way to abuse that should be able to tell the owner privately.
+
+- **Where:** the root. `docs/SECURITY.md` would clash with `docs/security.md` on Windows and macOS, whose filesystems ignore case.
+- **What it says:** report through GitHub's private vulnerability reporting, expect no support promise for personal config, and read [docs/security.md](docs/security.md) for how the repo keeps secrets out.
+- **The switch:** private vulnerability reporting is off by default, under Settings → Advanced Security. No commit can turn it on.
 
 ## Someday
 
