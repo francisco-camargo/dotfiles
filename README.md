@@ -591,7 +591,7 @@ Anyone minded to reconsider should reconsider now.
 
 Then the switch, and straight after it, before the next push:
 
-4. **Turn on push protection.** Highest value, and the only item here that no commit can do for you. It cannot come earlier, because GitHub does not offer it while the repo is private. Still outstanding.
+4. **Turn on push protection.** Highest value, and the only item here that no commit can do for you. It cannot come earlier, because GitHub does not offer it while the repo is private. Done.
 
 From inside the clone:
 
@@ -607,6 +607,9 @@ One more that is not about secrets but shares the timing.
 Turn on branch protection, and read every proposed change to `install.sh` or the hooks as what it is.
 It too waits for the switch: GitHub Free offers neither branch protection nor rulesets on a private repository.
 Strangers cannot open pull requests before then, so nothing is lost by waiting.
+
+Done, as a ruleset named "Protect main" that blocks force pushes to the default branch and its deletion, with no one allowed to bypass it.
+It does not require pull requests: a stranger's change already needs the owner to merge it, and requiring them would put every direct push of the owner's through a bypass.
 
 ## Open items
 
