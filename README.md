@@ -4,27 +4,26 @@ Configuration files kept in one place so every machine behaves the same.
 
 ## Intent
 
-Why this repo exists, in my own words — for anyone picking up work here, Claude in a future session included.
+Why this repo exists, in my own words, for anyone who works here next, including Claude in a later session.
 
-I am exploring dotfiles because I want to solve a problem **once**.
-Not once per repo, and not once per machine.
-When something takes real thought to work out, I want the result to still be there the next time I hit it — in a different project, or on a different computer — rather than re-derived from scratch or half-remembered.
+I am exploring dotfiles so that I solve each problem **once**: not once per repo, and not once per machine.
+When a problem takes real thought, I want the answer to be there the next time I meet it, in another project or on another computer, rather than worked out again or half remembered.
 
-That is the test I want applied to work here.
-The question about any fix is not only "does this work" but "where does this belong so it keeps working elsewhere":
+That is the test for work here.
+Ask of any fix both "does it work?" and "where does it belong, so that it keeps working elsewhere?"
 
-- A fix that only helps in the repo I happen to be sitting in is a fix I will have to make again. Prefer the general form.
-- A fix that only helps on this machine is worse, because I will not notice it is missing on the next one. Prefer the portable form.
-- A solution I have to remember to apply is the weakest kind. Prefer one the machine applies on its own.
+- A fix that helps only in the current repo is one I will have to make again. Prefer the general form.
+- A fix that helps only on this machine is worse, because I will not notice it missing on the next one. Prefer the portable form.
+- A fix I must remember to apply is the least reliable. Prefer one the machine applies itself.
 
-**Claude, when we work here:** default to generalizing.
-If something we are fixing in another repo would help in every repo, or on every machine, say so and propose lifting it here instead of solving it locally and moving on.
-Treat a local one-off as a deliberate choice needing a reason, not the default.
-And when this repo's own mechanics undermine the goal — copies drifting out of sync, two sources of truth for one skill — treat that as a real problem and not a small annoyance, because it defeats the entire point of the repo.
+**Claude, when we work here:** generalize by default.
+If a fix in another repo would help in every repo or on every machine, say so, and propose moving it here rather than fixing it locally.
+A local one-off needs a reason.
+When this repo's own setup works against that goal, as when copies drift apart or one skill has two sources of truth, treat it as a real problem, since it defeats the purpose of the repo.
 
-The counterweight: scope grows when repetition justifies it, not in anticipation.
-Something earns a place here once I have hit it twice — not the first time I imagine I might.
-Generalize what has actually recurred; leave the rest alone.
+The limit: add scope when a problem recurs, not in advance.
+A thing belongs here once I have hit it twice, not when I first imagine I might.
+Generalize what has recurred, and leave the rest alone.
 
 ## Introduction
 
