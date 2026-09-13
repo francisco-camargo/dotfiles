@@ -468,7 +468,8 @@ That makes write access to this repo equivalent to code execution on all your ma
 
 - Keep 2FA on the GitHub account.
 - Read the diff before `git pull && ./install.sh` on another machine, the same way you would for any script handed to you.
-- If this repo is ever shared or made public, treat a pull request against it as a change to a security-sensitive script, not a config tweak.
+- Treat a pull request against it as a change to a security-sensitive script, not a config tweak. A stranger's change still needs the owner to merge it.
+- Keep the "Protect main" ruleset, which blocks force pushes to the default branch and its deletion, with no one allowed to bypass it. It does not require pull requests, which would put each of the owner's direct pushes through a bypass.
 
 ### A secret scanner, once it is worth the setup
 
@@ -512,12 +513,6 @@ That placement is the point: a gate nobody knows is off is exactly what this lay
 `--no-verify` still skips all of it, and none of it runs for someone who never ran `install.sh`.
 That is the right trade when the thing being defended against is an accident rather than an attacker.
 
-## Before this repo goes public
-
-Going public cannot be undone.
-A private repo nobody has fetched can still be rewritten; a public one cannot be un-published, because clones and forks are outside your control ([Git history does not forget](#git-history-does-not-forget)).
-Everything below wants deciding first, not afterwards.
-
 ### How a secret would actually get out
 
 Nobody is going to type a password into `settings.json`.
@@ -534,7 +529,7 @@ Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
 [A secret scanner, once it is worth the setup](#a-secret-scanner-once-it-is-worth-the-setup) called a scanner overkill at this size, and said to revisit that once the repo grew into those files.
-Going public while growing into them is that moment.
+That is why [the commit gates](#the-commit-gates) run `gitleaks`.
 
 ### Four layers, and what each one misses
 
@@ -545,15 +540,22 @@ Going public while growing into them is that moment.
 | A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | A config file, and `pre-commit` on the machine |
 | `gitleaks` in Actions | Whatever reached the remote anyway, `--no-verify` included | Runs after the push — on a public repo, after it is already published | A workflow file |
 
-Push protection is the one to reach for first, and it is free on a public repository.
-GitHub does not offer it on a private repository owned by a personal account, so it has to wait until this repo is public.
-Secret scanning runs automatically on public repositories at no cost.
-Push protection is a separate switch: repository-level is off by default, and an administrator turns it on under Settings → Advanced Security (formerly Code security).
-It blocks the push and says why.
+Push protection is on for this repo.
+It and secret scanning are free on a public repository, and GitHub does not offer them on a private one owned by a personal account.
+Both are off by default: an administrator turns them on under Settings → Advanced Security (formerly Code security), or from inside a clone:
+
+```sh
+gh api -X PATCH 'repos/{owner}/{repo}' \
+  -f 'security_and_analysis[secret_scanning][status]=enabled' \
+  -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled'
+gh api 'repos/{owner}/{repo}' --jq .security_and_analysis
+```
+
+Push protection blocks the push and says why.
 Anyone with write access can bypass it by giving a reason, which is the right trade when the thing being defended against is an accident rather than an attacker.
 
 The Actions scan reports; it does not block.
-By the time it fires on a public repo, the commit is already published.
+By the time it fires, the commit is already public.
 So this repo has no such workflow: `gitleaks` runs only in the local `pre-commit` hook, before a commit exists, and push protection guards the remote.
 
 ### Repo-local hooks, or global, and the trap in the global one
@@ -573,43 +575,6 @@ Using [the framework](#the-commit-gates) means no `core.hooksPath` at all: `pre-
 The global form is still there when the appetite arrives, and it has no trap either.
 `pre-commit init-templatedir` sets `init.templateDir`, so every repo cloned or created afterwards gets a real hook of its own rather than a redirect.
 The catch is only that it reaches new clones, not the repos already sitting on the machine.
-
-### Already decided: the history keeps the old names
-
-The references to internal repos are generalized in the working tree.
-They remain in `README.md` throughout the history, and one remains in the commit message of `938f77c`.
-Rewriting nearly every commit to hide a repo name was judged not worth losing the history over.
-
-That decision is reversible only up to the moment the repo goes public.
-Anyone minded to reconsider should reconsider now.
-
-### The order to do it in
-
-1. **Add the `pre-commit` hook.** Done — [the commit gates](#the-commit-gates). It runs `gitleaks` rather than the `sed` and `grep` this list first imagined, which is a better gate for less code.
-2. **Audit the full history once more**, deliberately rather than in passing — the working tree being clean is not the same claim. Done.
-3. **Decide on the `gitleaks` workflow.** Done: no workflow, and `gitleaks` stays in the local hook ([four layers](#four-layers-and-what-each-one-misses)).
-
-Then the switch, and straight after it, before the next push:
-
-4. **Turn on push protection.** Highest value, and the only item here that no commit can do for you. It cannot come earlier, because GitHub does not offer it while the repo is private. Done.
-
-From inside the clone:
-
-```sh
-gh api -X PATCH 'repos/{owner}/{repo}' \
-  -f 'security_and_analysis[secret_scanning][status]=enabled' \
-  -f 'security_and_analysis[secret_scanning_push_protection][status]=enabled'
-gh api 'repos/{owner}/{repo}' --jq .security_and_analysis
-```
-
-One more that is not about secrets but shares the timing.
-[This repo runs code on every machine that installs it](#this-repo-runs-code-on-every-machine-that-installs-it), so public means strangers can open pull requests against a script you execute.
-Turn on branch protection, and read every proposed change to `install.sh` or the hooks as what it is.
-It too waits for the switch: GitHub Free offers neither branch protection nor rulesets on a private repository.
-Strangers cannot open pull requests before then, so nothing is lost by waiting.
-
-Done, as a ruleset named "Protect main" that blocks force pushes to the default branch and its deletion, with no one allowed to bypass it.
-It does not require pull requests: a stranger's change already needs the owner to merge it, and requiring them would put every direct push of the owner's through a bypass.
 
 ## Open items
 
