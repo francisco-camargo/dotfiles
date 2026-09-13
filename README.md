@@ -587,6 +587,18 @@ Someone setting up a machine wants the sequence once, in one place:
 Each step already has a section arguing it.
 The list is a table of contents for one afternoon, not a replacement for them.
 
+### Add a SECURITY.md
+
+GitHub treats a `SECURITY.md` in the root, `docs/` or `.github/` as the repo's security policy.
+It appears under Security and quality → Security policy, and GitHub points to it when someone opens an issue.
+Its job is to tell a stranger how to report a vulnerability without posting it in public.
+
+This repo needs one because [it runs code on every machine that installs it](docs/security.md#this-repo-runs-code-on-every-machine-that-installs-it): the hooks run on every tool call, and anyone who finds a way to abuse that should be able to tell the owner privately.
+
+- **Where:** the root. `docs/SECURITY.md` would clash with `docs/security.md` on Windows and macOS, whose filesystems ignore case.
+- **What it says:** report through GitHub's private vulnerability reporting, expect no support promise for personal config, and read [docs/security.md](docs/security.md) for how the repo keeps secrets out.
+- **The switch:** private vulnerability reporting is off by default, under Settings → Advanced Security. No commit can turn it on.
+
 ## What else could live here
 
 Nothing below is set up yet.

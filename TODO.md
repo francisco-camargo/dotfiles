@@ -18,6 +18,7 @@ Started and unfinished, as opposed to speculative — [Open items](README.md#ope
 - [ ] Install what this config already assumes — a new machine has neither `uv` nor `pre-commit` ([install what this config assumes](README.md#install-what-this-config-already-assumes))
 - [ ] Report the state of a machine with a `doctor.sh`, including whether each gate still fires ([verify the machine](README.md#verify-the-machine-not-only-write-to-it))
 - [ ] Put the new-machine steps in one order, authentication included ([one order](README.md#put-the-new-machine-steps-in-one-order))
+- [ ] Add a root `SECURITY.md` and turn on private vulnerability reporting ([add a SECURITY.md](README.md#add-a-securitymd))
 
 ## Someday
 
