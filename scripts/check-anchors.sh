@@ -18,7 +18,8 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 # GitHub builds an anchor by lowercasing the heading, dropping anything that is
-# not a letter, digit, space or hyphen, then turning spaces into hyphens.
+# not a letter, digit, space, hyphen or underscore, then turning spaces into
+# hyphens.
 # Repeated headings would need -1, -2 suffixes; this repo has none, and the
 # duplicate check below keeps it that way.
 slugs() {
@@ -27,7 +28,7 @@ slugs() {
       heading = $0
       sub(/^#+[ \t]+/, "", heading)
       slug = tolower(heading)
-      gsub(/[^a-z0-9 -]/, "", slug)
+      gsub(/[^a-z0-9 _-]/, "", slug)
       gsub(/ /, "-", slug)
       print slug
     }
