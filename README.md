@@ -7,7 +7,7 @@ Configuration files kept in one place so every machine behaves the same.
 This repo holds the configuration I want on every machine and in every project.
 Today that is Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills).
 [What's here](#whats-here) lists each file and where it installs.
-[Candidates for later](#what-else-could-live-here) are git config, VS Code settings, a shell profile, and the files each repo repeats, such as `.gitignore` and `.gitattributes`.
+[Candidates for later](TODO.md#what-else-could-live-here) are git config, VS Code settings, a shell profile, and the files each repo repeats, such as `.gitignore` and `.gitattributes`.
 
 When I settle how a tool should behave, through a setting, a hook, or a rule for Claude, I want to do it **once**, not once per repo or once per machine.
 The hook that makes Claude ask before `git commit` shows the idea: written once here, it holds in every repo on every machine that runs `install.sh`.
@@ -407,103 +407,4 @@ The test is the same each time, and [Split standing instructions between CLAUDE.
 
 ## Open items
 
-Work that is started and unfinished is in [TODO.md](TODO.md#open-items).
-
-## What else could live here
-
-Nothing below is set up yet.
-This is the list of things worth pulling in as the need comes up, roughly in order of how much repetition each one removes.
-
-### More Claude Code configuration
-
-- **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
-- **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher proves worth the setup.
-- **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
-- **`~/.claude/keybindings.json`** — key bindings, which is the file nobody rebuilds from memory on a new machine.
-- **More hooks** — the same `PreToolUse` mechanism as the gates above can auto-format after edits, block writes to protected paths, or log what ran.
-
-### Shared repo scaffolding
-
-The files every repo starts with live in [repo-template](https://github.com/francisco-camargo/repo-template), because they concern every project and not one person's machines.
-
-### Global git config
-
-`~/.gitconfig` on this machine carries an editor, a name, and an address.
-`init.defaultBranch`, `pull.rebase`, aliases, `core.excludesFile` — all of it is re-derived per machine or lived without, which is the drift this repo exists to end.
-
-Git also solves here what `settings.json` could not, because a gitconfig can include another one:
-
-```ini
-[include]
-    path = ~/git/dotfiles/git/gitconfig
-```
-
-The install appends a line instead of replacing a file someone already owns, so [asking before replacing a file](TODO.md#ask-before-replacing-a-file) has nothing to ask about there.
-Two more things fall out of the same mechanism.
-`includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](#per-machine-differences)).
-And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo, above.
-
-Read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit of one: a credential helper and a remote URL with a token in it both live in this file.
-
-### Machine setup
-
-- **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](TODO.md#install-what-this-config-already-assumes) — it starts with the tools this repo's own config depends on.
-- **Editor settings** — VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
-- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](#symlinks-on-windows)).
-
-### VS Code settings
-
-This is the next thing to pull in, so it gets more than a bullet.
-
-The files worth versioning all live in one directory — `%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux:
-
-- `settings.json` — the bulk of it
-- `keybindings.json`
-- an extensions list, produced by `code --list-extensions > vscode/extensions.txt` and replayed by looping `code --install-extension` over the file
-
-The first two are ordinary `place()` targets and need only a second destination in `install.sh`, since VS Code does not live under `$HOME`:
-
-```sh
-vsdest="${VSCODE_USER_DIR:-$APPDATA/Code/User}"
-place "$repo/vscode/settings.json"    "$vsdest/settings.json"
-place "$repo/vscode/keybindings.json" "$vsdest/keybindings.json"
-```
-
-`$APPDATA` is set inside Git Bash.
-The extensions list is the odd one out: it is a script input rather than a symlink target, so it wants its own small `vscode/install-extensions.sh`.
-
-#### The recommendation
-
-Start with `settings.json` alone.
-Add keybindings once there are any worth keeping, and the extensions list once a second machine exists to replay it onto — that file is the one that pays off only on a fresh install.
-
-One argument cuts the other way, and it is the new-machine one.
-Redoing `settings.json` by hand takes a minute; rebuilding the extension set takes an afternoon, and what is missing from it only shows up when something stops working.
-`code --list-extensions > vscode/extensions.txt` costs nothing to keep current, and it cannot drift the way `settings.json` does, because no UI writes back to it.
-So take the extensions list first if the next machine is nearer than the next settings change.
-
-Then pick a single source of truth, and let it be the repo.
-This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
-Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
-The UI-edited file is not lost — `backup()` moves it into `backups/` first — but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
-So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
-If a setting gets changed through the UI by reflex — and it will — copy it back into the repo before the next install, not after.
-
-Enabling Developer Mode and getting real symlinks removes the whole problem, and is the single change that makes versioning editor settings pleasant instead of fiddly.
-Worth doing first if you have the option.
-
-Two things to expect.
-VS Code settings collect absolute paths — `python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine — and those are exactly what [Per-machine differences](#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
-And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit, not after.
-
-### Per-machine differences
-
-The moment a second machine has a genuinely different setting, the single-file approach strains.
-The usual fix is a `hosts/<machine-name>/` directory that `install.sh` layers on top of the shared files after placing them, so shared config stays shared and only the differences are duplicated.
-Worth doing when the need actually appears, not before.
-
-
-### Before adding any of this
-
-Shell profiles, git config, and bootstrap scripts are where credentials actually creep in — a remote URL with a token in it, an exported key in `.bashrc`.
-Re-read [Security](docs/security.md) before pulling any of them in.
+Work that is started and unfinished is in [TODO.md](TODO.md#open-items), along with [what else could live here](TODO.md#what-else-could-live-here).

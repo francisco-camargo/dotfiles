@@ -120,7 +120,7 @@ Nothing copies it today, because `install.sh` names every file it places ([The d
 Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest.
 
 **Two: the config files queued up to arrive next.**
-[What else could live here](../README.md#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
+[What else could live here](../TODO.md#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
 [A secret scanner, once it is worth the setup](#a-secret-scanner-once-it-is-worth-the-setup) called a scanner overkill at this size, and said to revisit that once the repo grew into those files.
