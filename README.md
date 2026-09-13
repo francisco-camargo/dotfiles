@@ -2,7 +2,7 @@
 
 Configuration files kept in one place so every machine behaves the same.
 
-## Intent
+## Motivation
 
 This repo holds the configuration I want on every machine and in every project.
 Today that is Claude Code: its settings and hooks, the instructions it reads each session, and its skills.
@@ -12,18 +12,20 @@ When I settle how a tool should behave, through a setting, a hook, or a rule for
 The hook that makes Claude ask before `git commit` shows the idea: written once here, it holds in every repo on every machine that runs `install.sh`.
 `.gitattributes` shows the opposite: I have written it by hand in more than one repo.
 
+## Working here
+
 Ask of any fix where it belongs, so that it keeps working elsewhere.
 
 - Prefer the general form to a fix for one repo.
 - Prefer the portable form to a fix for one machine.
 - Prefer a fix the machine applies to one I must remember.
 
+Add a thing here once I have hit it twice, not before.
+
 **Claude, when we work here:** generalize by default.
 If a fix in another repo would help every repo or every machine, say so and propose moving it here.
 A local one-off needs a reason.
 Treat copies that drift apart, or two sources of truth for one skill, as a real problem.
-
-Add a thing here once I have hit it twice, not before.
 
 ## Introduction
 
@@ -580,7 +582,7 @@ By the time it fires on a public repo, the commit is already published.
 A `pre-commit` hook needs `core.hooksPath`, because `.git/hooks/` is not cloned.
 
 - **Repo-local**, set by `install.sh` from inside this repo. Narrow and safe, and covers only this repo.
-- **Global**, pointing at this repo from the global git config. This is the "solve it once, not once per repo" form the [Intent](#intent) section argues for.
+- **Global**, pointing at this repo from the global git config. This is the "solve it once, not once per repo" form the [Motivation](#motivation) section argues for.
 
 The trap is that a global `core.hooksPath` overrides per-repo hooks everywhere.
 Any repo shipping its own `pre-commit` stops running it, with nothing to say so.
