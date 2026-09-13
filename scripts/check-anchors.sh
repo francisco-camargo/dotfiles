@@ -17,16 +17,23 @@ set -euo pipefail
 
 cd "$(git rev-parse --show-toplevel)"
 
+# The lines of a Markdown file outside fenced code blocks. Inside one, a "#"
+# line is a comment, not a heading, and a link is an example, not a link.
+prose() {
+  awk '
+    /^[ \t]*(```|~~~)/ { fenced = !fenced; next }
+    !fenced
+  ' "$1"
+}
+
 # GitHub builds an anchor by lowercasing the heading, dropping anything that is
 # not a letter, digit, space, hyphen or underscore, then turning spaces into
 # hyphens.
 # Repeated headings would need -1, -2 suffixes; this repo has none, and the
 # duplicate check below keeps it that way.
-# A "#" line inside a fenced code block is a comment, not a heading.
 slugs() {
-  awk '
-    /^[ \t]*(```|~~~)/ { fenced = !fenced; next }
-    !fenced && /^#+ / {
+  prose "$1" | awk '
+    /^#+ / {
       heading = $0
       sub(/^#+[ \t]+/, "", heading)
       slug = tolower(heading)
@@ -34,7 +41,7 @@ slugs() {
       gsub(/ /, "-", slug)
       print slug
     }
-  ' "$1"
+  '
 }
 
 problems="$(
@@ -45,7 +52,7 @@ problems="$(
       printf '  %s\n' $dupes
     fi
 
-    for raw in $(grep -oE '\]\([^) ]*#[A-Za-z0-9._-]+\)' "$file" || true); do
+    for raw in $(prose "$file" | grep -oE '\]\([^) ]*#[A-Za-z0-9._-]+\)' || true); do
       link="${raw#](}"
       link="${link%)}"
       target="${link%%#*}"
