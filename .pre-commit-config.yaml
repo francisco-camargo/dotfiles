@@ -1,9 +1,3 @@
-# Gates that run before a commit is created. Install them with `pre-commit
-# install`, which install.sh does for you.
-#
-# These catch what GitHub's own scanning misses or catches too late: push
-# protection only knows recognized credential formats, and an Actions scan on a
-# public repo reports after the commit is already published.
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
