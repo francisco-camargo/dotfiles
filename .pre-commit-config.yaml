@@ -2,26 +2,90 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-      - id: detect-private-key
-      - id: check-shebang-scripts-are-executable
-      - id: check-added-large-files
-      - id: check-merge-conflict
-      - id: check-yaml
-      - id: end-of-file-fixer
+      - id: detect-private-key # Detects private keys
+      - id: check-executables-have-shebangs # Checks that executable text files have a shebang
+      - id: check-shebang-scripts-are-executable # Checks that files with a shebang are executable
+      - id: check-added-large-files # Prevents accidentally committing large files
+      - id: check-merge-conflict # Checks for merge conflict strings
+      - id: check-yaml # Validates YAML file syntax
+      - id: check-json # Validates JSON file syntax
+      - id: check-toml # Validates TOML file syntax
+      - id: end-of-file-fixer # Ensures files end with a newline
         exclude: \.svg$
-      - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
+      - id: trailing-whitespace # Removes trailing whitespace
+        args: [--markdown-linebreak-ext=md] # Keeps Markdown's two-space line breaks
         exclude: \.svg$
+      - id: mixed-line-ending # Converts line endings to LF
+        args: [--fix=lf]
+      - id: debug-statements # Checks for debugger imports and breakpoint() calls
+      - id: name-tests-test # Verifies that test files follow the "test_" naming convention
+        args: [--pytest-test-first]
+      - id: requirements-txt-fixer # Sorts entries in requirements.txt files
 
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.30.0
     hooks:
-      - id: gitleaks
+      - id: gitleaks # Scans staged changes for secrets such as API keys and tokens
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.3
+    hooks:
+      - id: codespell # Checks for common misspellings
+        additional_dependencies: [tomli] # Reads settings from pyproject.toml on Python before 3.11
 
   - repo: https://github.com/lycheeverse/lychee
     rev: lychee-v0.24.2
     hooks:
-      - id: lychee
+      - id: lychee # Checks that Markdown links point at files and headings that exist
         args: ["--no-progress", "--offline", "--include-fragments", "."]
         files: \.md$
         pass_filenames: false
+
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 26.5.1
+    hooks:
+      - id: black # Python code formatter
+        args: [-S, --line-length=100] # -S leaves string quotes as written
+
+  - repo: https://github.com/pycqa/isort
+    rev: 9.0.1
+    hooks:
+      - id: isort # Sorts Python imports
+        args: [--profile=black, --line-length=100, --skip-gitignore] # Compatible with black formatter
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.3.0
+    hooks:
+      - id: flake8 # Python linter for style guide enforcement
+        args: [--max-line-length=100, "--extend-ignore=E203,W503"] # Ignores rules that conflict with black
+
+  - repo: https://github.com/asottile/add-trailing-comma
+    rev: v4.0.0
+    hooks:
+      - id: add-trailing-comma # Automatically adds trailing commas to Python code
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.3.1
+    hooks:
+      - id: mypy # Static type checker for Python
+        args: [--strict, --ignore-missing-imports, --no-error-summary]
+        additional_dependencies: [types-pyyaml] # Type stubs for PyYAML
+
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.7.0
+    hooks:
+      - id: interrogate # Checks Python docstring coverage
+        args: [-vv, --ignore-init-method, --fail-under=100]
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.9.4
+    hooks:
+      - id: bandit # Security linter for Python code
+        args: [-r, --skip, B101] # B101 flags assert, which tests rely on
+
+  - repo: https://github.com/pypa/pip-audit
+    rev: v2.10.1
+    hooks:
+      - id: pip-audit # Scans Python dependencies for known vulnerabilities
+        args: [.] # Audits this project's dependencies, not the hook's own environment
+        files: ^pyproject\.toml$
