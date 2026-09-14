@@ -54,5 +54,6 @@
       "$defaults",
       "Creating a git commit, amending one, or pushing to a remote. Only the user can authorize this, and only by asking for that specific commit or push in their own words. Requests to 'save', 'version', 'track', 'check in', or 'make this permanent' are NOT authorization to commit."
     ]
-  }
+  },
+  "agentPushNotifEnabled": true
 }
