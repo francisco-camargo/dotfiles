@@ -84,28 +84,6 @@ Harmless while the tree is small, and worth a `--keep N` or a date cutoff before
 Another repo keeps its own copy of the `md-to-pdf` skill.
 Delete that copy and let this repo own the skill, as [Skill scope, and duplicates](README.md#skill-scope-and-duplicates) says to.
 
-### Consolidate the two pre-commit configs
-
-The config here is not the only one I maintain.
-[`francisco-camargo/francisco-camargo`](https://github.com/francisco-camargo/francisco-camargo/blob/master/src/python/pre-commit/.pre-commit-config.yaml) carries a fuller one for Python work, and the two were written without reference to each other.
-
-They agree on the part that matters least and differ on the part that matters most.
-Both pin `pre-commit/pre-commit-hooks` at the same revision and share most of its hygiene hooks.
-Then each is missing what the other has where it counts: `gitleaks` runs only here, though the Python config is the one sitting in front of dependency files and API clients, and `codespell` runs only there, though this repo is mostly prose.
-
-Three layers, once they are pulled apart:
-
-- **Wanted everywhere, language-agnostic.** The hygiene hooks, `detect-private-key`, `check-shebang-scripts-are-executable`, `gitleaks`, `codespell`.
-- **Python only.** `black`, `flake8`, `isort`, `mypy`, `bandit`, `interrogate`, `pip-audit`, `add-trailing-comma`.
-- **Repo-specific, at first.** The link check, `lychee`, added for this repo and now also in [repo-template](https://github.com/francisco-camargo/repo-template).
-
-While the two are side by side, the cheap question is what each is missing.
-`check-json` and `check-toml` are in the Python config and not here; `codespell` would have caught more than one wobble in this README; `mixed-line-ending` overlaps what `.gitattributes` already does, so it may be redundant rather than missing.
-
-The obstacle is that `pre-commit` has no include or extends.
-One config cannot inherit another, so sharing a base means choosing between a block documented in one place and copied by hand — the drift this repo exists to end — and generating the file, which trades the drift for a build step.
-Worth settling before a third config turns up and makes the same choice a third time.
-
 ### Settle how spelling gets checked
 
 `cspell.json` sits in the repo root and the VS Code extension finds it without being told to, so a misspelling is underlined as I type it.
@@ -116,7 +94,7 @@ Two tools could close that, and they work differently.
 `cspell` works from dictionaries and flags anything absent from them, which is stricter and is why the word list in `cspell.json` had to be written before it was usable here.
 
 `codespell` is the cheaper of the two.
-It is a Python tool, `pre-commit` is itself a Python tool on this machine, and the Python config runs it, so [consolidating the two configs](#consolidate-the-two-pre-commit-configs) brings it here as part of a job already on this list.
+It is a Python tool, `pre-commit` is itself a Python tool on this machine, and the Python config runs it, so [consolidating the pre-commit configs](https://github.com/francisco-camargo/repo-template/blob/main/TODO.md#consolidate-the-pre-commit-configs) in repo-template brings it here once this repo takes its config from there.
 
 `cspell` costs a second runtime.
 Its hook is `language: node`, so `pre-commit` builds that environment by fetching a node runtime into `~/.cache/pre-commit`, the way it already fetches the Go toolchain for `gitleaks`.
