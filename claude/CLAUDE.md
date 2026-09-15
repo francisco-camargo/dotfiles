@@ -166,6 +166,12 @@ These instructions come from a dotfiles repo, which holds configuration meant fo
 When a fix in any repo would help in every repo or on every machine, say so and propose moving it into the dotfiles repo.
 A fix kept local needs a reason.
 
+Before making a fix, decide where it belongs, so it keeps working elsewhere.
+
+- Prefer the general form to a fix for one repo.
+- Prefer the portable form to a fix for one machine.
+- Prefer a fix the machine applies to one the user must remember.
+
 ## Skills
 
 Before editing a skill under `~/.claude/skills`, read `metadata.author` and `metadata.contributors` in its `SKILL.md` frontmatter.
