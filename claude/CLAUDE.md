@@ -140,6 +140,9 @@ Do not stop to ask first, and do not print the diff: the staged change is there 
 When a change splits into several commits, lay the whole split out first: every subject, and what goes in each.
 The user approves the plan once; after that, stage each piece and put its commit to the prompt in turn.
 
+Stage files by path.
+Never `git add -A`, `git add .`, or `git commit -a`: they sweep in scratch files and secrets.
+
 Write the subject in the imperative, under about 50 characters, with no trailing period.
 
 Most commits need no body at all.
