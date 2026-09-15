@@ -172,6 +172,25 @@ Before making a fix, decide where it belongs, so it keeps working elsewhere.
 - Prefer the portable form to a fix for one machine.
 - Prefer a fix the machine applies to one the user must remember.
 
+## Memory
+
+Claude Code's per-project memory sits outside every repo, where nobody sees it in day-to-day work.
+Save a fact there only when no visible file can hold it.
+
+Before writing a memory, find the file the fact belongs in, and propose that edit instead:
+
+- A preference for every project, such as showing options with a recommendation, goes in this file.
+- A convention for one repo, such as its test command or branch naming, goes in that repo's `CLAUDE.md`.
+- A rule that must hold every time, such as asking before `git commit`, goes in a hook or permission rule in `settings.json`.
+- A procedure repeated across sessions, such as cutting a release, goes in a skill.
+- Unfinished work and next steps go in the repo's TODO list or issue tracker.
+- The reason for a decision goes in the commit message, or in the README next to what it explains.
+- A pointer to a dashboard, ticket, or outside document goes in the README or `docs/`.
+
+Memory suits what has no such home: context about a repo you cannot commit to, or a fact too private for any file in git.
+
+When you save a memory, say so in the reply and name the file.
+
 ## Skills
 
 Before editing a skill under `~/.claude/skills`, read `metadata.author` and `metadata.contributors` in its `SKILL.md` frontmatter.
