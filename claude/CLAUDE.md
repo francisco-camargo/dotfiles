@@ -103,10 +103,10 @@ One idea per commit: if the subject needs an "and", it is two commits.
 Commit each piece as it is finished rather than collecting a session's work into one.
 
 Stage the change, then run `git commit` in the same turn.
-Do not stop to ask first, and do not print the diff: the staged change is there to read, and the permission prompt on `git commit` is where the commit is accepted or refused.
+Do not stop to ask first, and do not print the diff: the staged change is there to read, and the user accepts or refuses the commit at the permission prompt on `git commit`.
 
 When a change splits into several commits, lay the whole split out first: every subject, and what goes in each.
-The plan is approved once, and each commit is then staged and put to the prompt one at a time.
+The user approves the plan once; after that, stage each piece and put its commit to the prompt in turn.
 
 Write the subject in the imperative, under about 50 characters, with no trailing period.
 
@@ -124,7 +124,7 @@ A fix kept local needs a reason.
 
 Before editing a skill under `~/.claude/skills`, read `metadata.author` and `metadata.contributors` in its `SKILL.md` frontmatter.
 
-A skill by a third party is vendored, and an official update overwrites whatever was changed in place.
+A skill by a third party is vendored, and an official update overwrites any edit made in place.
 Do not fix it there.
 Write the fix as a small skill of your own, and have it import the vendored skill's shared modules and scripts by sibling path, such as `../vendored-skill/scripts/`.
 
