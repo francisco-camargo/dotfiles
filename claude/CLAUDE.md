@@ -102,7 +102,7 @@ Commit small and often.
 One idea per commit: if the subject needs an "and", it is two commits.
 Commit each piece as it is finished rather than collecting a session's work into one.
 
-Stage the commit, then run `git commit` in the same turn.
+Stage the change, then run `git commit` in the same turn.
 Do not stop to ask first, and do not print the diff: the staged change is there to read, and the permission prompt on `git commit` is where the commit is accepted or refused.
 
 When a change splits into several commits, lay the whole split out first: every subject, and what goes in each.
