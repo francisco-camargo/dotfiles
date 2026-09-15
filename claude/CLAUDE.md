@@ -118,6 +118,10 @@ Keep these:
 
 Links and references by name are fine.
 
+## Code
+
+Comments say why; the code already says what.
+
 ## Commits
 
 Commit small and often, rather than collecting a session's work into one commit.
