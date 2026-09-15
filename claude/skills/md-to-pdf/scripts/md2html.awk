@@ -1,5 +1,6 @@
 # Minimal Markdown -> HTML converter for this repo's documents.
-# Supports: ATX headings, GFM pipe tables, paragraphs, **bold**, `code`.
+# Supports: ATX headings, GFM pipe tables, flat bulleted and numbered lists,
+# paragraphs, **bold**, `code`.
 # Deliberately small -- extend it when a document needs more.
 
 function rep(s, from, to,   out, p) {
@@ -32,22 +33,33 @@ function inline(s,   pre, mid, post) {
 
 function closetable() { if (intable) { print "</tbody></table>"; intable = 0 } }
 function closepara()  { if (inpara)  { print "</p>";             inpara  = 0 } }
+function closelist()  { if (inlist)  { print "</" inlist ">";     inlist  = "" } }
+
+function listitem(tag, text) {
+  closepara(); closetable()
+  if (inlist != tag) { closelist(); print "<" tag ">"; inlist = tag }
+  print "<li>" inline(text) "</li>"
+}
 
 {
   line = $0
   sub(/\r$/, "", line)
 
-  if (line ~ /^ *$/) { closepara(); closetable(); next }
+  if (line ~ /^ *$/) { closepara(); closetable(); closelist(); next }
+
+  if (line ~ /^[-*] /) { listitem("ul", substr(line, 3)); next }
+
+  if (match(line, /^[0-9]+\. /)) { listitem("ol", substr(line, RLENGTH + 1)); next }
 
   if (line ~ /^#+ /) {
-    closepara(); closetable()
+    closepara(); closetable(); closelist()
     match(line, /^#+/); lvl = RLENGTH
     printf "<h%d>%s</h%d>\n", lvl, inline(substr(line, lvl + 2)), lvl
     next
   }
 
   if (line ~ /^\|/) {
-    closepara()
+    closepara(); closelist()
     body = line
     sub(/^\|/, "", body)
     sub(/\| *$/, "", body)
@@ -66,9 +78,9 @@ function closepara()  { if (inpara)  { print "</p>";             inpara  = 0 } }
     next
   }
 
-  closetable()
+  closetable(); closelist()
   if (!inpara) { print "<p>"; inpara = 1 }
   print inline(line)
 }
 
-END { closepara(); closetable() }
+END { closepara(); closetable(); closelist() }

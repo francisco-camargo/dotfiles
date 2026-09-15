@@ -37,10 +37,11 @@ machine this config is installed on.
 ## Scope of the converter
 
 `md2html.awk` is intentionally small. It handles headings, GFM pipe tables,
-paragraphs, `**bold**`, and `` `code` ``, which is all the target documents
-use. Anything else (lists, links, images, block quotes, fenced code) passes
-through as literal text. If a document starts needing those, extend the awk
-script rather than reaching for a heavier toolchain.
+flat bulleted and numbered lists, paragraphs, `**bold**`, and `` `code` ``,
+which is all the target documents use. Anything else (nested lists, links,
+images, block quotes, fenced code) passes through as literal text. If a
+document starts needing those, extend the awk script rather than reaching for
+a heavier toolchain.
 
 ## Adjusting the layout
 
