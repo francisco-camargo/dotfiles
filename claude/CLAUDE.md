@@ -180,7 +180,7 @@ Save a fact there only when no visible file can hold it.
 
 Before writing a memory, find the file the fact belongs in, and propose that edit instead:
 
-- A preference for every project, such as showing options with a recommendation, goes in this file.
+- A preference for every project, such as one sentence per line, goes in this file.
 - A convention for one repo, such as its test command or branch naming, goes in that repo's `CLAUDE.md`.
 - A rule that must hold every time, such as asking before `git commit`, goes in a hook or permission rule in `settings.json`.
 - A procedure repeated across sessions, such as cutting a release, goes in a skill.
