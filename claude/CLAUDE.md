@@ -40,6 +40,10 @@ A bold lead-in inside a list item is fine.
 Do not separate sections with `---`.
 The heading is the separator.
 
+### Headings in sentence case
+
+Capitalize the first word of a heading and proper nouns, nothing else.
+
 ## Writing style
 
 Follow Orwell's six rules, from *Politics and the English Language*:
