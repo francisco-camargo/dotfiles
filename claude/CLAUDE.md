@@ -115,6 +115,16 @@ These instructions come from a dotfiles repo, which holds configuration meant fo
 When a fix in any repo would help in every repo or on every machine, say so and propose moving it into the dotfiles repo.
 A fix kept local needs a reason.
 
+## Skills
+
+Before editing a skill under `~/.claude/skills`, read `metadata.author` and `metadata.contributors` in its `SKILL.md` frontmatter.
+
+A skill by a third party is vendored, and an official update overwrites whatever was changed in place.
+Do not fix it there.
+Write the fix as a small skill of your own, and have it import the vendored skill's shared modules and scripts by sibling path, such as `../vendored-skill/scripts/`.
+
+Edit a vendored skill in place only when there is a real path to send the change upstream to the author it names.
+
 ## Shells
 
 This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
