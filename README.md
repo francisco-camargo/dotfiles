@@ -204,6 +204,7 @@ If the commit just goes through, the settings have not reloaded yet.
 | `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | [Standing instructions](#standing-instructions) for every session, everywhere |
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](#skills) that renders a Markdown file to a print-ready PDF |
 | `claude/skills/repo-template-check/` | `~/.claude/skills/repo-template-check/` | A [skill](#skills) that checks a repo against repo-template |
+| `claude/skills/memory-audit/` | `~/.claude/skills/memory-audit/` | A [skill](#skills) that moves Claude's per-project memories into visible files |
 
 ## Hooks
 
@@ -308,6 +309,20 @@ Ask Claude to check a repo against [repo-template](https://github.com/francisco-
 The script does what code can settle: which template files the project lacks, which match, and which template lines a differing copy lacks.
 Claude does the rest: it offers the missing files, explains each gap, and suggests what to adopt, changing nothing until asked.
 See `claude/skills/repo-template-check/SKILL.md` for details.
+
+### The memory-audit skill
+
+Ask Claude to audit a project's memories.
+Claude Code keeps them outside every repo, where they shape sessions without anyone seeing them.
+
+```bash
+~/.claude/skills/memory-audit/scripts/find.sh some-project
+```
+
+The script finds the project's memory directory and prints every memory; `--all` covers every project.
+Claude then proposes a visible home for each one, such as a `CLAUDE.md`, a hook, or the README, and waits for approval.
+Once approved, it commits each move and deletes the memory after the commit lands.
+See `claude/skills/memory-audit/SKILL.md` for details.
 
 ### Skill scope, and duplicates
 
