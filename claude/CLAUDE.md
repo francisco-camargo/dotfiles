@@ -95,13 +95,11 @@ Commit small and often.
 One idea per commit: if the subject needs an "and", it is two commits.
 Commit each piece as it is finished rather than collecting a session's work into one.
 
-Stage a commit, then ask before creating it.
-Show the whole `git diff --cached`, and the subject line it will carry, and wait for an answer.
-The hooks already hold a commit until it is approved, but what they show is the command and not what is in it, which is what makes approving one worth anything.
+Stage the commit, then run `git commit` in the same turn.
+Do not stop to ask first, and do not print the diff: the staged change is there to read, and the permission prompt on `git commit` is where the commit is accepted or refused.
 
 When a change splits into several commits, lay the whole split out first: every subject, and what goes in each.
-The plan is approved once.
-Each commit is then still staged and shown before it is created, so nothing is committed unread.
+The plan is approved once, and each commit is then staged and put to the prompt one at a time.
 
 Write the subject in the imperative, under about 50 characters, with no trailing period.
 
