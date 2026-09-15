@@ -14,6 +14,32 @@ Exceptions: list items are one line each regardless of length, and tables and co
 When editing a file that is already hard-wrapped, match the file rather than converting a paragraph in passing.
 Converting is a deliberate, whole-file change.
 
+## Markdown structure
+
+### Headings and lists, not bold titles
+
+Give a document headings and subheadings, and use a list for anything enumerable.
+Do not open a paragraph with a bolded phrase standing in for a heading: a heading nests, takes a link, and shows up in the outline.
+
+```markdown
+**Where it installs.** Every skill lands in `~/.claude/skills/`.
+```
+
+becomes
+
+```markdown
+#### Where it installs
+
+Every skill lands in `~/.claude/skills/`.
+```
+
+A bold lead-in inside a list item is fine.
+
+### No horizontal rules
+
+Do not separate sections with `---`.
+The heading is the separator.
+
 ## Writing style
 
 Follow Orwell's six rules, from *Politics and the English Language*:
