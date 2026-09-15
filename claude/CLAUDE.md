@@ -51,9 +51,9 @@ Follow Orwell's six rules, from *Politics and the English Language*:
 5. Never use a foreign phrase, a scientific word, or a jargon word if you can think of an everyday English equivalent.
 6. Break any of these rules sooner than say anything outright barbarous.
 
-They apply to everything written here: documentation, commit messages, code comments, and replies in the session.
+They apply to everything you write: documentation, commit messages, code comments, and replies in the session.
 
-Rule 6 outranks the other five: being clear and being accurate come first.
+Rule 6 outranks the other five: clarity and accuracy come first.
 Where a technical term is the precise word, use it.
 
 ### No litotes
@@ -98,9 +98,8 @@ Links and references by name are fine.
 
 ## Commits
 
-Commit small and often.
+Commit small and often, rather than collecting a session's work into one commit.
 One idea per commit: if the subject needs an "and", it is two commits.
-Commit each piece as it is finished rather than collecting a session's work into one.
 
 Stage the change, then run `git commit` in the same turn.
 Do not stop to ask first, and do not print the diff: the staged change is there to read, and the user accepts or refuses the commit at the permission prompt on `git commit`.
