@@ -127,6 +127,8 @@ Delete dead code rather than commenting it out: git keeps it.
 For safety, start a shell script with `#!/usr/bin/env bash` and `set -euo pipefail`.
 The script then stops at a failed command, an unset variable, or a failure anywhere in a pipeline, rather than running on in a broken state.
 
+Fix a bug by first writing a test that fails because of it.
+
 ## Commits
 
 Commit small and often, rather than collecting a session's work into one commit.
