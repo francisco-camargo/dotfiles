@@ -48,6 +48,10 @@ Capitalize the first word of a heading and proper nouns, nothing else.
 
 Open every fenced code block with its language, such as `sh`, or `text` for output.
 
+### Link text names the target
+
+Make the link text the name of what it points at, never "here", "this link", or a bare URL.
+
 ## Writing style
 
 Follow Orwell's six rules, from *Politics and the English Language*:
