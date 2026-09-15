@@ -143,6 +143,8 @@ The user approves the plan once; after that, stage each piece and put its commit
 Stage files by path.
 Never `git add -A`, `git add .`, or `git commit -a`: they sweep in scratch files and secrets.
 
+Never amend, rebase, or force-push a commit that has been pushed.
+
 Write the subject in the imperative, under about 50 characters, with no trailing period.
 
 Most commits need no body at all.
