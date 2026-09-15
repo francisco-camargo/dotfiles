@@ -79,14 +79,21 @@ Where one would go, use a comma, colon, semicolon, parentheses, or a new sentenc
 Do not restate in prose what a reader could look up: a count of what a directory holds, a file's line count, an entry's position in a list, how many repos do something.
 
 Name things rather than counting them, and describe them by what they are rather than where they sit.
-Prefer "the gates below" to "the three gates below".
-Prefer "this gate denies sed edits" to "the second hook denies sed edits".
-Prefer "while it stays short" to "at sixty lines".
+
+- Prefer "the gates below" to "the three gates below".
+- Prefer "this gate denies sed edits" to "the second hook denies sed edits".
+- Prefer "while it stays short" to "at sixty lines".
 
 The test: if the claim went false, what would say so?
 A list or table in the same section answers that; nothing answers it for a claim about another file.
 
-Keep a count an adjacent list makes self-evident, a count that carries an argument, a fixed outside fact, and identifiers that do not drift, such as a commit hash.
+Keep these:
+
+- a count that an adjacent list makes plain
+- a count that carries an argument
+- a fixed outside fact
+- an identifier that does not change, such as a commit hash
+
 Links and references by name are fine.
 
 ## Commits
