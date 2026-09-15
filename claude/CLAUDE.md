@@ -130,4 +130,4 @@ When a session exposes both a PowerShell tool and a Bash tool, their syntaxes do
 In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting.
 The PowerShell here-string `@'...'@` is not Bash syntax and does not fail: Bash passes the `@` through as an ordinary character, silently embedding it in the text.
 
-In the PowerShell tool the reverse holds, and `&&` and `||` are parse errors in Windows PowerShell 5.1.
+In the PowerShell tool, write `A; if ($?) { B }` in place of `A && B`: `&&` and `||` are parse errors in Windows PowerShell 5.1.
