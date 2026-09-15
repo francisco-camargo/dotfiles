@@ -156,6 +156,10 @@ Wrap a body at 72 characters.
 Title a pull request as you would a commit subject.
 The body says why the change exists and how to check it; the diff already says what.
 
+## Replies in the session
+
+Say how you checked a claim, or say that you did not.
+
 ## Dotfiles
 
 These instructions come from a dotfiles repo, which holds configuration meant for every machine and every project.
