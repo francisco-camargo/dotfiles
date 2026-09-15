@@ -1,6 +1,6 @@
 # Standing instructions
 
-Preferences and conventions that apply in every project on this machine.
+Preferences and conventions that apply in every project, on every machine.
 Keep this file portable: no absolute paths, host names, or anything else that is true of one computer and not the next.
 
 ## Markdown prose
@@ -125,7 +125,7 @@ Edit a vendored skill in place only when there is a real path to send the change
 
 ## Shells
 
-This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
+When a session exposes both a PowerShell tool and a Bash tool, their syntaxes do not mix.
 
 In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting.
 The PowerShell here-string `@'...'@` is not Bash syntax and does not fail: Bash passes the `@` through as an ordinary character, silently embedding it in the text.
