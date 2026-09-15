@@ -122,6 +122,8 @@ Links and references by name are fine.
 
 Comments say why; the code already says what.
 
+Delete dead code rather than commenting it out: git keeps it.
+
 ## Commits
 
 Commit small and often, rather than collecting a session's work into one commit.
