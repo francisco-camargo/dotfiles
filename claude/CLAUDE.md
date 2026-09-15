@@ -62,7 +62,7 @@ Do not state a thing by denying its opposite.
 Say the plain word: "not uncommon" means common, "no small feat" means a hard one, "not a bad idea" means a good one.
 Also out: "not unlike", "not without merit", "it would not be unreasonable to", "this is no accident".
 
-Plain negatives stay as they are: "this does not work", "nothing copies it today".
+Plain negatives stay as they are: "this does not work", "nothing copies it".
 
 ### Get to the point
 
@@ -83,6 +83,8 @@ Name things rather than counting them, and describe them by what they are rather
 - Prefer "the gates below" to "the three gates below".
 - Prefer "this gate denies sed edits" to "the second hook denies sed edits".
 - Prefer "while it stays short" to "at sixty lines".
+
+Leave out words that date a sentence: "today", "currently", "now", "new", "recently", "soon".
 
 The test: if the claim went false, what would say so?
 A list or table in the same section answers that; nothing answers it for a claim about another file.
