@@ -52,8 +52,8 @@ Layout lives entirely in `assets/print.css`. Things worth knowing:
 - `tr { page-break-inside: avoid }` stops rows splitting across a page break.
 - `h2`/`h3` use `page-break-after: avoid` so a section heading is never orphaned
   at the bottom of a page.
-- Column widths are set by `td:nth-child(n)` and assume the
-  Task / Owner / Backup / Cadence shape.
+- Fixed column widths apply only to four-column tables, the
+  Task / Owner / Backup / Cadence shape. Other tables size columns to fit.
 
 ## After regenerating
 

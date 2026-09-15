@@ -73,10 +73,11 @@ th {
   font-size: 9pt;
 }
 
-/* Task | Owner | Backup | Cadence */
-td:nth-child(1) { width: 55%; }
-td:nth-child(2),
-td:nth-child(3) { width: 13%; }
-td:nth-child(4) { width: 19%; }
+/* Task | Owner | Backup | Cadence. Only four-column tables get these
+   widths; other tables size their columns to fit. */
+td:nth-child(1):nth-last-child(4) { width: 55%; }
+td:nth-child(2):nth-last-child(3),
+td:nth-child(3):nth-last-child(2) { width: 13%; }
+td:nth-child(4):nth-last-child(1) { width: 19%; }
 
 tbody tr:nth-child(even) { background: #fafafa; }
