@@ -69,6 +69,10 @@ Plain negatives stay as they are: "this does not work", "nothing copies it".
 State the thing and stop.
 Leave out the case for it unless the reader needs the reason to act, or asks for it.
 
+### Filler words
+
+Cut "just", "simply", "easily", "obviously", "very", "really", "actually".
+
 ### No em dashes
 
 Do not use em dashes.
