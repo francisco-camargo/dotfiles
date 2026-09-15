@@ -44,6 +44,10 @@ The heading is the separator.
 
 Capitalize the first word of a heading and proper nouns, nothing else.
 
+### Code blocks name their language
+
+Open every fenced code block with its language, such as `sh`, or `text` for output.
+
 ## Writing style
 
 Follow Orwell's six rules, from *Politics and the English Language*:
