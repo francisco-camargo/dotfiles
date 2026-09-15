@@ -151,6 +151,11 @@ Most commits need no body at all.
 Add one only when the subject cannot carry the reason, and hold it to a sentence or two saying why, since the diff already says what.
 Wrap a body at 72 characters.
 
+## Pull requests
+
+Title a pull request as you would a commit subject.
+The body says why the change exists and how to check it; the diff already says what.
+
 ## Dotfiles
 
 These instructions come from a dotfiles repo, which holds configuration meant for every machine and every project.
