@@ -265,6 +265,41 @@ The moment a second machine has a genuinely different setting, the single-file a
 The usual fix is a `hosts/<machine-name>/` directory that `install.sh` layers on top of the shared files after placing them, so shared config stays shared and only the differences are duplicated.
 Worth doing when the need actually appears, not before.
 
+### Check prose with Vale
+
+[Vale](https://vale.sh) is a linter for prose.
+It could check the writing rules in [claude/CLAUDE.md](claude/CLAUDE.md), which hold only as far as Claude remembers them.
+
+What it adds over a `grep` check:
+
+- It reads Markdown, so it skips front matter, code blocks and inline code.
+- Each rule has a level, and only errors fail a run. An em dash can be an error while a possible passive stays a hint, which leaves Orwell's sixth rule to the reader.
+- Word lists such as write-good's `TooWordy` and `Cliches`, and substitution rules that suggest the short word, cover rules `grep` cannot.
+- Its `vale-commit-msg` hook applies the same rules to commit messages.
+
+It cannot check one sentence per line, stale counts, or whether a paragraph gets to the point.
+
+What it costs:
+
+- **A runtime.** Its pre-commit hook is `language: golang`, so pre-commit fetches Go as it does for `gitleaks`. The editor and a run by hand need the binary: `winget install -e --id errata-ai.Vale`.
+- **A third word list.** Turn its spelling rule off, for the reason in [Settle how spelling gets checked](#settle-how-spelling-gets-checked).
+- **Vendored styles.** `vale sync` downloads packages such as write-good. Either sync on each machine, or write a small style of our own that borrows the lists worth having.
+- **Noise.** write-good's `Passive` flags a form of "be" followed by a word ending in "ed", so it misses "is written" and flags "is based". Its `E-Prime` flags every "is".
+
+Vale always loads a user-level `.vale.ini`, at `%LOCALAPPDATA%\vale\.vale.ini` on Windows, and lays a project's file over it.
+So `install.sh` could place a style as one more target, which suits the editor and a run by hand.
+A commit gate must not depend on that file, because a machine without these dotfiles would get different results.
+A gate's style travels with the repo, through [repo-template](https://github.com/francisco-camargo/repo-template).
+
+To try it before adopting it:
+
+1. Install the binary.
+2. Write a user-level `.vale.ini` with a small style: em dashes, litotes, and words that date a document as errors; write-good's `Passive`, `TooWordy` and `Cliches` as warnings.
+3. Run `vale README.md TODO.md` and judge whether the warnings are worth reading.
+
+Keep it if they are.
+If not, a `grep` hook covers the error-level rules.
+
 ### Point francisco-camargo's notes here
 
 [francisco-camargo](https://github.com/francisco-camargo/francisco-camargo) keeps learning notes, and some of them describe setup this repo would own once the items above land: the ssh-agent block and git credentials in its git notes, VS Code settings in its VS Code notes, and the WSL fixes in its Linux notes.
