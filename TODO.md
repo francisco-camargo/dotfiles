@@ -292,6 +292,11 @@ If VS Code syncs settings through a GitHub account, Sync and a versioned `settin
 Turn Sync off for settings when the repo takes over, or decide Sync is enough and drop this item.
 Worth carrying over either way: the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
 
+Keep markdownlint's fallback rules in `~/.markdownlint.yaml`, have `install.sh` install that file, and point `markdownlint.configFile` at `${userHome}/.markdownlint.yaml`.
+The extension uses a repo's own `.markdownlint.yaml` first, and falls back to `configFile` in a repo without one.
+The path must exist on every machine, which `${userHome}` and the install make sure of; a path into one repo makes the extension fail in every other.
+The `markdownlint.config` setting is deprecated.
+
 Two things to expect.
 VS Code settings collect absolute paths — `python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine — and those are exactly what [Per-machine differences](#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
 And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit, not after.
