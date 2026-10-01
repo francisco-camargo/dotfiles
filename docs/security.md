@@ -168,5 +168,6 @@ Settled, and the trap turned out to be avoidable.
 Using [the framework](#the-commit-gates) means no `core.hooksPath` at all: `pre-commit install` writes an ordinary `.git/hooks/pre-commit` into this clone, so nothing is redirected and no other repo is touched.
 
 The global form is still there when the appetite arrives, and it has no trap either.
-`pre-commit init-templatedir` sets `init.templateDir`, so every repo cloned or created afterwards gets a real hook of its own rather than a redirect.
+`pre-commit init-templatedir` writes a hook into a template folder, and `git config --global init.templateDir` points git at it, so every repo cloned or created afterwards gets a real hook of its own rather than a redirect.
+`init-templatedir` only warns when that setting is missing; it does not set it.
 The catch is only that it reaches new clones, not the repos already sitting on the machine.
