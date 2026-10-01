@@ -17,6 +17,7 @@ repos:
         exclude: \.svg$
       - id: mixed-line-ending # Converts line endings to LF
         args: [--fix=lf]
+        exclude: \.svg$
       - id: debug-statements # Checks for debugger imports and breakpoint() calls
       - id: name-tests-test # Verifies that test files follow the "test_" naming convention
         args: [--pytest-test-first]
