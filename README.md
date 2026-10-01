@@ -112,7 +112,7 @@ Use `--copy` to force copies instead of links, and `--replace-existing` to repla
 This repo is meant as a starting point rather than something to depend on.
 Fork it, or clone it and point `origin` at your own remote, and everything from that commit on is yours to change.
 
-Install `pre-commit` before running `install.sh`, and the same run also wires [the gates](docs/security.md#the-commit-gates) into your clone:
+Install `pre-commit` before running `install.sh`, and the same run also wires [the gates](docs/security.md#the-commit-gates) into your clone, and into every repo you clone or create afterwards:
 
 ```bash
 uv tool install pre-commit
@@ -120,6 +120,12 @@ uv tool install pre-commit
 
 `uv` is what I use; `pipx install pre-commit` or a `pip --user` install do the same job, and nothing here depends on which.
 Either order works — `install.sh` says so when the gates end up off, and `pre-commit install` from inside the clone turns them on afterwards.
+
+The later repos get the gates through git's template folder.
+`install.sh` writes a pre-commit hook into `~/.git-template` and points `init.templateDir` at it, so git copies the hook into each repo as it clones or creates it.
+The hook runs the gates in that repo's own `.pre-commit-config.yaml`, and skips a repo that has none.
+A repo already on disk picks the hook up from `git init` run inside it, which adds what is missing and overwrites nothing.
+If `init.templateDir` already points somewhere else, `install.sh` leaves it alone and says so.
 
 The gates are worth more in your copy than in mine.
 A dotfiles repo grows toward shell profiles and git config, and that is where a credential eventually lands: see [how a secret would actually get out](docs/security.md#how-a-secret-would-actually-get-out).

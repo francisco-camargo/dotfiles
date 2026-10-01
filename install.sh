@@ -177,6 +177,18 @@ else
   gates=off
 fi
 
+# Git copies its template folder into every repo it clones or creates, so a hook
+# there reaches each new clone without a `pre-commit install`. The hook skips a
+# repo with no pre-commit config. "~" keeps the setting portable, and git
+# expands it. A templateDir someone already set is theirs, so it stays.
+templatedir="$(git config --global --get init.templateDir || true)"
+if [ -n "$templatedir" ] && [ "$templatedir" != "~/.git-template" ]; then
+  say "  kept init.templateDir = $templatedir; new clones get no pre-commit hook from this repo"
+elif command -v pre-commit >/dev/null 2>&1; then
+  run git config --global init.templateDir "~/.git-template"
+  run pre-commit init-templatedir "$HOME/.git-template"
+fi
+
 say
 say "done. Restart Claude Code (or open /hooks once) so it reloads settings."
 

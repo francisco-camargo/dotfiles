@@ -71,4 +71,19 @@ else
   printf 'skip  a link that points outside this repo is kept (no symlinks here)\n'
 fi
 
+templatedir() { HOME="$home" git config --global --get init.templateDir; }
+
+fresh_home
+install
+check "new clones get the pre-commit hook" \
+  [ -f "$home/.git-template/hooks/pre-commit" ]
+check "  ...through init.templateDir" [ "$(templatedir)" = "~/.git-template" ]
+
+fresh_home
+# A ~ path, since Git Bash would rewrite a leading / into a Windows path.
+HOME="$home" git config --global init.templateDir "~/my-template"
+install || true
+check "an init.templateDir set elsewhere is kept" [ "$(templatedir)" = "~/my-template" ]
+check "  ...and the run says so" grep -q "init.templateDir" "$tmp/out"
+
 exit "$failed"
