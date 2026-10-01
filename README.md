@@ -101,6 +101,7 @@ Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 
 `git` and `bash` are the whole requirement for this much.
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
+It also links this repo's `.markdownlint.yaml` to `~/.markdownlint.yaml`, the rules the markdownlint extension uses in a repo without its own.
 Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
 Use `--copy` to force copies instead of links.
 
