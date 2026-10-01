@@ -31,7 +31,6 @@ repos:
     rev: v2.4.3
     hooks:
       - id: codespell # Checks for common misspellings
-        additional_dependencies: [tomli] # Reads settings from pyproject.toml on Python before 3.11
         exclude: \.svg$ # Encoded image data reads as misspelled words
 
   - repo: https://github.com/lycheeverse/lychee
