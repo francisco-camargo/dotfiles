@@ -129,6 +129,17 @@ The script then stops at a failed command, an unset variable, or a failure anywh
 
 Fix a bug by first writing a test that fails because of it.
 
+## Spelling
+
+cspell underlines unknown words in the editor, and codespell checks commits for known misspellings.
+Each kind of exception has one home:
+
+- A word correct in one repo goes in that repo's `cspell.json`, under `words`, sorted.
+- A word correct in every repo, such as my name or a library I use everywhere, goes in `vscode/cspell-words.txt` in the dotfiles repo.
+- A real word that codespell rejects goes in the repo's `.codespellrc`, under `ignore-words-list`, with a comment naming what it is.
+
+Never put words in VS Code's `cSpell.words` or `cSpell.userWords` settings: the first hides them in editor config, and the second keeps them out of git.
+
 ## Commits
 
 Commit small and often, rather than collecting a session's work into one commit.
