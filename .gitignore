@@ -3,6 +3,8 @@
 .claude.json
 .env
 .env.*
+# Names without values, meant to be committed.
+!.env.example
 *.pem
 *.key
 id_rsa
