@@ -1,6 +1,6 @@
 MD013: false # One sentence per line makes long lines normal
 MD007:
-  indent: 4 # Matches .editorconfig's Markdown indent
+  indent: 4 # Matches a Tab under VS Code's editor.tabSize
 MD033:
   allowed_elements: [img] # A Markdown image cannot set a width
 MD004:
