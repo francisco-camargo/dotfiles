@@ -107,6 +107,9 @@ A file already there that matches the repo's is left alone.
 One that differs is kept unless you choose to replace it, and a replaced file moves into `~/.claude/backups/`, with the command to restore it printed beside it.
 Use `--copy` to force copies instead of links, and `--replace-existing` to replace files that differ without asking.
 
+After changing `install.sh`, run `tests/install-test.sh`.
+It installs into a scratch home, never yours, and checks that the installer keeps what it should and replaces only what it is told to.
+
 ### Making it your own
 
 This repo is meant as a starting point rather than something to depend on.
