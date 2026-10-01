@@ -95,9 +95,14 @@ place "$repo/.markdownlint.yaml"        "$HOME/.markdownlint.yaml"
 # inert until something writes the hook into this clone. This is that step, and
 # it touches only this repo -- no global core.hooksPath, which would override
 # the hooks of every other repo on the machine.
+#
+# CLAUDE_HOME set means an install somewhere other than this machine's
+# ~/.claude, such as the tests' scratch home, so this clone is left alone.
 gates=on
 say
-if [ "$dry" -eq 1 ]; then
+if [ -n "${CLAUDE_HOME:-}" ]; then
+  say "  skipping pre-commit install: CLAUDE_HOME is set"
+elif [ "$dry" -eq 1 ]; then
   say "  would: pre-commit install"
 elif command -v pre-commit >/dev/null 2>&1; then
   (cd "$repo" && pre-commit install)
