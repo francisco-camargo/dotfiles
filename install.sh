@@ -22,7 +22,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --copy)    mode=copy ;;
     --dry-run) dry=1 ;;
-    -h|--help) sed -n '2,8p' "${BASH_SOURCE[0]}"; exit 0 ;;
+    -h|--help) awk 'NR == 1 { next } /^#/ { print; next } { exit }' "${BASH_SOURCE[0]}"; exit 0 ;;
     *)         echo "unknown option: $1" >&2; exit 2 ;;
   esac
   shift
