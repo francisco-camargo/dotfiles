@@ -51,10 +51,33 @@ backup() {
   run mv "$target" "$saved"
 }
 
+# True when target is a link to src, as a previous run leaves it.
+linked() { [ -L "$2" ] && [ "$(readlink "$2")" = "$1" ]; }
+
+# True when target is a plain file or directory holding what src holds.
+same_copy() {
+  [ -L "$2" ] && return 1
+  if [ -d "$1" ]; then
+    [ -d "$2" ] && diff -rq "$1" "$2" >/dev/null 2>&1
+  else
+    [ -f "$2" ] && cmp -s "$1" "$2"
+  fi
+}
+
 # Symlinks need Developer Mode or admin on Windows. Try, verify, fall back.
 place() {
   local src="$1" target="$2"
-  backup "$target"
+  if { [ "$mode" = link ] && linked "$src" "$target"; } ||
+    { [ "$mode" = copy ] && same_copy "$src" "$target"; }; then
+    say "  unchanged $target"
+    return 0
+  fi
+  # A link or copy of this repo's file holds nothing a backup would save.
+  if linked "$src" "$target" || same_copy "$src" "$target"; then
+    run rm -rf "$target"
+  else
+    backup "$target"
+  fi
   run mkdir -p "$(dirname "$target")"
   if [ "$mode" = link ]; then
     if [ "$dry" -eq 1 ]; then
