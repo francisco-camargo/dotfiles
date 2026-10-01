@@ -1,0 +1,3 @@
+MD013: false # One sentence per line makes long lines normal
+MD007:
+  indent: 4 # Matches .editorconfig's Markdown indent
