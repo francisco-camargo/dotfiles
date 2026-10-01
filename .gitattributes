@@ -1,6 +1,4 @@
 # Normalize to LF so shell scripts work on every platform.
 * text=auto eol=lf
 
-# A PDF can open with enough plain text that git takes it for text and
-# rewrites its line endings.
 *.pdf binary
