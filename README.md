@@ -124,7 +124,8 @@ uv tool install pre-commit
 `uv` is what I use; `pipx install pre-commit` or a `pip --user` install do the same job, and nothing here depends on which.
 Either order works — `install.sh` says so when the gates end up off, and `pre-commit install` from inside the clone turns them on afterwards.
 
-The later repos get the gates through git's template folder.
+In short, `install.sh` makes every `git clone` and `git init` run the equivalent of `pre-commit install`, so nobody has to remember it on a new clone.
+It does this through git's template folder.
 `install.sh` writes a pre-commit hook into `~/.git-template` and points `init.templateDir` at it, so git copies the hook into each repo as it clones or creates it.
 The hook runs the gates in that repo's own `.pre-commit-config.yaml`, and skips a repo that has none.
 A repo already on disk picks the hook up from `git init` run inside it, which adds what is missing and overwrites nothing.
