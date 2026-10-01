@@ -347,7 +347,6 @@ If not, a `grep` hook covers the error-level rules.
 [francisco-camargo](https://github.com/francisco-camargo/francisco-camargo) keeps learning notes, and some of them describe setup this repo would own once the items above land: the ssh-agent block and git credentials in its git notes, VS Code settings in its VS Code notes, and the WSL fixes in its Linux notes.
 As each lands here, replace the matching part of those notes with a link to this repo, so the steps live in one place.
 
-
 ### Before adding any of this
 
 Shell profiles, git config, and bootstrap scripts are where credentials actually creep in — a remote URL with a token in it, an exported key in `.bashrc`.

@@ -358,7 +358,7 @@ MSG
 
 Feed the PowerShell form to the Bash tool and nothing errors.
 Bash has no idea `@'` is meant to open anything, so it passes the `@` through as an ordinary character.
-The commit succeeds — with `@ ` glued to the front of the subject and a stray `@` alone on the last line of the body.
+The commit succeeds — with `@` and a space glued to the front of the subject and a stray `@` alone on the last line of the body.
 Nothing complains, the tool reports success, and it looks fine until the log is read back.
 The repair is an amend.
 
