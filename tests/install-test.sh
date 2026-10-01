@@ -43,6 +43,8 @@ install
 check "an empty home gets every file" same_as_repo
 check "an empty home gets the markdownlint rules" \
   cmp -s "$repo/.markdownlint.yaml" "$home/.markdownlint.yaml"
+check "an empty home gets the spelling words" \
+  cmp -s "$repo/vscode/cspell-words.txt" "$home/.cspell-words.txt"
 
 install
 check "a second run backs nothing up" no_backups

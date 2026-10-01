@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Install this repo's Claude Code config into ~/.claude on the current machine,
-# and its markdownlint rules into ~/.markdownlint.yaml.
+# its markdownlint rules into ~/.markdownlint.yaml, and its personal spelling
+# words into ~/.cspell-words.txt.
 #
 #   ./install.sh            symlink (falls back to copying if the OS refuses)
 #   ./install.sh --copy     always copy
@@ -157,6 +158,10 @@ place "$repo/claude/skills/memory-audit" "$dest/skills/memory-audit"
 # The markdownlint extension falls back to this file in a repo without its own
 # config; markdownlint.configFile in VS Code's settings points at it.
 place "$repo/.markdownlint.yaml"        "$HOME/.markdownlint.yaml"
+
+# Words that are right in every repo. cSpell.customDictionaries in VS Code's
+# settings points at this file, and "Add to user dictionary" writes to it.
+place "$repo/vscode/cspell-words.txt"   "$HOME/.cspell-words.txt"
 
 # Git does not clone .git/hooks/, so the gates in .pre-commit-config.yaml are
 # inert until something writes the hook into this clone. This is that step, and

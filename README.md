@@ -73,7 +73,7 @@ Developer Mode is the exception: it is off on every new Windows machine, so anyo
 
 ## Install on a new machine
 
-`install.sh` writes into `~/.claude/` and to `~/.markdownlint.yaml`.
+`install.sh` writes into `~/.claude/`, `~/.markdownlint.yaml`, and `~/.cspell-words.txt`.
 Where a file is already there and differs from this repo's, it shows you which and asks whether to keep it, replace it, or see the difference.
 With no terminal to ask on, it keeps it.
 If you already have a `~/.claude/settings.json`, read [`install.sh` and an existing `settings.json`](#installsh-and-an-existing-settingsjson) first.
@@ -103,6 +103,16 @@ Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 `git` and `bash` are the whole requirement for this much.
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
 It also links this repo's `.markdownlint.yaml` to `~/.markdownlint.yaml`, the rules the markdownlint extension uses in a repo without its own.
+And it links `vscode/cspell-words.txt` to `~/.cspell-words.txt`, the words the Code Spell Checker extension accepts in every repo.
+VS Code reads neither file until its user settings point at them:
+
+```jsonc
+"markdownlint.configFile": "${userHome}/.markdownlint.yaml",
+"cSpell.customDictionaries": {
+    "personal": { "name": "personal", "path": "~/.cspell-words.txt", "addWords": true, "scope": "user" }
+},
+```
+
 A file already there that matches the repo's is left alone.
 One that differs is kept unless you choose to replace it, and a replaced file moves into `~/.claude/backups/`, with the command to restore it printed beside it.
 Use `--copy` to force copies instead of links, and `--replace-existing` to replace files that differ without asking.
