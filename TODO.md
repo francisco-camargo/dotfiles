@@ -8,47 +8,10 @@ Delete an item once it is done.
 Work that is started and unfinished, as opposed to [what else could live here](#what-else-could-live-here), which is speculative.
 Each of these is known to be missing, not merely imagined.
 
-### Ask before replacing a file
-
-`install.sh` replaces whatever it finds, and the only notice is a "backing up existing" line as it goes.
-Nothing is deleted, but someone's `settings.json`, their own `CLAUDE.md`, or a skill edited in place ends up in `~/.claude/backups/`, and nothing says how to put it back.
-Nobody who runs this script should lose what was on their machine without being asked.
-
-For each file the installer places:
-
-| What is at the destination | What happens |
-| --- | --- |
-| Nothing, the same content, or a link into this repo | Place it without asking |
-| Anything else | Show what is there, and ask |
-
-The question offers:
-
-- **keep** the existing file and skip this one, which is the default
-- **replace** it, backing it up as today and printing the command that restores the backup
-- **diff** the two, then ask again
-- **quit**, leaving the rest untouched
-
-With no terminal to ask on, as when piped or run from another script, the answer is keep.
-Replacing without a terminal takes an explicit `--replace-existing`.
-
-Keeping `settings.json` means going without the hooks, so the installer says so and prints the block to paste in by hand.
-
-This one change covers three problems that were tracked apart:
-
-- **`settings.json` replaced wholesale** ([the warning](README.md#installsh-replaces-settingsjson-wholesale)): a settings file someone already has stays unless they choose otherwise.
-- **Copy-mode drift** ([copies drift both ways](README.md#copies-drift-both-ways)): a skill edited in place under `~/.claude` differs from the repo, so the next install asks instead of overwriting it.
-- **Writing before showing**: the question is the preview, so a bare `./install.sh` cannot change a file before its owner has seen what it would do, and `--dry-run` stops being something to know about in advance.
-
-Whether a destination matches the repo is the same check [the doctor script](#verify-the-machine-not-only-write-to-it) needs, so it should be written once.
-
-The limit is the one that applies to everything here: the script should stay readable in a single sitting.
-A question and a comparison fit that.
-An `--undo` or a separate plan-then-apply mode would not, and asking first makes both less needed.
-
 ### Merge `settings.json` instead of replacing it
 
-Described in full under [`install.sh` replaces `settings.json` wholesale](README.md#installsh-replaces-settingsjson-wholesale).
-[Ask before replacing a file](#ask-before-replacing-a-file) stops the installer taking someone's settings without asking.
+Described in full under [`install.sh` and an existing `settings.json`](README.md#installsh-and-an-existing-settingsjson).
+`install.sh` asks before replacing someone's settings.
 What is left is making the hooks easy to adopt for someone who keeps their own.
 
 A real merge is the wrong fix.
@@ -128,7 +91,7 @@ A `doctor.sh` would report state and change nothing:
 - whether `uv` and `gh` are on PATH
 
 Two of those are worth more than a status line.
-The difference check is the detecting half of [asking before replacing a file](#ask-before-replacing-a-file), so building it once serves both.
+The difference check already exists in `install.sh`, which uses it to decide when to ask before replacing a file, so the doctor can share it.
 And a doctor script is where the test that [Hooks](README.md#hooks) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
 A gate that quietly stopped firing is the failure this repo keeps designing against, and nothing checks for it.
 
@@ -227,7 +190,7 @@ Git also solves here what `settings.json` could not, because a gitconfig can inc
     path = ~/git/dotfiles/git/gitconfig
 ```
 
-The install appends a line instead of replacing a file someone already owns, so [asking before replacing a file](TODO.md#ask-before-replacing-a-file) has nothing to ask about there.
+The install appends a line instead of replacing a file someone already owns, so the installer has nothing to ask about there.
 Two more things fall out of the same mechanism.
 `includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](#per-machine-differences)).
 And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo, above.

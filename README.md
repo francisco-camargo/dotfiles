@@ -73,14 +73,15 @@ Developer Mode is the exception: it is off on every new Windows machine, so anyo
 
 ## Install on a new machine
 
-Read this paragraph before running anything.
-`install.sh` writes into `~/.claude/`, and it replaces `settings.json` rather than merging with one you already have.
-If that directory has a history, [`install.sh` replaces `settings.json` wholesale](#installsh-replaces-settingsjson-wholesale) is the section to read first — every `permissions.allow` rule you have built up answering "Yes, and don't ask again" lives in that file.
+`install.sh` writes into `~/.claude/` and to `~/.markdownlint.yaml`.
+Where a file is already there and differs from this repo's, it shows you which and asks whether to keep it, replace it, or see the difference.
+With no terminal to ask on, it keeps it.
+If you already have a `~/.claude/settings.json`, read [`install.sh` and an existing `settings.json`](#installsh-and-an-existing-settingsjson) first.
 
 **On Windows, turn on Developer Mode before the first run.**
 Settings → For developers → Developer Mode on — under System on Windows 11, under Update & Security on Windows 10 — then restart Git Bash.
 Windows will not let an ordinary user create a symlink without it, and every new machine arrives with it off, so `install.sh` reports the refusal and copies instead.
-Copies work, but each edit here then needs another `./install.sh` to reach `~/.claude/`, and a file edited under `~/.claude` can be overwritten on the next run ([copies drift both ways](#copies-drift-both-ways)).
+Copies work, but each edit here then needs another `./install.sh` to reach `~/.claude/`, and the next run asks about any file edited under `~/.claude` ([copies drift both ways](#copies-drift-both-ways)).
 Turning it on takes an administrator; running the install from an elevated shell does the same job for one run.
 
 See what it would do first. `--dry-run` changes nothing:
@@ -102,8 +103,9 @@ Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 `git` and `bash` are the whole requirement for this much.
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
 It also links this repo's `.markdownlint.yaml` to `~/.markdownlint.yaml`, the rules the markdownlint extension uses in a repo without its own.
-Anything already there is moved into `~/.claude/backups/` first — nothing is silently overwritten.
-Use `--copy` to force copies instead of links.
+A file already there that matches the repo's is left alone.
+One that differs is kept unless you choose to replace it, and a replaced file moves into `~/.claude/backups/`, with the command to restore it printed beside it.
+Use `--copy` to force copies instead of links, and `--replace-existing` to replace files that differ without asking.
 
 ### Making it your own
 
@@ -123,22 +125,15 @@ The gates are worth more in your copy than in mine.
 A dotfiles repo grows toward shell profiles and git config, and that is where a credential eventually lands: see [how a secret would actually get out](docs/security.md#how-a-secret-would-actually-get-out).
 Mine is small enough that there is nothing to catch yet, which is exactly the wrong moment to find out the gates were never on.
 
-### `install.sh` replaces `settings.json` wholesale
+### `install.sh` and an existing `settings.json`
 
-`install.sh` treats every item the same way: back up what is there, then put the repo's version in its place.
-That is right for `CLAUDE.md` and the skill, which are whole files this repo owns.
-It is wrong for `settings.json`, because there is only one user settings file and everything user-level has to share it.
-
+There is one user settings file, and everything user-level has to share it.
 Claude Code reads settings in this order, highest first: managed, command line, `.claude/settings.local.json`, `.claude/settings.json`, `~/.claude/settings.json`.
-The `settings.local.json` layer is per project, not per user, and there is no include or extends mechanism.
-So an existing `~/.claude/settings.json` is not merged with this repo's — it is moved into `~/.claude/backups/` and replaced.
+The `settings.local.json` layer is per project, not per user, and there is no include or extends mechanism, so `install.sh` cannot merge this repo's settings with yours.
 
-What that costs someone who already had one: their model choice, their `statusLine`, their `env` block, their MCP servers, and every `permissions.allow` rule they built up answering "Yes, and don't ask again".
-Nothing is destroyed, but getting it back means merging two JSON files by hand, and the symptom is Claude Code asking again about commands it had stopped asking about a year ago.
-
-This costs nothing on a machine already running this repo's settings, which is why it went unnoticed.
-It is a real hazard for anyone else, and for a future machine of mine that has a history before the first `./install.sh`.
-Until [Ask before replacing a file](TODO.md#ask-before-replacing-a-file) lands, copy `~/.claude/settings.json` somewhere safe first, then merge the pieces back by hand afterwards.
+So you choose one file or the other.
+Replacing yours sets aside your model choice, your `statusLine`, your `env` block, your MCP servers, and every `permissions.allow` rule you built up answering "Yes, and don't ask again".
+Keeping yours means going without this repo's hooks; `install.sh` says so, and you can copy the `"hooks"` block from `claude/settings.json` into your file by hand.
 
 ### Symlinks on Windows
 
@@ -157,25 +152,12 @@ Turn Developer Mode on and you get real symlinks, and edits propagate on their o
 
 ### Copies drift both ways
 
-The copy fallback has a second failure mode, and it is easier to hit than the first.
-When `~/.claude/skills/md-to-pdf/` is a copied directory and not a link, editing a skill in place — which is what Claude does when asked to change a global skill — leaves this repo clean.
-`git status` reports nothing, so the change looks like it was never made, and the next `./install.sh` replaces it with the repo's older copy.
-The overwritten directory does get moved into `~/.claude/backups/`, so the work is recoverable, but only if you notice in time to go looking for it.
+When `~/.claude/skills/md-to-pdf/` is a copied directory and not a link, editing a skill in place, which is what Claude does when asked to change a global skill, leaves this repo clean.
+`git status` reports nothing, so the change looks like it was never made.
+This lost work once: an `h4` rule added to `print.css` lived only in `~/.claude`, while the repo picked up two commits the live copy never saw.
 
-This has already happened once.
-An `h4` rule added to `print.css` lived only in `~/.claude`, while the repo picked up two commits the live copy never saw.
-Both sides had edits the other did not.
-
-Until it is fixed, the rule is: edit files in this repo, never in `~/.claude`, then re-run `./install.sh`.
-And before running the installer, diff the two trees so an in-place edit does not get thrown away:
-
-```bash
-diff -r claude/skills ~/.claude/skills
-```
-
-**To deal with next.** Turning on Developer Mode ends the copying on a machine that allows it.
-[Asking before replacing a file](TODO.md#ask-before-replacing-a-file), under Open items, covers machines where Developer Mode is not on offer.
-A copy-mode install should not be able to silently destroy work, and right now it can.
+The next `./install.sh` sees that the copy differs and asks before replacing it; pick diff to see the edit, and carry it into the repo before replacing.
+Better still, edit files in this repo, never in `~/.claude`, and turn on Developer Mode so there are no copies to drift.
 
 ### A backup can load as a skill
 
