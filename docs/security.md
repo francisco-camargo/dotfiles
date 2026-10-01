@@ -87,6 +87,7 @@ That "once" arrived, and the gates are in — see [the commit gates](#the-commit
 | `check-merge-conflict` | Conflict markers committed by accident |
 | `end-of-file-fixer`, `trailing-whitespace` | Whitespace that would otherwise show up in someone else's diff |
 | `lychee` | A Markdown link to a file or heading that is not there |
+| `markdownlint-cli2` | Markdown that breaks the rules in `.markdownlint.yaml`; it fixes what it can, such as list indents, and fails the commit so the fix gets reviewed |
 
 Both directions are tested rather than assumed: a planted AWS key pair is caught as `aws-access-token` and `generic-api-key`, and a broken anchor fails the commit.
 
