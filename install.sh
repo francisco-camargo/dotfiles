@@ -5,8 +5,11 @@
 #   ./install.sh            symlink (falls back to copying if the OS refuses)
 #   ./install.sh --copy     always copy
 #   ./install.sh --dry-run  show what would happen, change nothing
+#   ./install.sh --replace-existing  replace files that differ without asking
 #
-# Existing files move to ~/.claude/backups/<name>.<timestamp> before being replaced.
+# Where a file already differs from the repo's, it asks whether to keep it,
+# replace it, or show the difference. With no terminal to ask on, it keeps it.
+# A replaced file moves to ~/.claude/backups/<name>.<timestamp>.
 set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -14,7 +17,10 @@ dest="${CLAUDE_HOME:-$HOME/.claude}"
 stamp="$(date +%Y%m%d-%H%M%S)"
 mode=link
 dry=0
+replace_existing=0
 fell_back=0
+kept=0
+kept_settings=0
 
 # Parsed with a shift loop rather than `for arg in "$@"`: bash 3.2 -- still the
 # system bash on macOS -- treats an empty "$@" as unbound under `set -u`.
@@ -22,6 +28,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --copy)    mode=copy ;;
     --dry-run) dry=1 ;;
+    --replace-existing) replace_existing=1 ;;
     -h|--help) awk 'NR == 1 { next } /^#/ { print; next } { exit }' "${BASH_SOURCE[0]}"; exit 0 ;;
     *)         echo "unknown option: $1" >&2; exit 2 ;;
   esac
@@ -31,8 +38,8 @@ done
 say() { printf '%s\n' "$*"; }
 run() { if [ "$dry" -eq 1 ]; then say "  would: $*"; else "$@"; fi; }
 
-# Move anything already at the destination out of the way. A symlink we placed
-# on a previous run is just removed -- backing up a link is noise.
+# Move anything already at the destination out of the way. A link that points
+# somewhere else moves too, since it may be another setup's.
 #
 # Backups collect in one directory instead of sitting beside the original.
 # Claude Code loads every directory under ~/.claude/skills/ as a skill, so a
@@ -41,14 +48,50 @@ run() { if [ "$dry" -eq 1 ]; then say "  would: $*"; else "$@"; fi; }
 backup() {
   local target="$1"
   [ -e "$target" ] || [ -L "$target" ] || return 0
-  if [ -L "$target" ]; then
-    run rm -f "$target"
-    return 0
-  fi
   local saved="$dest/backups/$(basename "$target").$stamp"
   say "  backing up existing $target -> $saved"
   run mkdir -p "$dest/backups"
   run mv "$target" "$saved"
+  [ "$dry" -eq 1 ] || say "  to restore it: mv '$saved' '$target'"
+}
+
+# Decide what to do with a target that differs from src. Returns 0 to replace
+# it, 1 to keep it. A replace nobody chose would lose someone's work, so keep
+# is the default everywhere a person cannot answer.
+replace_ok() {
+  local src="$1" target="$2" answer
+  [ "$replace_existing" -eq 1 ] && return 0
+  if [ "$dry" -eq 1 ]; then
+    say "  would ask before replacing $target"
+    return 1
+  fi
+  if [ ! -t 0 ]; then
+    keep "$target" "differs from the repo; --replace-existing replaces it"
+    return 1
+  fi
+  if [ -L "$target" ]; then
+    say "  $target is a link to $(readlink "$target")"
+  else
+    say "  $target differs from $src"
+  fi
+  while :; do
+    printf '  [k]eep it, [r]eplace it, [d]iff, or [q]uit? (k) '
+    read -r answer || answer=k
+    case "$answer" in
+      ""|k|K) keep "$target" "your choice"; return 1 ;;
+      r|R)    return 0 ;;
+      # diff exits 1 when the two differ, which here is the expected case.
+      d|D)    diff -ru "$target" "$src" || true ;;
+      q|Q)    say "stopped; nothing after $target was changed."; exit 1 ;;
+    esac
+  done
+}
+
+keep() {
+  say "  kept $1: $2"
+  kept=1
+  [ "$1" = "$dest/settings.json" ] && kept_settings=1
+  return 0
 }
 
 # True when target is a link to src, as a previous run leaves it.
@@ -75,7 +118,8 @@ place() {
   # A link or copy of this repo's file holds nothing a backup would save.
   if linked "$src" "$target" || same_copy "$src" "$target"; then
     run rm -rf "$target"
-  else
+  elif [ -e "$target" ] || [ -L "$target" ]; then
+    replace_ok "$src" "$target" || return 0
     backup "$target"
   fi
   run mkdir -p "$(dirname "$target")"
@@ -135,6 +179,18 @@ fi
 
 say
 say "done. Restart Claude Code (or open /hooks once) so it reloads settings."
+
+if [ "$kept" -eq 1 ]; then
+  say
+  say "Note: files marked \"kept\" above differ from the repo and were left alone."
+  say "  Run ./install.sh in a terminal to choose for each, or add --replace-existing."
+fi
+# The hooks live in settings.json, so keeping someone's own file means going
+# without them. A JSON merge here would need a parser this script avoids.
+if [ "$kept_settings" -eq 1 ]; then
+  say "  Your settings.json was kept, so this repo's hooks are not active."
+  say "  To use them, copy the \"hooks\" block from $repo/claude/settings.json into it."
+fi
 
 # Windows refuses symlinks to an ordinary user until Developer Mode is on, which
 # is the state every new machine is in. Naming the fix here beats leaving someone
