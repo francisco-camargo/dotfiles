@@ -1,0 +1,3 @@
+[default.extend-words]
+# NumPy's arange function
+arange = "arange"

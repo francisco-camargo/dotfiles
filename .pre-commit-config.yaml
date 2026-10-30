@@ -28,11 +28,11 @@ repos:
     hooks:
       - id: gitleaks # Scans staged changes for secrets such as API keys and tokens
 
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.3
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.51.1
     hooks:
-      - id: codespell # Checks for common misspellings
-        exclude: \.svg$ # Encoded image data reads as misspelled words
+      - id: typos # Checks for common misspellings
+        args: [--force-exclude] # Reports misspellings rather than rewriting them
 
   - repo: https://github.com/lycheeverse/lychee
     rev: lychee-v0.24.2
