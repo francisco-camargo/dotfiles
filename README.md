@@ -225,10 +225,12 @@ Each pattern is a string inside `settings.json`, so an alternation written `\|\|
 Get that wrong and the pattern still parses, still exits 0, and matches nothing.
 Test the string pulled back out of `settings.json`, not the one typed into the shell.
 
+Claude Code then turns each `\\` into `\` once more before the shell runs the hook, so a doubled backslash in the decoded string reaches `grep` single.
+To match a literal backslash, write `[\\]` in the JSON: `grep` reads a backslash inside brackets as itself, and no layer changes it.
+
 **A command can start on a later line.**
 The hooks read the raw JSON payload, where a newline in a multi-line command arrives as the two characters `\n`.
 A gate that anchors a command to the start or to `;`, `&&`, `|` must also accept `\n` before it, or the second line of a call slips through.
-
 `tests/hooks-test.sh` runs each gate as written in `settings.json` against sample commands; run it after changing one.
 
 To drop any one gate, delete its entry in `hooks.PreToolUse`.

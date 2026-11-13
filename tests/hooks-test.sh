@@ -6,15 +6,18 @@
 set -euo pipefail
 
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-settings="$repo/claude/settings.json"
+settings="${1:-$repo/claude/settings.json}"
 failed=0
 
 # Pull a gate's command back out of settings.json and undo the JSON escaping,
 # so the test runs the string the hook runs, not one retyped by hand.
+# Claude Code then turns each \\ into \ once more before the shell sees it,
+# so do that too.
 gate() {
   grep -F "$1" "$settings" | grep -F '"command":' |
     sed -e 's/^[[:space:]]*"command":[[:space:]]*"//' -e 's/",[[:space:]]*$//' \
-      -e 's/\\\(.\)/\1/g'
+      -e 's/\\\(.\)/\1/g' |
+    sed -e 's/\\\\/\\/g'
 }
 
 git_gate="$(gate 'git commit/push needs')"
