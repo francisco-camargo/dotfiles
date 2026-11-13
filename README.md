@@ -215,7 +215,7 @@ Each gate below is an entry in `hooks.PreToolUse` in `claude/settings.json`.
 A `PreToolUse` hook runs before every Bash and PowerShell tool call and can let it through, force an approval prompt, or refuse it outright.
 The git gate backs its hook with further layers of permission rules; the rest are the hook alone.
 
-Two rules hold for every gate here, and both are worth keeping if one is ever edited.
+These rules hold for every gate here, and all are worth keeping if one is ever edited.
 
 **`sed` and `grep` only** — no `jq`, `node`, or `python`, none of which are reliably installed.
 Keep it that way, or a hook will silently stop firing on a machine that lacks the dependency.
@@ -224,6 +224,12 @@ Keep it that way, or a hook will silently stop firing on a machine that lacks th
 Each pattern is a string inside `settings.json`, so an alternation written `\|\|` at a shell prompt has to survive as `\\|\\|`, and `\.` as `\\.`.
 Get that wrong and the pattern still parses, still exits 0, and matches nothing.
 Test the string pulled back out of `settings.json`, not the one typed into the shell.
+
+**A command can start on a later line.**
+The hooks read the raw JSON payload, where a newline in a multi-line command arrives as the two characters `\n`.
+A gate that anchors a command to the start or to `;`, `&&`, `|` must also accept `\n` before it, or the second line of a call slips through.
+
+`tests/hooks-test.sh` runs each gate as written in `settings.json` against sample commands; run it after changing one.
 
 To drop any one gate, delete its entry in `hooks.PreToolUse`.
 To turn a refusal into a prompt, change that entry's `"permissionDecision": "deny"` to `"ask"`.
@@ -272,7 +278,7 @@ On this machine `python` and `python3` on `PATH` are symlinks to `AppInstallerPy
 There is no Python installed outside uv; the only real interpreter is the one under `%APPDATA%\uv\python\`.
 So `python script.py` cannot succeed here, and the cost of trying is a wasted turn spent reading a failure that looks like a missing file rather than a missing interpreter.
 
-The hook matches those names in command position — at the start, or after `;`, `&&`, `||`, `|`, or `(`.
+The hook matches those names in command position — at the start of a line, or after `;`, `&&`, `||`, `|`, or `(`.
 That anchoring is what makes it worth a hook rather than a permission rule, for the same reason the git gate needs one: it catches `cd src && python app.py`, which prefix matching misses.
 
 It deliberately leaves alone anything under `uv run`, including `uv run python -c ...`, where `python` is an argument rather than the command.
