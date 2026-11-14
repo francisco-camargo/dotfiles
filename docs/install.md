@@ -24,8 +24,6 @@ Turning it on takes an administrator; running the install from an elevated shell
 ## What the installer does
 
 `install.sh` writes into `~/.claude/`, `~/.markdownlint.yaml`, and `~/.cspell-words.txt`, and needs only `git` and `bash`.
-Where a file is already there and differs from this repo's, it shows you which and asks whether to keep it, replace it, or see the difference.
-With no terminal to ask on, it keeps it.
 A running Claude Code session picks up the new settings; see [when settings changes take effect](#when-settings-changes-take-effect).
 
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
@@ -41,7 +39,8 @@ VS Code reads neither file until its user settings point at them:
 ```
 
 `install.sh` leaves alone a file that matches the repo's.
-It keeps one that differs unless you choose to replace it, and moves a replaced file into `~/.claude/backups/`, printing the command to restore it.
+For one that differs, it asks whether to keep it, replace it, or show the difference, and keeps it when there is no terminal to ask on.
+It moves a replaced file into `~/.claude/backups/`, printing the command to restore it.
 Use `--copy` to force copies instead of links, and `--replace-existing` to replace files that differ without asking.
 
 Backups pile up, one per replaced file per run.
