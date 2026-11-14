@@ -39,6 +39,14 @@ Developer Mode, and real symlinks, remove the problem.
 Settings Sync is a rival source of truth.
 If VS Code syncs settings through a GitHub account, Sync and a versioned `settings.json` overwrite each other.
 
+## Keybindings
+
+Settings Sync keeps one keybindings file per platform (`settingsSync.keybindingsPerPlatform`, on by default).
+The repo keeps one `vscode/keybindings.json` for every platform instead, and `install.sh` places it everywhere.
+A binding that differs by platform, such as `ctrl` on Windows and `cmd` on macOS, gets a `"when"` clause with `isMac` or `isWindows`, rather than a second file.
+
+The Vim extension's bindings (`vim.normalModeKeyBindings` and the like) are settings, so they travel in `settings.json`, not here.
+
 ## What to carry over, and what to strip
 
 - Carry the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
@@ -51,7 +59,7 @@ If VS Code syncs settings through a GitHub account, Sync and a versioned `settin
 - [ ] Decide between Settings Sync and the repo, and turn Sync off for settings if the repo wins.
 - [ ] Add `vscode/extensions.txt` and `vscode/install-extensions.sh`.
 - [ ] Add `vscode/settings.json`, stripped of machine paths and tokens, and have `install.sh` place it.
-- [ ] Add `vscode/keybindings.json`, once there are keybindings worth keeping.
+- [ ] Add `vscode/keybindings.json`, once there are keybindings worth keeping, and have `install.sh` place it.
 
 ## Docs to update
 
