@@ -72,7 +72,7 @@ else
   if out="$(pre-commit run --all-files --color never 2>&1)"; then
     echo "  every hook passed"
   else
-    printf '%s\n' "$out" | grep -Ev '\.(Passed|Skipped)$' | sed 's/^/  /'
+    printf '%s\n' "$out" | grep -Ev '(Passed|Skipped)$' | sed 's/^/  /'
   fi
   if [ "$git" = 1 ] && ! git diff --quiet "$base"; then
     echo "  the fixers changed:"

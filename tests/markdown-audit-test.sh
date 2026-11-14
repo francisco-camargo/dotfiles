@@ -133,6 +133,11 @@ repos:
         entry: sed -i s/xx//
         language: system
         files: \.md$
+      - id: no-match
+        name: no match
+        entry: "true"
+        language: system
+        files: \.nomatch$
 EOF
   git add .pre-commit-config.yaml
   git commit --quiet -m config
@@ -144,6 +149,8 @@ EOF
   check "a failing hook is reported" says "strip x"
   check "the fixers' change is shown" says "orphan.md |"
   check "an edit already there is not" silent "TODO.md |"
+  check "a hook with no files to check is not shown" silent "no match"
+
 else
   echo "skip  pre-commit is not installed"
 fi
