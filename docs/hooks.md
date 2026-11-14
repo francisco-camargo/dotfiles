@@ -68,7 +68,7 @@ Run by hand that is survivable, because you read the diff before moving on.
 Run as one step in a longer task it is not: the mangled line becomes the base for the next several edits, and by the time it surfaces the diff is hard to untangle.
 
 The hook denies a sed invocation carrying `-i`, `--in-place`, or an `s///` substitution.
-It leaves `sed -n '1,50p' file` alone, so paging a file still works, and so does the git gate above, which is itself a `sed -n 's///p'` pipeline.
+It leaves `sed -n '1,50p' file` alone, so paging a file still works.
 The refusal names the alternatives, so the response is to use the `Edit` tool or write a short script, not to look for a way around the hook.
 
 ### It trims the payload before matching
