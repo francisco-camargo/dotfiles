@@ -6,6 +6,7 @@ Delete an item once it is done, along with its plan.
 
 ## Next
 
+- [Planning skill](docs/plans/planning-skill.md): structure plan files, and keep this list and the plans in step.
 - [Markdown audit skill](docs/plans/markdown-audit.md): audit a repo's Markdown against its pre-commit hooks, its writing rules, and an opinion on how its files fit together.
 - [New-machine setup](docs/plans/new-machine.md): install the tools the config assumes, check the result, and put the steps in one order.
 - [VS Code settings](docs/plans/vscode-settings.md): version VS Code's settings, keybindings, and extensions list here.
@@ -25,7 +26,6 @@ Delete an item once it is done, along with its plan.
 - [Spelling](docs/plans/spelling.md): decide whether `cspell` runs only in the editor or also at commit beside `typos`.
 - [Git config](docs/plans/git-config.md): keep a shared gitconfig here and include it from `~/.gitconfig`.
 - [Shell profile and WSL config](docs/plans/shell-and-wsl.md): a `.bashrc` that sets `MSYS` and starts ssh-agent, and the WSL settings that survive a restart.
-- [Planning skill](docs/plans/planning-skill.md): structure plan files, and keep this list and the plans in step.
 - [Standing instructions split](docs/plans/standing-instructions-split.md): move long instructions out of `CLAUDE.md` into skills once one outgrows it.
 
 ## Ideas
