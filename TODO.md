@@ -66,7 +66,7 @@ The order worth trying: leave `cspell` as an editor underline, and add the `cspe
 
 ### Install what this config already assumes
 
-The [uv gate](README.md#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](docs/security.md#the-commit-gates) need `pre-commit`.
+The [uv gate](docs/hooks.md#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](docs/security.md#the-commit-gates) need `pre-commit`.
 A new machine has neither.
 So the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off — the repo naming a hole it could fill.
 
@@ -92,7 +92,7 @@ A `doctor.sh` would report state and change nothing:
 
 Two of those are worth more than a status line.
 The difference check already exists in `install.sh`, which uses it to decide when to ask before replacing a file, so the doctor can share it.
-And a doctor script is where the test that [Hooks](README.md#hooks) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
+And a doctor script is where the test that [Hooks](docs/hooks.md) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
 A gate that quietly stopped firing is the failure this repo keeps designing against, and nothing checks for it.
 
 `sed` and `grep` only, for the reason the hooks are.
@@ -139,7 +139,7 @@ Each adds a pattern escaped inside JSON, which strengthens the case for moving h
 
 #### Block `pip install`
 
-- **What it catches:** `pip install` and `pip3 install`, which the [uv gate](README.md#the-uv-gate) lets through although they reach for the same missing interpreter.
+- **What it catches:** `pip install` and `pip3 install`, which the [uv gate](docs/hooks.md#the-uv-gate) lets through although they reach for the same missing interpreter.
 - **Form:** widen the uv gate's pattern rather than add a hook. `uv pip install` still passes, because the gate matches `pip` only where it starts a command.
 - **Refusal text:** `uv add` for a project dependency, `uv pip install` inside a venv, `uvx` or `uv tool install` for a command-line tool.
 
