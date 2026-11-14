@@ -24,8 +24,15 @@ git_gate="$(gate 'git commit/push needs')"
 sed_gate="$(gate 'No editing with sed')"
 py_gate="$(gate 'Run Python through uv')"
 
+# The sed and uv gates each have a Bash and a PowerShell handler, since an
+# `if` rule names one tool. Their commands must stay identical.
 for g in git_gate sed_gate py_gate; do
   [[ -n "${!g}" ]] || { printf 'FAIL  could not find %s in settings.json\n' "$g"; exit 1; }
+  if [[ "$(printf '%s\n' "${!g}" | sort -u | wc -l)" -ne 1 ]]; then
+    printf 'FAIL  copies of %s differ\n' "$g"
+    exit 1
+  fi
+  printf -v "$g" '%s' "$(printf '%s\n' "${!g}" | head -n 1)"
 done
 
 # Wrap a command in a payload shaped like the one Claude Code sends.

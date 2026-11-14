@@ -232,9 +232,14 @@ To match a literal backslash, write `[\\]` in the JSON: `grep` reads a backslash
 The hooks read the raw JSON payload, where a newline in a multi-line command arrives as the two characters `\n`.
 A gate that anchors a command to the start or to `;`, `&&`, `|` must also accept `\n` before it, or the second line of a call slips through.
 
+**A gate runs only when its command does.**
+The `sed` and uv gates carry an `if` rule, `Bash(sed *)` or `Bash(py*)`, so Claude Code starts them only when some part of the call runs `sed` or a name starting with `py`.
+Claude Code splits the call itself, so `sed -i` inside quotes, a commit message, or a heredoc does not start the gate.
+An `if` rule names one tool, so each gate has a Bash handler and a PowerShell handler with the same command; `tests/hooks-test.sh` fails if the copies differ.
+
 **Text after `git commit` is the git gate's.**
-The `sed` and uv gates cut the command at `git … commit` before matching, so a commit message that mentions `sed -i` or starts a line with `python` goes through.
-A hook cannot tell a quoted argument from a command, and the git gate already shows the whole command for approval.
+The `sed` and uv gates cut the command at `git … commit` before matching, so a commit message that mentions `sed -i` or starts a line with `python` goes through even when a real `sed` elsewhere in the call starts the gate.
+The git gate already shows the whole command for approval.
 `tests/hooks-test.sh` runs each gate as written in `settings.json` against sample commands; run it after changing one.
 
 To drop any one gate, delete its entry in `hooks.PreToolUse`.
