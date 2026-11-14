@@ -113,13 +113,13 @@ The [prose checks plan](prose-checks.md) covers the same pattern checks; its hoo
 - [x] Settle the open questions, and the structure opinion with its line counts.
 - [x] Write `check.sh` and run it on this repo.
 - [x] Write `SKILL.md` and `references/structure.md`, and install the skill.
-- [ ] Run the skill on this repo, `repo-template`, and one repo with no `CLAUDE.md` and no pre-commit config, and fix what the runs show.
+- [x] Run the skill on this repo, `repo-template`, and one repo with no `CLAUDE.md` and no pre-commit config, and fix what the runs show.
 
 ## Docs to update
 
 - [x] `README.md`: list the skill in the file table and the skills list.
 - [x] [The prose checks plan](prose-checks.md): say its hook runs `patterns.awk`, and drop the open question on one list of patterns.
-- [ ] [The planning skill](../claude/skills/planning/SKILL.md): link to this skill for checking a repo's plans, if the audit takes that on.
+- [x] [The planning skill](../claude/skills/planning/SKILL.md): link to this skill for checking a repo's plans, if the audit takes that on.
 
 ## Updates to send
 

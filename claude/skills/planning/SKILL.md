@@ -83,6 +83,8 @@ Fit one at a time:
 
 Report what you could not place, rather than dropping it.
 
+The [markdown-audit skill](../markdown-audit/SKILL.md) checks a repo's `TODO.md` and `plans/` against this layout, among its other checks.
+
 ## Decide what comes next
 
 Read `TODO.md` top down.
