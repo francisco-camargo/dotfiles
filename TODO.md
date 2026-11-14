@@ -261,7 +261,7 @@ And some extensions store tokens in `settings.json`, so read [Commit the referen
 
 The moment a second machine has a genuinely different setting, the single-file approach strains.
 The usual fix is a `hosts/<machine-name>/` directory that `install.sh` layers on top of the shared files after placing them, so shared config stays shared and only the differences are duplicated.
-Worth doing when the need actually appears, not before.
+Worth doing when the need appears, not before.
 
 ### Check prose with Vale
 
@@ -305,5 +305,5 @@ As each lands here, replace the matching part of those notes with a link to this
 
 ### Before adding any of this
 
-Shell profiles, git config, and bootstrap scripts are where credentials actually creep in: a remote URL with a token in it, an exported key in `.bashrc`.
+Shell profiles, git config, and bootstrap scripts are where credentials creep in: a remote URL with a token in it, an exported key in `.bashrc`.
 Re-read [Security](docs/security.md) before pulling any of them in.

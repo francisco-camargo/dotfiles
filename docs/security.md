@@ -8,7 +8,7 @@ Decide what goes in it on that basis.
 
 Nothing sensitive.
 `settings.json` holds a model name and permission rules, `install.sh` holds paths, the skill is shell, awk, and CSS.
-Searching the entire history (not just the current files) for key, token, and password patterns turns up only this repo's own documentation talking about them.
+Searching the entire history (not only the current files) for key, token, and password patterns turns up only this repo's own documentation talking about them.
 That is the state to preserve, and it is worth re-checking whenever the repo grows.
 
 ## The directory this installs into is full of secrets
@@ -50,7 +50,7 @@ If a secret is ever committed, deleting it in a later commit does not remove it.
 It stays in every clone, in every fork, and on GitHub's servers.
 The fix, in order:
 
-1. **Rotate the credential.** Assume it is burned. This is the step that actually matters.
+1. **Rotate the credential.** Assume it is burned. This is the step that matters.
 2. Rewrite the history with `git filter-repo` and force-push, as cleanup. The "Protect main" ruleset blocks that push, so turn it off for the push and back on after.
 
 ## This repo runs code on every machine that installs it
@@ -103,13 +103,13 @@ The first hook run builds roughly 340 MB of cached environments under `~/.cache/
 `pre-commit clean` empties it.
 
 `install.sh` does not install `pre-commit` itself, because placing config files should not drag a global Python tool onto a machine as a side effect.
-It checks for the tool, and when it is missing it says so as the very last thing it prints.
+It checks for the tool, and when it is missing it says so as the last thing it prints.
 That placement is the point: a gate nobody knows is off is exactly what this layer is otherwise blind to.
 
 `--no-verify` still skips all of it, and none of it runs for someone who never ran `install.sh`.
 That is the right trade when the thing being defended against is an accident rather than an attacker.
 
-## How a secret would actually get out
+## How a secret would get out
 
 Nobody is going to type a password into `settings.json`.
 The realistic leak is this repo starting to track a file that already holds a credential.

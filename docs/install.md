@@ -72,7 +72,7 @@ A repo already on disk picks the hook up from `git init` run inside it, which ad
 If `init.templateDir` already points somewhere else, `install.sh` leaves it alone and says so.
 
 The gates are worth more in your copy than in mine.
-A dotfiles repo grows toward shell profiles and git config, and that is where a credential tends to land: see [how a secret would actually get out](security.md#how-a-secret-would-actually-get-out).
+A dotfiles repo grows toward shell profiles and git config, and that is where a credential tends to land: see [how a secret would get out](security.md#how-a-secret-would-get-out).
 Mine holds nothing to catch yet, and that is the wrong moment to find out the gates were never on.
 
 ## `install.sh` and an existing `settings.json`
