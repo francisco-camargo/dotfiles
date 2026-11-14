@@ -63,6 +63,7 @@ Until then, run `./install.sh` again after each edit, or the change never reache
 | `claude/skills/repo-template-check/` | `~/.claude/skills/repo-template-check/` | A [skill](claude/skills/repo-template-check/SKILL.md) that checks a repo against repo-template |
 | `claude/skills/memory-audit/` | `~/.claude/skills/memory-audit/` | A [skill](claude/skills/memory-audit/SKILL.md) that moves Claude's per-project memories into visible files |
 | `claude/skills/planning/` | `~/.claude/skills/planning/` | A [skill](claude/skills/planning/SKILL.md) that writes plans in `plans/` and keeps `TODO.md` in step |
+| `claude/skills/markdown-audit/` | `~/.claude/skills/markdown-audit/` | A [skill](claude/skills/markdown-audit/SKILL.md) that audits a repo's Markdown and how its files fit together |
 
 ## Hooks
 
@@ -83,6 +84,7 @@ Ask Claude for the task, and it runs the skill:
 - **[repo-template-check](claude/skills/repo-template-check/SKILL.md)** compares a repo with [repo-template](https://github.com/francisco-camargo/repo-template), the files every project starts with, and offers what is missing.
 - **[memory-audit](claude/skills/memory-audit/SKILL.md)** finds Claude Code's per-project memories and, once you approve, moves each into a file you can see.
 - **[planning](claude/skills/planning/SKILL.md)** writes a plan for a piece of work in `plans/`, with steps ticked off as commits land, and keeps `TODO.md` a short, ordered list that links to the plans.
+- **[markdown-audit](claude/skills/markdown-audit/SKILL.md)** checks a repo's Markdown against its pre-commit hooks and the writing rules in its `CLAUDE.md` files, judges whether the README says what the repo is and why it matters and whether each file serves one reader, and, once you approve, fixes what it finds in small commits.
 
 ### Skill scope, and duplicates
 

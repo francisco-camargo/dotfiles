@@ -178,6 +178,7 @@ place "$repo/claude/skills/md-to-pdf"   "$dest/skills/md-to-pdf"
 place "$repo/claude/skills/repo-template-check" "$dest/skills/repo-template-check"
 place "$repo/claude/skills/memory-audit" "$dest/skills/memory-audit"
 place "$repo/claude/skills/planning"     "$dest/skills/planning"
+place "$repo/claude/skills/markdown-audit" "$dest/skills/markdown-audit"
 
 # The markdownlint extension falls back to this file in a repo without its own
 # config; markdownlint.configFile in VS Code's settings points at it.
