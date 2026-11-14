@@ -40,7 +40,7 @@ Read [Commit the reference, not the secret](../docs/security.md#commit-the-refer
 
 - [ ] `README.md`: the new files, in the file table.
 - [ ] [docs/install.md](../docs/install.md#what-the-installer-does): the include line the installer adds.
-- [ ] repo-template's `TODO.md`: its "Split global excludes from per-project ignores" item waits on the excludes file.
+- [ ] repo-template's `TODO.md`: its idea to move OS clutter into the global excludes file waits on that file.
 - [ ] francisco-camargo's git notes: replace the git credentials part with a link here.
 
 ## Updates to send

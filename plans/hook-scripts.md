@@ -29,7 +29,7 @@ A merger written in awk would fail quietly on a nested key, which is the failure
 - [ ] [docs/hooks.md](../docs/hooks.md): the gates live in scripts; revise the rules about JSON escaping.
 - [ ] [docs/install.md](../docs/install.md#installsh-and-an-existing-settingsjson): point a person with their own settings at the scripts and the project-level route.
 - [ ] `README.md`: add `claude/hooks/` to the file table.
-- [ ] repo-template's `TODO.md`: its `.claude/settings.json` item links here; point it at the snippet once this plan is deleted.
+- [ ] repo-template's `plans/missing-files.md`: its `.claude/settings.json` step links here; point it at the snippet once this plan is deleted.
 
 ## Updates to send
 
