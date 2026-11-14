@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Write and maintain a repo's plans, one Markdown file per piece of work in docs/plans/, each with a goal, a task list of steps ticked off as commits land, the docs the work must update, the updates to send to people, tickets, and channels, and when, open questions, and a done-when check, and keep TODO.md a short, ordered list that links to them. Use when asked to plan a piece of work, write or update a plan, tick off progress, split a long TODO list into plans, or decide what to work on next.
+description: Write and maintain a repo's plans, one Markdown file per piece of work in plans/ at the repo root, each with a goal, a task list of steps ticked off as commits land, the docs the work must update, the updates to send to people, tickets, and channels, and when, open questions, and a done-when check, and keep TODO.md a short, ordered list that links to them. Use when asked to plan a piece of work, write or update a plan, tick off progress, split a long TODO list into plans, or decide what to work on next.
 ---
 
 # Plan a repo's work
@@ -8,7 +8,7 @@ description: Write and maintain a repo's plans, one Markdown file per piece of w
 A repo holds its plans in two places:
 
 - **`TODO.md`** at the root orders the work. Each item is one line, linking to its plan where there is one.
-- **`docs/plans/`** holds one file per piece of work that needs more than a line.
+- **`plans/`**, also at the root, holds one file per piece of work that needs more than a line. It sits outside `docs/`, which is for anyone reading about the project; plans are for whoever does the work.
 
 The plan says what and how; `TODO.md` says what comes first.
 A plan is deleted once its work is done, along with its line in `TODO.md`; git keeps the history.
@@ -18,8 +18,8 @@ Read it before writing or changing a plan.
 
 ## Plan a new piece of work
 
-1. Read `TODO.md` and the plans in `docs/plans/`, so the new plan neither repeats one nor contradicts one.
-2. Write `docs/plans/<name>.md` from the template. Fill the goal first; if it will not fit in two sentences, the work is more than one plan.
+1. Read `TODO.md` and the plans in `plans/`, so the new plan neither repeats one nor contradicts one.
+2. Write `plans/<name>.md` from the template. Fill the goal first; if it will not fit in two sentences, the work is more than one plan.
 3. List the docs the work will make stale. Search the repo, and any repo that links into it, for the names of what the work changes: files, commands, settings, headings.
 4. List the updates to send, with when: the people the work affects, and the tickets, threads, and channels that track it. Ask the owner, since the repo rarely says.
 5. Add one line to `TODO.md` under the section that matches its priority, linking to the plan.

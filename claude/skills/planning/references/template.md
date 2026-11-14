@@ -1,6 +1,6 @@
 # The plan template
 
-A plan is one file in `docs/plans/`, named for the work in kebab case, such as `new-machine.md`.
+A plan is one file in `plans/` at the repo root, named for the work in kebab case, such as `new-machine.md`.
 
 ```markdown
 # Plan: <the work, in a few words>
