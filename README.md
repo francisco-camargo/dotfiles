@@ -15,19 +15,6 @@ The hook that makes Claude ask before `git commit` shows the idea: written once 
 
 If dotfiles are new to you, [docs/background.md](docs/background.md) says what they are and why this repo links its files into your home directory.
 
-## The working loop
-
-Edit a file here, commit it, and `git pull` on the other machines.
-With symlinks, the change takes effect at once.
-
-The link works the other way too.
-Claude Code edits `~/.claude/settings.json` itself when you change a `/config` option stored in user settings, such as the theme.
-That shows up here as an uncommitted change to `claude/settings.json`, which can conflict on the next `git pull`.
-Commit it if every machine should have it, or `git restore` it if not.
-
-Windows refuses symlinks to an ordinary user until Developer Mode is on, so `install.sh` copies instead.
-Until then, run `./install.sh` again after each edit, or the change never reaches `~/.claude/` ([Symlinks on Windows](docs/install.md#symlinks-on-windows)).
-
 ## Install on a new machine
 
 On Windows, [turn on Developer Mode first](docs/install.md#on-windows-turn-on-developer-mode-first).
@@ -53,15 +40,28 @@ If you already have a `~/.claude/settings.json`, read [`install.sh` and an exist
 
 [docs/install.md](docs/install.md) covers what the installer links, the VS Code settings it needs, its flags, platform support, and what to watch for on Windows.
 
+## The working loop
+
+Edit a file here, commit it, and `git pull` on the other machines.
+With symlinks, the change takes effect at once.
+
+The link works the other way too.
+Claude Code edits `~/.claude/settings.json` itself when you change a `/config` option stored in user settings, such as the theme.
+That shows up here as an uncommitted change to `claude/settings.json`, which can conflict on the next `git pull`.
+Commit it if every machine should have it, or `git restore` it if not.
+
+Windows refuses symlinks to an ordinary user until Developer Mode is on, so `install.sh` copies instead.
+Until then, run `./install.sh` again after each edit, or the change never reaches `~/.claude/` ([Symlinks on Windows](docs/install.md#symlinks-on-windows)).
+
 ## What's here
 
 | Path | Goes to | What it is |
 | --- | --- | --- |
-| `claude/settings.json` | `~/.claude/settings.json` | Model choice, and the [hooks](#hooks) below |
-| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | [Standing instructions](#standing-instructions) for every session, everywhere |
-| `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](#skills) that renders a Markdown file to a print-ready PDF |
-| `claude/skills/repo-template-check/` | `~/.claude/skills/repo-template-check/` | A [skill](#skills) that checks a repo against repo-template |
-| `claude/skills/memory-audit/` | `~/.claude/skills/memory-audit/` | A [skill](#skills) that moves Claude's per-project memories into visible files |
+| `claude/settings.json` | `~/.claude/settings.json` | Model choice, and the [hooks](docs/hooks.md) |
+| `claude/CLAUDE.md` | `~/.claude/CLAUDE.md` | [Standing instructions](docs/standing-instructions.md) for every session, everywhere |
+| `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](claude/skills/md-to-pdf/SKILL.md) that renders a Markdown file to a print-ready PDF |
+| `claude/skills/repo-template-check/` | `~/.claude/skills/repo-template-check/` | A [skill](claude/skills/repo-template-check/SKILL.md) that checks a repo against repo-template |
+| `claude/skills/memory-audit/` | `~/.claude/skills/memory-audit/` | A [skill](claude/skills/memory-audit/SKILL.md) that moves Claude's per-project memories into visible files |
 
 ## Hooks
 
@@ -76,43 +76,11 @@ If you already have a `~/.claude/settings.json`, read [`install.sh` and an exist
 ## Skills
 
 A skill pairs a script with the description that tells Claude when to use it.
+Ask Claude for the task, and it runs the skill:
 
-### The md-to-pdf skill
-
-```bash
-~/.claude/skills/md-to-pdf/scripts/md2pdf.sh some-document.md
-```
-
-`md2pdf.sh` converts Markdown to HTML with a small awk script, inlines `assets/print.css`, and prints it with headless Chrome or Edge.
-It needs no pandoc or node.
-The stylesheet holds all the layout, including page breaks and repeated table headers.
-See `claude/skills/md-to-pdf/SKILL.md` for details.
-
-### The repo-template-check skill
-
-Ask Claude to check a repo against [repo-template](https://github.com/francisco-camargo/repo-template), which holds the files every project starts with.
-
-```bash
-~/.claude/skills/repo-template-check/scripts/check.sh some-project
-```
-
-The script does what code can settle: which template files the project lacks, which match, and which template lines a differing copy lacks.
-Claude does the rest: it offers the missing files, explains each gap, and suggests what to adopt, changing nothing until asked.
-See `claude/skills/repo-template-check/SKILL.md` for details.
-
-### The memory-audit skill
-
-Ask Claude to audit a project's memories.
-Claude Code keeps them outside every repo, where they shape sessions without anyone seeing them.
-
-```bash
-~/.claude/skills/memory-audit/scripts/find.sh some-project
-```
-
-The script finds the project's memory directory and prints every memory; `--all` covers every project.
-Claude then proposes a visible home for each one, such as a `CLAUDE.md`, a hook, or the README, and waits for approval.
-Once approved, it commits each move and deletes the memory after the commit lands.
-See `claude/skills/memory-audit/SKILL.md` for details.
+- **[md-to-pdf](claude/skills/md-to-pdf/SKILL.md)** renders a Markdown file to a print-ready PDF through headless Chrome or Edge, with no pandoc or node.
+- **[repo-template-check](claude/skills/repo-template-check/SKILL.md)** compares a repo with [repo-template](https://github.com/francisco-camargo/repo-template), the files every project starts with, and offers what is missing.
+- **[memory-audit](claude/skills/memory-audit/SKILL.md)** finds Claude Code's per-project memories and, once you approve, moves each into a file you can see.
 
 ### Skill scope, and duplicates
 
