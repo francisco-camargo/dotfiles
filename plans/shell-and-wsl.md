@@ -7,7 +7,7 @@ Keep a shell profile for Git Bash that sets `MSYS` and starts ssh-agent, and the
 ## Shell profile
 
 `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks.
-There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](../install.md#symlinks-on-windows)).
+There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](../docs/install.md#symlinks-on-windows)).
 GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
 
 ## WSL config
@@ -24,7 +24,7 @@ A hand-edited `/etc/resolv.conf` reverts because WSL regenerates it at startup; 
 ## Docs to update
 
 - [ ] `README.md`: the new files, in the file table.
-- [ ] [docs/install.md](../install.md#symlinks-on-windows): the profile sets `MSYS`, so the manual step goes.
+- [ ] [docs/install.md](../docs/install.md#symlinks-on-windows): the profile sets `MSYS`, so the manual step goes.
 - [ ] francisco-camargo's notes: replace the ssh-agent block and the WSL fixes with links here.
 
 ## Updates to send

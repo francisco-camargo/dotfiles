@@ -6,7 +6,7 @@ Someone who keeps their own `settings.json` can take the gates without merging J
 
 ## Why
 
-`install.sh` asks before replacing someone's settings ([`install.sh` and an existing `settings.json`](../install.md#installsh-and-an-existing-settingsjson)), so the gates are all or nothing for a person with settings of their own.
+`install.sh` asks before replacing someone's settings ([`install.sh` and an existing `settings.json`](../docs/install.md#installsh-and-an-existing-settingsjson)), so the gates are all or nothing for a person with settings of their own.
 
 ## Why not merge the files
 
@@ -26,8 +26,8 @@ A merger written in awk would fail quietly on a nested key, which is the failure
 
 ## Docs to update
 
-- [ ] [docs/hooks.md](../hooks.md): the gates live in scripts; revise the rules about JSON escaping.
-- [ ] [docs/install.md](../install.md#installsh-and-an-existing-settingsjson): point a person with their own settings at the scripts and the project-level route.
+- [ ] [docs/hooks.md](../docs/hooks.md): the gates live in scripts; revise the rules about JSON escaping.
+- [ ] [docs/install.md](../docs/install.md#installsh-and-an-existing-settingsjson): point a person with their own settings at the scripts and the project-level route.
 - [ ] `README.md`: add `claude/hooks/` to the file table.
 - [ ] repo-template's `TODO.md`: its `.claude/settings.json` item links here; point it at the snippet once this plan is deleted.
 

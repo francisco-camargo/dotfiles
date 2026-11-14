@@ -7,7 +7,7 @@ When a set of instructions outgrows `CLAUDE.md`, move its long form into a skill
 ## Why
 
 `CLAUDE.md` is read in every session, so every entry has to earn that.
-[What belongs here, and what belongs in a skill](../standing-instructions.md#what-belongs-here-and-what-belongs-in-a-skill) makes the case.
+[What belongs here, and what belongs in a skill](../docs/standing-instructions.md#what-belongs-here-and-what-belongs-in-a-skill) makes the case.
 Nothing needs splitting while `CLAUDE.md` stays short; a full writing style guide is the likely first case, with review checklists, commit conventions, and diagram style behind it.
 
 ## Steps
@@ -18,7 +18,7 @@ Nothing needs splitting while `CLAUDE.md` stays short; a full writing style guid
 
 ## Docs to update
 
-- [ ] [docs/standing-instructions.md](../standing-instructions.md): where the line fell, and why.
+- [ ] [docs/standing-instructions.md](../docs/standing-instructions.md): where the line fell, and why.
 - [ ] `README.md`: the skill, in the file table and the skills list.
 
 ## Updates to send

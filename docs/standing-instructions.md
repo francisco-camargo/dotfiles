@@ -99,4 +99,4 @@ Orwell's six rules apply to every sentence produced in any session, so they belo
 A longer style guide, with examples, before and after pairs, and a checklist, would not, and would sit better as a `writing-style` skill that this file points at.
 
 The same split applies to anything else that grows past a few lines: review checklists, commit message conventions, a house style for diagrams.
-The test is the same each time, and [Split standing instructions between CLAUDE.md and skills](plans/standing-instructions-split.md) records what is left to decide.
+The test is the same each time, and [Split standing instructions between CLAUDE.md and skills](../plans/standing-instructions-split.md) records what is left to decide.

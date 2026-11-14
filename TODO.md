@@ -1,15 +1,15 @@
 # TODO
 
 The work ahead, in priority order.
-Each item is one line; an item that needs more has a plan in [docs/plans/](docs/plans/).
+Each item is one line; an item that needs more has a plan in [plans/](plans/).
 Delete an item once it is done, along with its plan.
 
 ## Next
 
-- [Markdown audit skill](docs/plans/markdown-audit.md): audit a repo's Markdown against its pre-commit hooks, its writing rules, and an opinion on how its files fit together.
-- [New-machine setup](docs/plans/new-machine.md): install the tools the config assumes, check the result, and put the steps in one order.
-- [VS Code settings](docs/plans/vscode-settings.md): version VS Code's settings, keybindings, and extensions list here.
-- [Uninstall](docs/plans/uninstall.md): `./install.sh --uninstall` removes what the install placed and leaves anything that differs.
+- [Markdown audit skill](plans/markdown-audit.md): audit a repo's Markdown against its pre-commit hooks, its writing rules, and an opinion on how its files fit together.
+- [New-machine setup](plans/new-machine.md): install the tools the config assumes, check the result, and put the steps in one order.
+- [VS Code settings](plans/vscode-settings.md): version VS Code's settings, keybindings, and extensions list here.
+- [Uninstall](plans/uninstall.md): `./install.sh --uninstall` removes what the install placed and leaves anything that differs.
 
 ## Small tasks
 
@@ -19,14 +19,14 @@ Delete an item once it is done, along with its plan.
 
 ## Later
 
-- [Hook scripts](docs/plans/hook-scripts.md): make the gates easy to adopt for someone who keeps their own `settings.json`.
-- [Proposed hooks](docs/plans/proposed-hooks.md): block `pip install`, staging everything, and edits to installed copies, and name `--no-verify` in the commit prompt.
-- [Prose checks](docs/plans/prose-checks.md): check the writing rules by machine, with Vale or a hook after Claude writes Markdown.
-- [Spelling](docs/plans/spelling.md): decide whether `cspell` runs only in the editor or also at commit beside `typos`.
-- [Git config](docs/plans/git-config.md): keep a shared gitconfig here and include it from `~/.gitconfig`.
-- [Shell profile and WSL config](docs/plans/shell-and-wsl.md): a `.bashrc` that sets `MSYS` and starts ssh-agent, and the WSL settings that survive a restart.
-- [Parallel sessions](docs/plans/parallel-sessions.md): run several Claude sessions on one repo, each in its own worktree and branch, and land each on `main`.
-- [Standing instructions split](docs/plans/standing-instructions-split.md): move long instructions out of `CLAUDE.md` into skills once one outgrows it.
+- [Hook scripts](plans/hook-scripts.md): make the gates easy to adopt for someone who keeps their own `settings.json`.
+- [Proposed hooks](plans/proposed-hooks.md): block `pip install`, staging everything, and edits to installed copies, and name `--no-verify` in the commit prompt.
+- [Prose checks](plans/prose-checks.md): check the writing rules by machine, with Vale or a hook after Claude writes Markdown.
+- [Spelling](plans/spelling.md): decide whether `cspell` runs only in the editor or also at commit beside `typos`.
+- [Git config](plans/git-config.md): keep a shared gitconfig here and include it from `~/.gitconfig`.
+- [Shell profile and WSL config](plans/shell-and-wsl.md): a `.bashrc` that sets `MSYS` and starts ssh-agent, and the WSL settings that survive a restart.
+- [Parallel sessions](plans/parallel-sessions.md): run several Claude sessions on one repo, each in its own worktree and branch, and land each on `main`.
+- [Standing instructions split](plans/standing-instructions-split.md): move long instructions out of `CLAUDE.md` into skills once one outgrows it.
 
 ## Ideas
 

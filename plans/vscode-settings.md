@@ -30,7 +30,7 @@ It costs nothing to keep current, and it cannot drift the way `settings.json` do
 
 ## One source of truth
 
-VS Code has a settings UI that writes to `%APPDATA%` directly, and `install.sh` is [copying rather than linking on this machine](../install.md#symlinks-on-windows).
+VS Code has a settings UI that writes to `%APPDATA%` directly, and `install.sh` is [copying rather than linking on this machine](../docs/install.md#symlinks-on-windows).
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
 The UI-edited file is not lost (`backup()` moves it into `backups/` first), but recovering a change from there is slow.
 So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`, and copy back any setting changed through the UI before the next install.
@@ -51,8 +51,8 @@ The Vim extension's bindings (`vim.normalModeKeyBindings` and the like) are sett
 
 - Carry the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
 - Carry `markdownlint.configFile` set to `${userHome}/.markdownlint.yaml`, the fallback rules `install.sh` installs. The extension uses a repo's own `.markdownlint.yaml` first. A path into one repo would make the extension fail in every other. The `markdownlint.config` setting is deprecated.
-- Strip absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), which belong to [Per-machine differences](../../TODO.md#ideas).
-- Strip tokens: some extensions store them in `settings.json`, so read [Commit the reference, not the secret](../security.md#commit-the-reference-not-the-secret) before the first commit.
+- Strip absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), which belong to [Per-machine differences](../TODO.md#ideas).
+- Strip tokens: some extensions store them in `settings.json`, so read [Commit the reference, not the secret](../docs/security.md#commit-the-reference-not-the-secret) before the first commit.
 
 ## Steps
 
@@ -64,7 +64,7 @@ The Vim extension's bindings (`vim.normalModeKeyBindings` and the like) are sett
 ## Docs to update
 
 - [ ] `README.md`: the new files, in the file table.
-- [ ] [docs/install.md](../install.md): the VS Code destination and the extensions script.
+- [ ] [docs/install.md](../docs/install.md): the VS Code destination and the extensions script.
 - [ ] francisco-camargo's notes: replace the VS Code settings part with a link here.
 
 ## Updates to send

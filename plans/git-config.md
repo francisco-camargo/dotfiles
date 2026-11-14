@@ -20,7 +20,7 @@ A gitconfig can include another one, which `settings.json` could not:
 
 The install appends a line instead of replacing a file someone already owns, so the installer has nothing to ask about.
 Two more things fall out of the same mechanism.
-`includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](../../TODO.md#ideas)).
+`includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](../TODO.md#ideas)).
 And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo.
 
 ## Identity and credentials
@@ -28,7 +28,7 @@ And `core.excludesFile` pointing here is what retires the `.gitignore` copied in
 - `user.email` should be GitHub's noreply address, which keeps the real one out of every commit.
 - No `credential.helper store`: it writes the token to `~/.git-credentials` in plain text. SSH keys, or the Git Credential Manager that Git for Windows sets up, keep the secret out of any file this repo could pick up.
 
-Read [Commit the reference, not the secret](../security.md#commit-the-reference-not-the-secret) before the first commit: a credential helper and a remote URL with a token in it both live in this file.
+Read [Commit the reference, not the secret](../docs/security.md#commit-the-reference-not-the-secret) before the first commit: a credential helper and a remote URL with a token in it both live in this file.
 
 ## Steps
 
@@ -39,7 +39,7 @@ Read [Commit the reference, not the secret](../security.md#commit-the-reference-
 ## Docs to update
 
 - [ ] `README.md`: the new files, in the file table.
-- [ ] [docs/install.md](../install.md#what-the-installer-does): the include line the installer adds.
+- [ ] [docs/install.md](../docs/install.md#what-the-installer-does): the include line the installer adds.
 - [ ] repo-template's `TODO.md`: its "Split global excludes from per-project ignores" item waits on the excludes file.
 - [ ] francisco-camargo's git notes: replace the git credentials part with a link here.
 

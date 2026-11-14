@@ -6,7 +6,7 @@ Bring a new machine to a working state by following one ordered list, and have a
 
 ## Why
 
-The [uv gate](../hooks.md#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](../security.md#the-commit-gates) need `pre-commit`.
+The [uv gate](../docs/hooks.md#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](../docs/security.md#the-commit-gates) need `pre-commit`.
 A new machine has neither, so the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off.
 And once the install is done, nothing answers the question that comes next: is this right yet?
 
@@ -30,13 +30,13 @@ A `doctor.sh` would report state and change nothing:
 - whether `tests/hooks-test.sh` passes
 
 The difference check already exists in `install.sh`, which uses it to decide when to ask before replacing a file, so the doctor can share it.
-The hooks test runs only when someone remembers to run it after [editing a gate](../hooks.md#run-the-test-after-a-change), and a gate that quietly stopped firing is the failure this repo keeps designing against.
+The hooks test runs only when someone remembers to run it after [editing a gate](../docs/hooks.md#run-the-test-after-a-change), and a gate that quietly stopped firing is the failure this repo keeps designing against.
 `sed` and `grep` only, for the reason the hooks are.
 
 ## The steps in one order
 
 Each step is written down somewhere, and none of them are together.
-Developer Mode opens [Install on a new machine](../../README.md#install-on-a-new-machine), `pre-commit` arrives in `install.sh`'s closing warning, restarting Claude Code is the line after the install command, and authenticating to GitHub is nowhere.
+Developer Mode opens [Install on a new machine](../README.md#install-on-a-new-machine), `pre-commit` arrives in `install.sh`'s closing warning, restarting Claude Code is the line after the install command, and authenticating to GitHub is nowhere.
 The order:
 
 1. Developer Mode, first, because it decides whether the install links or copies
@@ -58,8 +58,8 @@ Each step already has a section arguing it; the list links to them rather than r
 ## Docs to update
 
 - [ ] `README.md`: the ordered steps under Install on a new machine, and the new files in the file table.
-- [ ] [docs/install.md](../install.md): the tools list and the doctor.
-- [ ] [docs/hooks.md](../hooks.md#run-the-test-after-a-change): the doctor runs the test too.
+- [ ] [docs/install.md](../docs/install.md): the tools list and the doctor.
+- [ ] [docs/hooks.md](../docs/hooks.md#run-the-test-after-a-change): the doctor runs the test too.
 
 ## Updates to send
 
@@ -67,7 +67,7 @@ None.
 
 ## Open questions
 
-- **Where the ordered steps go:** the README's install section, or [docs/install.md](../install.md). Leaning the README, since a newcomer starts there.
+- **Where the ordered steps go:** the README's install section, or [docs/install.md](../docs/install.md). Leaning the README, since a newcomer starts there.
 
 ## Done when
 

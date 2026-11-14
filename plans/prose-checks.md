@@ -2,7 +2,7 @@
 
 ## Goal
 
-Check the writing rules in [claude/CLAUDE.md](../../claude/CLAUDE.md) by machine, so a broken rule is flagged rather than left to Claude's memory or a reread.
+Check the writing rules in [claude/CLAUDE.md](../claude/CLAUDE.md) by machine, so a broken rule is flagged rather than left to Claude's memory or a reread.
 
 ## The options
 
@@ -47,7 +47,7 @@ A gate's style travels with the repo, through [repo-template](https://github.com
 
 ## Docs to update
 
-- [ ] [docs/hooks.md](../hooks.md): a section for the hook, if it is added.
+- [ ] [docs/hooks.md](../docs/hooks.md): a section for the hook, if it is added.
 - [ ] repo-template's `.pre-commit-config.yaml` and README: the check at commit, if it is added, since it belongs in every project.
 - [ ] `README.md`: the hook or the Vale style, in the file table.
 

@@ -56,7 +56,7 @@ If that sentence is hard to write, or wrong, the README fails, whatever else it 
 | `CONTRIBUTING.md` | Someone about to change the repo |
 | `CLAUDE.md` | Claude, working in the repo |
 | `TODO.md` | The owner |
-| `docs/plans/*.md` | The owner, while the work is under way |
+| `plans/*.md` | The owner, while the work is under way |
 | `SECURITY.md` | Someone reporting a vulnerability |
 
 A file written for two readers serves neither; the audit names the reader for each file and flags the passages that address someone else.
@@ -107,7 +107,7 @@ The structure opinion goes in `references/` so `SKILL.md` stays short and the op
 
 - [ ] `README.md`: list the skill in the file table and the skills list.
 - [ ] [The prose checks plan](prose-checks.md): say which pattern checks `check.sh` already makes, once the overlap question is settled.
-- [ ] [The planning skill](../../claude/skills/planning/SKILL.md): link to this skill for checking a repo's plans, if the audit takes that on.
+- [ ] [The planning skill](../claude/skills/planning/SKILL.md): link to this skill for checking a repo's plans, if the audit takes that on.
 
 ## Updates to send
 
@@ -120,7 +120,7 @@ None: the skill runs only on this repo's owner's machines, and no ticket tracks 
 - **Overlap with the prose checks plan:** [Check Markdown after Claude writes it](prose-checks.md#check-markdown-after-claude-writes-it) and [Check prose with Vale](prose-checks.md#check-prose-with-vale) cover the same pattern checks. Leaning: the hook there calls `check.sh`, so the patterns live in one script.
 - **A style skill:** [Split standing instructions between CLAUDE.md and skills](standing-instructions-split.md) expects a writing style guide to become the first skill split out of `CLAUDE.md`. The structure opinion could be that guide's first part.
 - **Repos without your rules:** in someone else's repo, should pass 2 apply your global `CLAUDE.md`, or only the repo's own? Leaning: the repo's own, with hits against the global rules reported apart as the owner's style.
-- **Plans layout:** should pass 3 check that a repo follows the [planning skill](../../claude/skills/planning/SKILL.md)'s layout of `TODO.md` and `docs/plans/`? Leaning yes, linking to the planning skill for the rule, so it lives in one place.
+- **Plans layout:** should pass 3 check that a repo follows the [planning skill](../claude/skills/planning/SKILL.md)'s layout of `TODO.md` and `plans/`? Leaning yes, linking to the planning skill for the rule, so it lives in one place.
 
 ## Done when
 

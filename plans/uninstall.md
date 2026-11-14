@@ -57,7 +57,7 @@ For each target it removes, it prints the newest backup of that name, if there i
 - [ ] `install.sh` header: a usage line for `--uninstall`, which `--help` prints; keep the line about backups last, or update the `--help prints the whole header` test.
 - [ ] `docs/install.md`: an `## Uninstall` section after "What the installer does", saying what goes, what stays and why, and that existing clones keep their hook.
 - [ ] `README.md`, under "Install on a new machine": one line pointing to the uninstall section.
-- [ ] `docs/plans/git-config.md`: a step to remove the `[include]` under `--uninstall`, since it edits `~/.gitconfig` rather than placing a target.
+- [ ] `plans/git-config.md`: a step to remove the `[include]` under `--uninstall`, since it edits `~/.gitconfig` rather than placing a target.
 
 ## Updates to send
 

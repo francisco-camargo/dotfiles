@@ -28,7 +28,7 @@ That list was written by reading the repo and judging what the dictionaries alre
 
 ## Docs to update
 
-- [ ] [claude/CLAUDE.md](../../claude/CLAUDE.md): the Spelling section, if a hook is added.
+- [ ] [claude/CLAUDE.md](../claude/CLAUDE.md): the Spelling section, if a hook is added.
 - [ ] repo-template's `TODO.md`: its "Move the shared docs out of dotfiles" item links here; remove the link once this plan is deleted.
 
 ## Updates to send
