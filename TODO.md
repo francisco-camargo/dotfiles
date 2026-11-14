@@ -14,16 +14,7 @@ Make the hooks easy to adopt for someone who keeps their own settings: [the hook
 
 ### Split standing instructions between CLAUDE.md and skills
 
-Described under [What belongs here, and what belongs in a skill](docs/standing-instructions.md#what-belongs-here-and-what-belongs-in-a-skill).
-
-Nothing needs splitting while `CLAUDE.md` stays short and every entry in it earns being read every session.
-The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case, with review checklists, commit conventions, and diagram style queued behind it.
-
-Three things to settle when it does:
-
-- Where the line falls: a short core here, the long form in a skill, and this file pointing at it.
-- Whether a skill's `description` can trigger reliably for prose work, which is a vaguer trigger than "render this Markdown to PDF".
-- Whether the split runs per subject, or one `house-style` skill covers all of it.
+Move long instructions, such as a writing style guide, out of `CLAUDE.md` into skills once one outgrows it: [the standing instructions plan](docs/plans/standing-instructions-split.md).
 
 ### Prune `~/.claude/backups/`
 
