@@ -45,7 +45,7 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 
 - [x] `claude/CLAUDE.md`: point to the skill from a "Plans" section.
 - [x] `README.md`: list the skill in the file table and the skills list.
-- [ ] `claude/skills/planning/`: move this plan's "How a repo holds its plans" and "The plan template" there, if they say anything the skill does not.
+- [x] `claude/skills/planning/`: move this plan's "How a repo holds its plans" and "The plan template" there, if they say anything the skill does not.
 
 ## Updates to send
 
