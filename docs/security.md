@@ -7,9 +7,9 @@ Decide what goes in it on that basis.
 ## What is in here
 
 Nothing sensitive.
-`settings.json` holds a model name and permission rules, `install.sh` holds paths, the skill is shell, awk, and CSS.
-Searching the entire history (not only the current files) for key, token, and password patterns turns up only this repo's own documentation talking about them.
-That is the state to preserve, and it is worth re-checking whenever the repo grows.
+`settings.json` holds a model name and permission rules, `install.sh` holds paths, and the skills are shell, awk, and CSS.
+That is the state to preserve.
+The commit gates scan only the staged change; `gitleaks git` scans the whole history, and is worth running whenever the repo grows.
 
 ## The directory this installs into is full of secrets
 
@@ -66,17 +66,10 @@ That makes write access to this repo equivalent to code execution on all your ma
 - Treat a pull request against it as a change to a security-sensitive script, not a config tweak. A stranger's change still needs the owner to merge it.
 - Keep the "Protect main" ruleset, which blocks force pushes to the default branch and its deletion, with no one allowed to bypass it. It does not require pull requests, which would put each of the owner's direct pushes through a bypass.
 
-## A secret scanner, once it is worth the setup
-
-A pre-commit hook running `gitleaks` or `trufflehog` blocks the accidental commit before it happens.
-Overkill at the current size: there is nothing here to catch.
-Worth adding once the repo grows to shell profiles and git config, which is where credentials genuinely creep in: a remote URL with a token embedded in it, an alias carrying a password, an exported key in `.bashrc`.
-
-That "once" arrived, and the gates are in: see [the commit gates](#the-commit-gates).
-
 ## The commit gates
 
-`.pre-commit-config.yaml` holds what runs before a commit is created, and `install.sh` writes the hook into the clone.
+`.pre-commit-config.yaml` holds what runs before a commit is created.
+`install.sh` writes the hook that runs it into this clone, and into every repo cloned or created afterwards: see [Repo-local hooks, or global](#repo-local-hooks-or-global-and-the-trap-in-the-global-one).
 
 | Gate | What it stops |
 | --- | --- |
@@ -91,7 +84,7 @@ That "once" arrived, and the gates are in: see [the commit gates](#the-commit-ga
 
 Both directions are tested rather than assumed: a planted AWS key pair is caught as `aws-access-token` and `generic-api-key`, and a broken anchor fails the commit.
 
-The framework rather than the hand-written script this repo first planned, for two reasons.
+The gates use the pre-commit framework rather than a hand-written script, for two reasons.
 `gitleaks` detects far more than any amount of `grep` I would write, and people who watch credential formats change maintain it.
 And `.pre-commit-config.yaml` is an ordinary tracked file, so it clones; only the hook that calls it has to be written per clone, which is the one thing `install.sh` adds.
 
@@ -99,7 +92,7 @@ The link check is here because a heading rename leaves broken links behind and n
 That is not a security gate, but it is the same shape of problem: a change that quietly invalidates something elsewhere in the repo.
 
 The cost is paid once per machine rather than once per repo, and it is larger than it looks.
-The first hook run builds roughly 340 MB of cached environments under `~/.cache/pre-commit`, most of it the Go toolchain `gitleaks` is built with.
+The first hook run builds cached environments under `~/.cache/pre-commit` that run to hundreds of megabytes, most of it toolchains such as the Go one `gitleaks` is built with.
 `pre-commit clean` empties it.
 
 `install.sh` does not install `pre-commit` itself, because placing config files should not drag a global Python tool onto a machine as a side effect.
@@ -126,8 +119,7 @@ Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest
 [What else could live here](../TODO.md#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
-[A secret scanner, once it is worth the setup](#a-secret-scanner-once-it-is-worth-the-setup) called a scanner overkill at this size, and said to revisit that once the repo grew into those files.
-That is why [the commit gates](#the-commit-gates) run `gitleaks`.
+[The commit gates](#the-commit-gates) run `gitleaks` to catch a credential from either place before it is committed.
 
 ## Four layers, and what each one misses
 
@@ -158,19 +150,15 @@ So this repo has no such workflow: `gitleaks` runs only in the local `pre-commit
 
 ## Repo-local hooks, or global, and the trap in the global one
 
-A `pre-commit` hook needs `core.hooksPath`, because `.git/hooks/` is not cloned.
+Git does not clone `.git/hooks/`, so each clone needs its hook written.
+A global `core.hooksPath` would do that with one setting, in the "solve it once, not once per repo" form the [Motivation](../README.md#motivation) argues for.
+The trap is that it overrides per-repo hooks everywhere: any repo shipping its own hooks stops running them, with nothing to say so.
 
-- **Repo-local**, set by `install.sh` from inside this repo. Narrow and safe, and covers only this repo.
-- **Global**, pointing at this repo from the global git config. This is the "solve it once, not once per repo" form the [Motivation](../README.md#motivation) section argues for.
+`install.sh` gets the global reach without the trap, and sets no `core.hooksPath`:
 
-The trap is that a global `core.hooksPath` overrides per-repo hooks everywhere.
-Any repo shipping its own `pre-commit` stops running it, with nothing to say so.
-Repo-local first, then; global is a separate decision that needs an answer to that objection before it is worth taking.
+- In this clone, it runs `pre-commit install`, which writes an ordinary `.git/hooks/pre-commit`.
+- For every other repo, it runs `pre-commit init-templatedir` to write the same kind of hook into `~/.git-template`, and points `init.templateDir` at it. Git copies that folder into each repo it clones or creates, so each one gets a real hook of its own rather than a redirect, and the hook skips a repo with no `.pre-commit-config.yaml`.
+- If `init.templateDir` already points somewhere else, it leaves the setting alone and says so.
 
-Settled, and the trap turned out to be avoidable.
-Using [the framework](#the-commit-gates) means no `core.hooksPath` at all: `pre-commit install` writes an ordinary `.git/hooks/pre-commit` into this clone, so nothing is redirected and no other repo is touched.
-
-The global form is still there when the appetite arrives, and it has no trap either.
-`pre-commit init-templatedir` writes a hook into a template folder, and `git config --global init.templateDir` points git at it, so every repo cloned or created afterwards gets a real hook of its own rather than a redirect.
-`init-templatedir` only warns when that setting is missing; it does not set it.
-The catch is only that it reaches new clones, not the repos already sitting on the machine.
+The template reaches only repos cloned or created afterwards.
+A repo already on disk picks up the hook from `git init` run inside it, which adds what is missing and overwrites nothing.
