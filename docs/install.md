@@ -14,9 +14,6 @@ Nothing here ties the repo to one operating system:
 
 The Windows-specific pieces do nothing elsewhere rather than break: the `PowerShell(...)` entries in `permissions.ask` name a tool that does not exist on macOS, `md2pdf.sh` guards its `cygpath` calls behind `command -v`, and its browser search list includes the `/Applications/` paths alongside the `C:\Program Files\` ones.
 
-Where the sections below say "this Windows machine", they report where the config happens to run, not a requirement.
-Developer Mode is the exception: it is off on every new Windows machine, so anyone installing on Windows meets it.
-
 ## On Windows, turn on Developer Mode first
 
 Open Settings → For developers and turn Developer Mode on (under System on Windows 11, under Update & Security on Windows 10), then restart Git Bash.
