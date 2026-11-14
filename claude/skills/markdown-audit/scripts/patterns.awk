@@ -3,7 +3,7 @@
 #
 # The rule names match the headings in ~/.claude/CLAUDE.md, so the skill can
 # keep only hits whose rule a CLAUDE.md in force states. A hit is a place to
-# look, not a verdict: "new" in "a new machine" breaks no rule.
+# look, not a verdict: "now" in "six months from now" breaks no rule.
 #
 # Front matter and fenced code are skipped, and inline code and link targets
 # are removed before matching, since neither is prose.
@@ -78,7 +78,9 @@ fence != "" {
 
   if (has_word("just|simply|easily|obviously|very|really|actually")) hit("filler words")
 
-  if (has_word("today|currently|now|new|recently|soon")) hit("no details that go stale")
+  # "new" is left out: it describes ("a new machine") far more often than it
+  # dates, and reading finds the rare case where it dates.
+  if (has_word("today|currently|now|recently|soon")) hit("no details that go stale")
 
   if (lower ~ /not un[a-z]+/ && lower !~ /not un(til|der|less|ion|it)/ \
       || has_word("not without|no small|not a bad|no accident|would not be unreasonable"))

@@ -69,6 +69,9 @@ Two lines, each whole.
 - A list item that wraps
   onto a second line.
 - An item that ends in a colon:
+
+Set up a new machine.
+It works today.
 EOF
 cat >TODO.md <<'EOF'
 # TODO
@@ -105,6 +108,8 @@ check "a hard-wrapped list item is a hit" says "docs/guide.md:20: one sentence p
 check "a line ending in a colon is not" silent "docs/guide.md:22: one sentence per line"
 check "a link to its own file by name is flagged" \
   lists "links to their own file by name, where an anchor alone would do" TODO.md:4
+check "'new' is not a dating word" silent "docs/guide.md:24: no details that go stale"
+check "'today' is" says "docs/guide.md:25: no details that go stale"
 check "a short file is flagged" says "orphan.md: 1 lines, under 20"
 check "an orphan is unreachable" lists "unreachable from README.md" orphan.md
 check "a linked plan is reachable" omits "unreachable from README.md" plans/linked.md

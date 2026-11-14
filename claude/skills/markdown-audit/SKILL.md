@@ -48,7 +48,7 @@ Sort each finding by where its rule comes from:
 Then work through the hits:
 
 - Drop each hit whose rule no `CLAUDE.md` in force states.
-- Read each remaining hit in its line and drop the false ones. A hit is a place to look: "new" in "a new machine" dates nothing, and a proper noun in a heading is no breach of sentence case.
+- Read each remaining hit in its line and drop the false ones. A hit is a place to look: "now" in "six months from now" dates nothing, and a proper noun in a heading is no breach of sentence case.
 - When one rule has many hits, give the count and a few examples, not every line.
 
 Patterns cannot check most of the rules, so read each file for the rest: the passive voice, long words, figures of speech, getting to the point, and claims that will go stale.
