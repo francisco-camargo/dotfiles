@@ -9,7 +9,7 @@ A new machine has neither.
 So the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off: the repo naming a hole it could fill.
 
 What closes it is a list of what a machine needs, kept as a file rather than a run of install lines: git, `gh`, `uv`, `pre-commit`, VS Code.
-`winget export` writes that list from a machine that already works and `winget import` replays it, which keeps it a file you can read and diff rather than a script you have to run to find out what it does, for the same reason the VS Code extensions list in [VS Code settings](../../TODO.md#vs-code-settings) is a file.
+`winget export` writes that list from a machine that already works and `winget import` replays it, which keeps it a file you can read and diff rather than a script you have to run to find out what it does, for the same reason the VS Code extensions list in [the VS Code settings plan](vscode-settings.md) is a file.
 
 It stays separate from `install.sh`.
 Installing tools onto a machine is a larger claim than placing config files, and making it a side effect of the second is the trade `install.sh` already refuses when it declines to install `pre-commit` for you.

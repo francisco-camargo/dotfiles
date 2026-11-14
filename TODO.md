@@ -67,64 +67,13 @@ Keep a shared gitconfig here and include it from `~/.gitconfig`: [the git config
 ### Machine setup
 
 - **A bootstrap list** of what a machine needs, argued in [the new-machine plan](docs/plans/new-machine.md#install-what-this-config-already-assumes); it starts with the tools this repo's own config depends on.
-- **Editor settings:** VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
+- **Editor settings:** VS Code, covered on its own in [the VS Code settings plan](docs/plans/vscode-settings.md).
 - **Shell profile:** `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](docs/install.md#symlinks-on-windows)). GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
 - **WSL config:** `/etc/wsl.conf` inside a distro and `.wslconfig` in the Windows home directory. A hand-edited `/etc/resolv.conf` reverts because WSL regenerates it at startup; `generateResolvConf = false` under `[network]` in `wsl.conf` keeps the edit.
 
 ### VS Code settings
 
-This is the next thing to pull in, so it gets more than a bullet.
-
-The files worth versioning all live in one directory (`%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux):
-
-- `settings.json`, the bulk of it
-- `keybindings.json`
-- an extensions list, produced by `code --list-extensions > vscode/extensions.txt` and replayed by looping `code --install-extension` over the file
-
-The first two are ordinary `place()` targets and need only a second destination in `install.sh`, since VS Code does not live under `$HOME`:
-
-```sh
-vsdest="${VSCODE_USER_DIR:-$APPDATA/Code/User}"
-place "$repo/vscode/settings.json"    "$vsdest/settings.json"
-place "$repo/vscode/keybindings.json" "$vsdest/keybindings.json"
-```
-
-`$APPDATA` is set inside Git Bash.
-The extensions list is the odd one out: it is a script input rather than a symlink target, so it wants its own small `vscode/install-extensions.sh`.
-
-#### The recommendation
-
-Start with `settings.json` alone.
-Add keybindings once there are any worth keeping, and the extensions list once a second machine exists to replay it onto; that file is the one that pays off only on a fresh install.
-
-One argument cuts the other way, and it is the new-machine one.
-Redoing `settings.json` by hand takes a minute; rebuilding the extension set takes an afternoon, and what is missing from it only shows up when something stops working.
-`code --list-extensions > vscode/extensions.txt` costs nothing to keep current, and it cannot drift the way `settings.json` does, because no UI writes back to it.
-So take the extensions list first if the next machine is nearer than the next settings change.
-
-Then pick a single source of truth, and let it be the repo.
-This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](docs/install.md#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
-Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
-The UI-edited file is not lost (`backup()` moves it into `backups/` first), but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
-So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
-If a setting gets changed through the UI by reflex, and it will, copy it back into the repo before the next install, not after.
-
-Enabling Developer Mode and getting real symlinks removes the whole problem, and is the single change that makes versioning editor settings pleasant instead of fiddly.
-Worth doing first if you have the option.
-
-Settings Sync is a rival source of truth.
-If VS Code syncs settings through a GitHub account, Sync and a versioned `settings.json` overwrite each other.
-Turn Sync off for settings when the repo takes over, or decide Sync is enough and drop this item.
-Worth carrying over either way: the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
-
-`install.sh` installs markdownlint's fallback rules as `~/.markdownlint.yaml`; carry the setting that points `markdownlint.configFile` at `${userHome}/.markdownlint.yaml`.
-The extension uses a repo's own `.markdownlint.yaml` first, and falls back to `configFile` in a repo without one.
-The path must exist on every machine, which `${userHome}` and the install make sure of; a path into one repo makes the extension fail in every other.
-The `markdownlint.config` setting is deprecated.
-
-Two things to expect.
-VS Code settings collect absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), and those are exactly what [Per-machine differences](#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
-And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit, not after.
+Version VS Code's settings, keybindings, and extensions list here: [the VS Code settings plan](docs/plans/vscode-settings.md).
 
 ### Per-machine differences
 
