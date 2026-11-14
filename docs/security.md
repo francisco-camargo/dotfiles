@@ -4,7 +4,7 @@ The repo is public: anyone can read every commit, past and present.
 It also gets cloned to every machine, sits in plain text in every backup, and is readable by anything running as you.
 Decide what goes in it on that basis.
 
-## What is in here today
+## What is in here
 
 Nothing sensitive.
 `settings.json` holds a model name and permission rules, `install.sh` holds paths, the skill is shell, awk, and CSS.
@@ -117,7 +117,7 @@ Two places it could come from, and the repo is growing toward both.
 
 **One: the auth token, which already sits in the directory this repo mirrors.**
 `~/.claude/.credentials.json` holds it.
-Nothing copies it today, because `install.sh` names every file it places ([The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets)).
+Nothing copies it, because `install.sh` names every file it places ([The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets)).
 Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest.
 
 **Two: the config files queued up to arrive next.**

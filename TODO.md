@@ -27,8 +27,7 @@ Two smaller pieces instead:
 
 Described under [What belongs here, and what belongs in a skill](docs/standing-instructions.md#what-belongs-here-and-what-belongs-in-a-skill).
 
-Nothing is wrong today.
-`CLAUDE.md` is short and every entry in it earns being read every session.
+Nothing needs splitting while `CLAUDE.md` stays short and every entry in it earns being read every session.
 The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case, with review checklists, commit conventions, and diagram style queued behind it.
 
 Three things to settle when it does:
@@ -80,7 +79,7 @@ Installing tools onto a machine is a larger claim than placing config files, and
 
 `install.sh` places files and reports what it did.
 Nothing answers the question that comes next on a new machine: is this right yet?
-Today you answer it by reading this README and checking by hand.
+The only answer is to read the docs and check by hand.
 
 A `doctor.sh` would report state and change nothing:
 
