@@ -1,5 +1,7 @@
 # Hooks
 
+The [README](../README.md#hooks) lists the gates; this page explains each one.
+
 Each gate below is an entry in `hooks.PreToolUse` in `claude/settings.json`.
 A `PreToolUse` hook runs before a Bash or PowerShell tool call and can let it through, force an approval prompt, or refuse it.
 The git gate backs its hook with further layers of permission rules; the rest are the hook alone.
