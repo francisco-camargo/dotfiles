@@ -1,17 +1,22 @@
 # Plan: check prose by machine
 
-Two ways to check the writing rules in [claude/CLAUDE.md](../../claude/CLAUDE.md) by machine, to decide together, along with a Markdown check at commit.
+## Goal
 
-## Check Markdown after Claude writes it
+Check the writing rules in [claude/CLAUDE.md](../../claude/CLAUDE.md) by machine, so a broken rule is flagged rather than left to Claude's memory or a reread.
+
+## The options
+
+Three, to decide together, since they cover the same rules: a hook after Claude writes Markdown, Vale, and a Markdown check at commit.
+
+### Check Markdown after Claude writes it
 
 - **What it catches:** em dashes and words that date a sentence, as Claude writes them, so it fixes them in the same turn. Claude put "today" into TODO.md while drafting [Check prose with Vale](#check-prose-with-vale), and caught it only on rereading.
 - **Form:** a `PostToolUse` hook on `Edit` and `Write` for `.md` files that searches the file and hands what it finds back to Claude.
-- **Overlap:** [Check prose with Vale](#check-prose-with-vale) and a Markdown check at commit cover the same rules. A check at commit also catches my own edits; this hook catches only Claude's, but sooner. Decide the three together.
+- **Overlap:** a check at commit also catches the owner's own edits; this hook catches only Claude's, but sooner.
 
-## Check prose with Vale
+### Check prose with Vale
 
 [Vale](https://vale.sh) is a linter for prose.
-It could check the writing rules in [claude/CLAUDE.md](../../claude/CLAUDE.md), which hold only as far as Claude remembers them.
 
 What it adds over a `grep` check:
 
@@ -34,11 +39,27 @@ So `install.sh` could place a style as one more target, which suits the editor a
 A commit gate must not depend on that file, because a machine without these dotfiles would get different results.
 A gate's style travels with the repo, through [repo-template](https://github.com/francisco-camargo/repo-template).
 
-To try it before adopting it:
+## Steps
 
-1. Install the binary.
-2. Write a user-level `.vale.ini` with a small style: em dashes, litotes, and words that date a document as errors; write-good's `Passive`, `TooWordy` and `Cliches` as warnings.
-3. Run `vale README.md TODO.md` and judge whether the warnings are worth reading.
+- [ ] Try Vale: install the binary, write a user-level `.vale.ini` with a small style (em dashes, litotes, and dating words as errors; write-good's `Passive`, `TooWordy` and `Cliches` as warnings), run `vale README.md TODO.md`, and judge whether the warnings are worth reading.
+- [ ] Choose among the hook, Vale, and a check at commit.
+- [ ] Add each chosen check, one commit each.
 
-Keep it if they are.
-If not, a `grep` hook covers the error-level rules.
+## Docs to update
+
+- [ ] [docs/hooks.md](../hooks.md): a section for the hook, if it is added.
+- [ ] repo-template's `.pre-commit-config.yaml` and README: the check at commit, if it is added, since it belongs in every project.
+- [ ] `README.md`: the hook or the Vale style, in the file table.
+
+## Updates to send
+
+None.
+
+## Open questions
+
+- **Vale or `grep`:** keep Vale if its warnings are worth reading; otherwise a `grep` hook covers the error-level rules.
+- **One list of patterns:** the [Markdown audit plan](markdown-audit.md) has a `check.sh` with the same patterns. Leaning: the hook calls that script, so the patterns live in one place.
+
+## Done when
+
+An em dash or "today" written into a Markdown file is flagged by machine, before Claude's turn ends or at commit.
