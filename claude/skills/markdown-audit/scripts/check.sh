@@ -83,7 +83,7 @@ fi
 echo
 echo "pattern hits (file:line: rule: text):"
 hits=""
-[ "${#md[@]}" = 0 ] || hits="$(awk -f "$here/patterns.awk" "${md[@]}")"
+[ "${#md[@]}" = 0 ] || hits="$(awk -f "$here/patterns.awk" "${md[@]}" | awk '!seen[$0]++')"
 if [ -n "$hits" ]; then printf '%s\n' "$hits" | sed 's/^/  /'; else echo "  (none)"; fi
 
 echo

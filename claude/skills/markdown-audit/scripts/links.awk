@@ -5,6 +5,7 @@
 #   orphan         no other file links to it
 #   no way back    it links neither to README.md nor to a file linking to it
 #   plan not in TODO.md   a file under plans/ that TODO.md does not link to
+#   self link      a link to its own file by name, where "#anchor" would do
 #
 # Links to other sites, and links within a file, are not edges.
 
@@ -26,9 +27,9 @@ function resolve(dir, target,    parts, n, i, out, k, path) {
 }
 
 # Record a raw link; it resolves in END, once every file is known.
-function edge(from, target) { raw[from, ++nraw[from]] = target }
+function edge(from, target) { raw[from, ++nraw[from]] = target; raw_line[from, nraw[from]] = FNR }
 
-function resolve_edge(from, target,    t) {
+function resolve_edge(from, target, line,    t) {
   sub(/^<|>$/, "", target)
   sub(/[ \t].*$/, "", target)
   if (target ~ /^[a-zA-Z][a-zA-Z0-9+.-]*:/ || target ~ /^#/ || target == "") return
@@ -40,6 +41,7 @@ function resolve_edge(from, target,    t) {
     else return
   }
   if (t != from) link[from, t] = 1
+  else self_links = self_links "    " from ":" line "\n"
 }
 
 FNR == 1 { md[FILENAME] = 1; files[++nfiles] = FILENAME; fence = "" }
@@ -73,7 +75,7 @@ function report(label, list) {
 
 END {
   for (i = 1; i <= nfiles; i++)
-    for (j = 1; j <= nraw[files[i]]; j++) resolve_edge(files[i], raw[files[i], j])
+    for (j = 1; j <= nraw[files[i]]; j++) resolve_edge(files[i], raw[files[i], j], raw_line[files[i], j])
 
   root = ("README.md" in md) ? "README.md" : ""
 
@@ -113,4 +115,5 @@ END {
   report("linked from no other file", orphans)
   report("no link back to README.md or to a file linking here", noback)
   report("plans that TODO.md does not link to", unplanned)
+  report("links to their own file by name, where an anchor alone would do", self_links)
 }

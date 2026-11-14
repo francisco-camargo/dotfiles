@@ -23,7 +23,7 @@ It prints:
 - **Pre-commit:** each failing hook, and what the fixers changed.
 - **Pattern hits:** `file:line: rule: text`, each tagged with the `CLAUDE.md` heading of the rule it may break.
 - **Lengths worth a look:** a README past 150 lines, another file past 400, any file under 20.
-- **Links:** files the README does not reach, files nothing links to, files with no link back up, and plans `TODO.md` does not link to.
+- **Links:** files the README does not reach, files nothing links to, files with no link back up, plans `TODO.md` does not link to, and links to a file's own name where an anchor alone would do.
 
 Pre-commit's fixers rewrite files.
 On a tree with uncommitted changes, the script says so and shows only what the fixers changed, from a snapshot taken before the run.

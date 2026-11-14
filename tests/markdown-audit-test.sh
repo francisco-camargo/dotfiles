@@ -61,11 +61,20 @@ just code
 ---
 
 ## Install On Windows
+
+A sentence that wraps
+onto a second line.
+Two lines, each whole.
+
+- A list item that wraps
+  onto a second line.
+- An item that ends in a colon:
 EOF
 cat >TODO.md <<'EOF'
 # TODO
 
 - [A plan](plans/linked.md): a thing, back in [the README](README.md).
+- Back to [the top](TODO.md#todo).
 EOF
 echo "# Linked plan, back to [TODO](../TODO.md)" >plans/linked.md
 echo "# Forgotten plan" >plans/forgotten.md
@@ -87,6 +96,13 @@ check "a title-case heading is a hit" says "docs/guide.md:14: headings in senten
 check "a title-case title is a hit" says "README.md:1: headings in sentence case"
 check "link text 'here' is a hit" says "README.md:4: link text names the target"
 check "two sentences on a line are a hit" says "README.md:4: one sentence per line"
+check "a hard-wrapped sentence is a hit" says "docs/guide.md:16: one sentence per line"
+check "  ...and its last line is not" silent "docs/guide.md:17: one sentence per line"
+check "a whole sentence is not" silent "docs/guide.md:18: one sentence per line"
+check "a hard-wrapped list item is a hit" says "docs/guide.md:20: one sentence per line"
+check "a line ending in a colon is not" silent "docs/guide.md:22: one sentence per line"
+check "a link to its own file by name is flagged" \
+  lists "links to their own file by name, where an anchor alone would do" TODO.md:4
 check "a short file is flagged" says "orphan.md: 1 lines, under 20"
 check "an orphan is unreachable" lists "unreachable from README.md" orphan.md
 check "a linked plan is reachable" omits "unreachable from README.md" plans/linked.md
@@ -117,8 +133,8 @@ EOF
   "$check_sh" >"$tmp/out" || true
   check "a dirty tree is reported" says "the working tree had uncommitted changes"
   check "a failing hook is reported" says "strip x"
-  check "the fixers' change is shown" says "orphan.md"
-  check "an edit already there is not" silent "    TODO.md"
+  check "the fixers' change is shown" says "orphan.md |"
+  check "an edit already there is not" silent "TODO.md |"
 else
   echo "skip  pre-commit is not installed"
 fi

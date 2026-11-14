@@ -8,12 +8,12 @@
 # Front matter and fenced code are skipped, and inline code and link targets
 # are removed before matching, since neither is prose.
 
-function hit(rule) {
-  shown = raw
+function hit_at(rule, line, shown) {
   sub(/^[ \t]+/, "", shown)
   if (length(shown) > 100) shown = substr(shown, 1, 97) "..."
-  printf "%s:%d: %s: %s\n", FILENAME, FNR, rule, shown
+  printf "%s:%d: %s: %s\n", FILENAME, line, rule, shown
 }
+function hit(rule) { hit_at(rule, FNR, raw) }
 
 # A whole word, ignoring case.
 function has_word(words) {
@@ -21,6 +21,18 @@ function has_word(words) {
 }
 
 { sub(/\r$/, ""); raw = $0 }
+
+# A prose line that ends mid-sentence, followed by more of the same
+# paragraph, is a hard wrap. The check needs the next line, so the line in
+# question waits in wrap_line; anything but a continuation clears it.
+FNR == 1 { wrap_line = 0 }
+wrap_line && ($0 ~ /^[ \t]*$/ || $0 ~ /^ {0,3}(#|>|\||```|~~~|<)/ || $0 ~ /^[ \t]*([-*+]|[0-9]+[.)])[ \t]/) {
+  wrap_line = 0
+}
+wrap_line {
+  hit_at("one sentence per line", wrap_line, wrap_text)
+  wrap_line = 0
+}
 
 FNR == 1 {
   fence = ""
@@ -45,8 +57,7 @@ fence != "" {
   next
 }
 
-# Indented code under a list is prose's neighbour, but HTML comments and
-# reference definitions are not prose at all.
+# HTML comments and reference definitions are not prose.
 /^[ \t]*<!--/ || /^ {0,3}\[[^]]+\]:/ { next }
 
 {
@@ -92,5 +103,12 @@ fence != "" {
     s = text
     gsub(/(e\.g|i\.e|etc|vs|cf)\./, "", s)
     if (s ~ /[a-z0-9)\]`"'*_][.!?][)"'*_]* +[A-Z`*_[]/) hit("one sentence per line")
+  }
+
+  # Two trailing spaces or a backslash is a deliberate line break.
+  if (!heading && !table && raw !~ /^[ \t]*$/ && raw !~ /[.!?:;][]`"')*_]*[ \t]*$/ \
+      && raw !~ /(  |\\)$/) {
+    wrap_line = FNR
+    wrap_text = raw
   }
 }
