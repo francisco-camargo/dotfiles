@@ -5,7 +5,7 @@ Configuration files kept in one place so every machine behaves the same.
 ## Motivation
 
 This repo holds the configuration I want on every machine and in every project.
-It covers Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills).
+It covers Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills), along with VS Code's Markdown lint rules and spelling words.
 [What's here](#whats-here) lists each file and where it installs.
 [Candidates for later](TODO.md#later) are git config, VS Code settings, a shell profile, and the files each repo repeats, such as `.gitignore` and `.gitattributes`.
 
@@ -64,6 +64,8 @@ Until then, run `./install.sh` again after each edit, or the change never reache
 | `claude/skills/memory-audit/` | `~/.claude/skills/memory-audit/` | A [skill](claude/skills/memory-audit/SKILL.md) that moves Claude's per-project memories into visible files |
 | `claude/skills/planning/` | `~/.claude/skills/planning/` | A [skill](claude/skills/planning/SKILL.md) that writes plans in `plans/` and keeps `TODO.md` in step |
 | `claude/skills/markdown-audit/` | `~/.claude/skills/markdown-audit/` | A [skill](claude/skills/markdown-audit/SKILL.md) that audits a repo's Markdown and how its files fit together |
+| `.markdownlint.yaml` | `~/.markdownlint.yaml` | The Markdown lint rules, for the markdownlint extension in a repo without its own |
+| `vscode/cspell-words.txt` | `~/.cspell-words.txt` | The words the Code Spell Checker extension accepts in every repo |
 
 ## Hooks
 
