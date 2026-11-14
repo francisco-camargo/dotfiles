@@ -68,11 +68,15 @@ expect deny  'sed -i after &&'            "$sed_gate" "cd x && sed -i 's/a/b/' f
 expect deny  'sed -i on a later line'     "$sed_gate" $'f=x\nsed -i -e \'s/a/b/\' f'
 expect allow 'sed -n'                     "$sed_gate" "sed -n '1,5p' f"
 expect allow 'sed -n, description has s,' "$sed_gate" 'sed -n 1p f'
+expect allow 'sed -i in a commit -m'      "$sed_gate" 'git commit -m "Deny sed -i edits"'
+expect allow 'sed -i in a commit heredoc' "$sed_gate" $'git commit -F - <<\'EOF\'\nGate edits\n\nsed -i now fails.\nEOF'
+expect deny  'sed -i before a commit'     "$sed_gate" "sed -i 's/a/b/' f && git commit -m x"
 
 expect deny  'python'                     "$py_gate"  'python x.py'
 expect deny  'python3 after ;'            "$py_gate"  'cd x; python3 x.py'
 expect deny  'python on a later line'     "$py_gate"  $'cd x\npython x.py'
 expect allow 'uv run python'              "$py_gate"  'uv run python x.py'
+expect allow 'python in a commit heredoc' "$py_gate"  $'git commit -F - <<\'EOF\'\nUse uv\n\npython x.py fails here.\nEOF'
 expect allow 'venv interpreter'           "$py_gate"  '.venv/Scripts/python.exe x.py'
 
 exit "$failed"

@@ -231,6 +231,10 @@ To match a literal backslash, write `[\\]` in the JSON: `grep` reads a backslash
 **A command can start on a later line.**
 The hooks read the raw JSON payload, where a newline in a multi-line command arrives as the two characters `\n`.
 A gate that anchors a command to the start or to `;`, `&&`, `|` must also accept `\n` before it, or the second line of a call slips through.
+
+**Text after `git commit` is the git gate's.**
+The `sed` and uv gates cut the command at `git … commit` before matching, so a commit message that mentions `sed -i` or starts a line with `python` goes through.
+A hook cannot tell a quoted argument from a command, and the git gate already shows the whole command for approval.
 `tests/hooks-test.sh` runs each gate as written in `settings.json` against sample commands; run it after changing one.
 
 To drop any one gate, delete its entry in `hooks.PreToolUse`.
