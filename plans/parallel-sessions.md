@@ -63,6 +63,7 @@ None.
 
 - Where to ignore `.claude/worktrees/`: a global excludes file from the [git config plan](git-config.md), or repo-template's `.gitignore`. I lean towards the global excludes file, since it covers repos that never took the template, but it waits on that plan.
 - Whether landing should fast-forward `main` locally or open a pull request. I lean towards local fast-forward for solo repos, since a pull request adds a round trip with no reviewer.
+- Whether to add a Stop hook that runs `git status` after each reply, to list every file a session changed, including changes made through Bash (`perl -pi`, `awk > file`) that no Edit diff shows. With one session, reviewing each commit makes it redundant; with several, nobody watches each one. I lean towards a check in `land-branch` instead: refuse to remove a worktree with uncommitted or untracked files, since that is the point where a stray change would be lost.
 - Whether to keep worktrees inside the repo (Claude's default) or beside it, such as `../<repo>.worktrees/<name>/`. I lean towards Claude's default, unless path length bites on Windows.
 
 ## Done when
