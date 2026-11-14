@@ -71,7 +71,7 @@ When the user refuses a commit, leave that memory in place.
 Delete a "Delete" entry's file and index line with no commit.
 When `MEMORY.md` has no entries left, delete it.
 
-A change to `settings.json` takes effect only after Claude Code restarts or `/hooks` is opened once; say so.
+A running session picks up a change to `settings.json` after a moment, except for keys such as `model` that wait for the next session; say so.
 
 ## 5. Report
 

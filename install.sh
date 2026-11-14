@@ -195,7 +195,7 @@ elif command -v pre-commit >/dev/null 2>&1; then
 fi
 
 say
-say "done. Restart Claude Code (or open /hooks once) so it reloads settings."
+say "done. Running Claude Code sessions pick up the new settings; the model choice applies from the next session."
 
 if [ "$kept" -eq 1 ]; then
   say

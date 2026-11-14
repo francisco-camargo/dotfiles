@@ -104,7 +104,7 @@ When that reads the way you want, drop the flag:
 ./install.sh
 ```
 
-Then restart Claude Code, or open `/hooks` once, so it reloads settings.
+A running Claude Code session picks up the new settings; see [when settings changes take effect](#when-settings-changes-take-effect).
 
 `git` and `bash` are all this much needs.
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
@@ -196,15 +196,15 @@ Every reinstall added one more.
 Backups collect in `~/.claude/backups/`, which nothing loads.
 The general point holds for anything else installed here: `~/.claude` is not a plain directory, and where a file sits decides whether it runs.
 
-### Settings only load at startup
+### When settings changes take effect
 
-Claude Code reads `~/.claude/settings.json` when a session starts.
-Installing or editing settings mid-session does nothing until the config reloads: a session that was already running keeps the old rules, including no git approval gate.
-Restart Claude Code, or open `/hooks` once, before assuming a change is live.
+Claude Code watches its settings files and applies most edits to a running session without a restart, hooks and permission rules included.
+The reload is not instant: in testing, the tool call straight after an edit to a hook still ran the old version, and the next call ran the new one.
+A few keys wait for the next session; of the ones this repo sets, that is `model`, which `/model` changes mid-session.
 
 To confirm the gate works, ask Claude to make a trivial commit.
 You should get an approval prompt.
-If the commit goes through, the settings have not reloaded yet.
+If the commit goes through, run `/status` and check that its `Setting sources` line lists your user settings.
 
 ## What's here
 
@@ -268,8 +268,8 @@ The git gate already shows the whole command for approval.
 This gate requires your approval before Claude runs `git commit` or `git push`.
 It has three layers, because the first two have gaps:
 
-1. **`hooks.PreToolUse`**: a sed+grep command that reads the command out of the tool payload and forces an approval prompt when it matches `git[^;&|]{0,60}(commit|push)`. This is the layer that matters: it catches compound commands like `cd /repo && git commit`, which the prefix-matching permission rules below miss.
-2. **`permissions.ask`**: rules for `Bash(git commit:*)`, `Bash(git push:*)` and the PowerShell equivalents. `ask` rules beat `allow` rules, so a project cannot grant itself permission later.
+1. **`hooks.PreToolUse`**: a sed+grep command that reads the command out of the tool payload and forces an approval prompt when it matches `git[^;&|]{0,60}(commit|push)`. It catches forms the permission rules below miss: an option before the subcommand, as in `git -C /repo commit`, and git run inside another shell, as in `bash -c 'git commit'`.
+2. **`permissions.ask`**: rules for `Bash(git commit:*)`, `Bash(git push:*)` and the PowerShell equivalents. Claude Code checks them against each part of a chained command, so they catch `cd /repo && git commit`. `ask` rules beat `allow` rules, so a project cannot grant itself permission later.
 3. **`autoMode.soft_deny`**: stops auto mode's classifier from approving a commit itself, and spells out that "save this" or "version this" is not authorization.
 
 To tighten it from "prompt me" to "never, I'll run git myself", move the entries from `permissions.ask` to `permissions.deny`.
@@ -309,7 +309,8 @@ No Python is installed outside uv; the only real interpreter is the one under `%
 So `python script.py` cannot succeed here, and trying costs a turn spent reading a failure that looks like a missing file rather than a missing interpreter.
 
 The hook matches those names in command position: at the start of a line, or after `;`, `&&`, `||`, `|`, or `(`.
-That anchoring is what makes it worth a hook rather than a permission rule, for the same reason the git gate needs one: it catches `cd src && python app.py`, which prefix matching misses.
+A deny rule such as `Bash(python *)` would also catch `cd src && python app.py`, since Claude Code checks each part of a chained command, but it refuses without saying what to run instead.
+The hook's message is what makes it worth a hook.
 
 It leaves alone anything under `uv run`, including `uv run python -c ...`, where `python` is an argument rather than the command.
 It also leaves alone an explicit interpreter path such as `.venv/Scripts/python.exe`, which is a choice and not the habit being corrected, and `python` used as an argument or inside a filename: `which python`, `grep -r python src/`, `cat python_notes.md`.

@@ -68,6 +68,8 @@ expect() {
 
 expect ask   'git commit'                 "$git_gate" 'git commit -m x'
 expect ask   'git push on a later line'   "$git_gate" $'cd repo\ngit push'
+expect ask   'git -C repo commit'         "$git_gate" 'git -C repo commit -m x'
+expect ask   'git commit inside bash -c'  "$git_gate" "bash -c 'git commit -m x'"
 expect allow 'git status'                 "$git_gate" 'git status'
 
 expect deny  'sed -i'                     "$sed_gate" "sed -i 's/a/b/' f"
