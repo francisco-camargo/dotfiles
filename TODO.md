@@ -15,13 +15,13 @@ Described in full under [`install.sh` and an existing `settings.json`](docs/inst
 What is left is making the hooks easy to adopt for someone who keeps their own.
 
 A real merge is the wrong fix.
-It needs a JSON parser, and the rule that keeps the hooks portable — `sed` and `grep` only, no `jq`, no `node`, no `python` — is the same rule that makes merging JSON inside `install.sh` a bad idea.
+It needs a JSON parser, and the rule that keeps the hooks portable (`sed` and `grep` only, no `jq`, no `node`, no `python`) is the same rule that makes merging JSON inside `install.sh` a bad idea.
 A merger written in awk would fail quietly on a nested key, which is the failure this repo keeps trying to design out.
 
 Two smaller pieces instead:
 
 - **Hand other people the project-level route.** Hook entries merge across settings levels rather than replacing each other, so the gates work committed to a shared project's `.claude/settings.json`. Everyone who clones that repo gets the gates, and no home directory is touched.
-- **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON — which the uv gate's escaping already argues for.
+- **Move the hook bodies into scripts.** `claude/hooks/git-gate.sh`, `claude/hooks/sed-gate.sh`, and `claude/hooks/uv-gate.sh`, with `settings.json` holding stanzas that call them. It does not fix the merge, but it shrinks the block a person has to paste and makes each hook testable on its own rather than by pulling a string back out of JSON, which the uv gate's escaping already argues for.
 
 ### Split standing instructions between CLAUDE.md and skills
 
@@ -29,7 +29,7 @@ Described under [What belongs here, and what belongs in a skill](docs/standing-i
 
 Nothing is wrong today.
 `CLAUDE.md` is short and every entry in it earns being read every session.
-The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case — with review checklists, commit conventions, and diagram style queued behind it.
+The decision arrives when the first set of instructions outgrows that, and a full writing style guide is the likely first case, with review checklists, commit conventions, and diagram style queued behind it.
 
 Three things to settle when it does:
 
@@ -59,7 +59,7 @@ The two tools work differently.
 `cspell` costs a second runtime.
 Its hook is `language: node`, so `pre-commit` builds that environment by fetching a node runtime into `~/.cache/pre-commit`, the way it already fetches the Go toolchain for `gitleaks`.
 Nothing has to be installed on the machine for that, and the environment is reusable once built: `pre-commit run cspell --all-files` then runs the checker on demand, which is the only way anything here runs `cspell` outside the editor.
-That last part is what the word list is waiting on — it was written by reading the repo and judging what the dictionaries already cover, and no run has confirmed it.
+That last part is what the word list is waiting on: it was written by reading the repo and judging what the dictionaries already cover, and no run has confirmed it.
 
 Running both means two lists of exceptions that drift apart, because each tool has to be told its own.
 The order worth trying: leave `cspell` as an editor underline, and add the `cspell` hook only if a misspelling gets past `typos` or the word list turns out to need checking.
@@ -68,10 +68,10 @@ The order worth trying: leave `cspell` as an editor underline, and add the `cspe
 
 The [uv gate](docs/hooks.md#the-uv-gate) refuses a bare `python` and tells Claude to run `uv` instead, and the [commit gates](docs/security.md#the-commit-gates) need `pre-commit`.
 A new machine has neither.
-So the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off — the repo naming a hole it could fill.
+So the first session after an install meets a hook demanding a tool that is not there, and `install.sh` ends by announcing that the gates are off: the repo naming a hole it could fill.
 
 What closes it is a list of what a machine needs, kept as a file rather than a run of install lines: git, `gh`, `uv`, `pre-commit`, VS Code.
-`winget export` writes that list from a machine that already works and `winget import` replays it, which keeps it a file you can read and diff rather than a script you have to run to find out what it does — the same reason the VS Code extensions list below is a file.
+`winget export` writes that list from a machine that already works and `winget import` replays it, which keeps it a file you can read and diff rather than a script you have to run to find out what it does, for the same reason the VS Code extensions list below is a file.
 
 It stays separate from `install.sh`.
 Installing tools onto a machine is a larger claim than placing config files, and making it a side effect of the second is the trade `install.sh` already refuses when it declines to install `pre-commit` for you.
@@ -105,7 +105,7 @@ Someone setting up a machine wants the sequence once, in one place:
 
 1. Developer Mode, first, because it decides whether the install links or copies
 2. git, and the tools the config assumes
-3. authentication — `gh auth login`, or an SSH key
+3. authentication: `gh auth login`, or an SSH key
 4. clone, `./install.sh --dry-run`, then `./install.sh`
 5. restart Claude Code
 
@@ -124,11 +124,11 @@ This is the list of things worth pulling in as the need comes up, roughly in ord
 
 ### More Claude Code configuration
 
-- **More skills** — anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
-- **`~/.claude/agents/`** — subagent definitions, if a specialized reviewer or researcher proves worth the setup.
-- **`~/.claude/commands/`** — custom slash commands for repeated multi-step workflows.
-- **`~/.claude/keybindings.json`** — key bindings, which is the file nobody rebuilds from memory on a new machine.
-- **More hooks** — the same `PreToolUse` mechanism as the gates above can auto-format after edits, block writes to protected paths, or log what ran. [Proposed hooks](#proposed-hooks) names specific ones.
+- **More skills:** anything done twice by hand is a candidate. Skills carry the *when* and *why* alongside the script, which is what makes them worth more than a loose shell script.
+- **`~/.claude/agents/`:** subagent definitions, if a specialized reviewer or researcher proves worth the setup.
+- **`~/.claude/commands/`:** custom slash commands for repeated multi-step workflows.
+- **`~/.claude/keybindings.json`:** key bindings, which is the file nobody rebuilds from memory on a new machine.
+- **More hooks:** the same `PreToolUse` mechanism as the gates above can auto-format after edits, block writes to protected paths, or log what ran. [Proposed hooks](#proposed-hooks) names specific ones.
 
 ### Proposed hooks
 
@@ -174,7 +174,7 @@ The files every repo starts with live in [repo-template](https://github.com/fran
 ### Global git config
 
 `~/.gitconfig` on this machine carries an editor, a name, and an address.
-`init.defaultBranch`, `pull.rebase`, aliases, `core.excludesFile` — all of it is re-derived per machine or lived without, which is the drift this repo exists to end.
+`init.defaultBranch`, `pull.rebase`, aliases, `core.excludesFile`: all of it is re-derived per machine or lived without, which is the drift this repo exists to end.
 
 Git also solves here what `settings.json` could not, because a gitconfig can include another one:
 
@@ -197,18 +197,18 @@ Read [Commit the reference, not the secret](docs/security.md#commit-the-referenc
 
 ### Machine setup
 
-- **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](TODO.md#install-what-this-config-already-assumes) — it starts with the tools this repo's own config depends on.
-- **Editor settings** — VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
-- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](docs/install.md#symlinks-on-windows)). GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
-- **WSL config** — `/etc/wsl.conf` inside a distro and `.wslconfig` in the Windows home directory. A hand-edited `/etc/resolv.conf` reverts because WSL regenerates it at startup; `generateResolvConf = false` under `[network]` in `wsl.conf` keeps the edit.
+- **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](TODO.md#install-what-this-config-already-assumes); it starts with the tools this repo's own config depends on.
+- **Editor settings:** VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
+- **Shell profile:** `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](docs/install.md#symlinks-on-windows)). GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
+- **WSL config:** `/etc/wsl.conf` inside a distro and `.wslconfig` in the Windows home directory. A hand-edited `/etc/resolv.conf` reverts because WSL regenerates it at startup; `generateResolvConf = false` under `[network]` in `wsl.conf` keeps the edit.
 
 ### VS Code settings
 
 This is the next thing to pull in, so it gets more than a bullet.
 
-The files worth versioning all live in one directory — `%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux:
+The files worth versioning all live in one directory (`%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux):
 
-- `settings.json` — the bulk of it
+- `settings.json`, the bulk of it
 - `keybindings.json`
 - an extensions list, produced by `code --list-extensions > vscode/extensions.txt` and replayed by looping `code --install-extension` over the file
 
@@ -226,7 +226,7 @@ The extensions list is the odd one out: it is a script input rather than a symli
 #### The recommendation
 
 Start with `settings.json` alone.
-Add keybindings once there are any worth keeping, and the extensions list once a second machine exists to replay it onto — that file is the one that pays off only on a fresh install.
+Add keybindings once there are any worth keeping, and the extensions list once a second machine exists to replay it onto; that file is the one that pays off only on a fresh install.
 
 One argument cuts the other way, and it is the new-machine one.
 Redoing `settings.json` by hand takes a minute; rebuilding the extension set takes an afternoon, and what is missing from it only shows up when something stops working.
@@ -236,9 +236,9 @@ So take the extensions list first if the next machine is nearer than the next se
 Then pick a single source of truth, and let it be the repo.
 This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](docs/install.md#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
-The UI-edited file is not lost — `backup()` moves it into `backups/` first — but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
+The UI-edited file is not lost (`backup()` moves it into `backups/` first), but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
 So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
-If a setting gets changed through the UI by reflex — and it will — copy it back into the repo before the next install, not after.
+If a setting gets changed through the UI by reflex, and it will, copy it back into the repo before the next install, not after.
 
 Enabling Developer Mode and getting real symlinks removes the whole problem, and is the single change that makes versioning editor settings pleasant instead of fiddly.
 Worth doing first if you have the option.
@@ -254,7 +254,7 @@ The path must exist on every machine, which `${userHome}` and the install make s
 The `markdownlint.config` setting is deprecated.
 
 Two things to expect.
-VS Code settings collect absolute paths — `python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine — and those are exactly what [Per-machine differences](#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
+VS Code settings collect absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), and those are exactly what [Per-machine differences](#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
 And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](docs/security.md#commit-the-reference-not-the-secret) before the first commit, not after.
 
 ### Per-machine differences
@@ -305,5 +305,5 @@ As each lands here, replace the matching part of those notes with a link to this
 
 ### Before adding any of this
 
-Shell profiles, git config, and bootstrap scripts are where credentials actually creep in — a remote URL with a token in it, an exported key in `.bashrc`.
+Shell profiles, git config, and bootstrap scripts are where credentials actually creep in: a remote URL with a token in it, an exported key in `.bashrc`.
 Re-read [Security](docs/security.md) before pulling any of them in.

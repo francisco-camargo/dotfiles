@@ -8,7 +8,7 @@ Decide what goes in it on that basis.
 
 Nothing sensitive.
 `settings.json` holds a model name and permission rules, `install.sh` holds paths, the skill is shell, awk, and CSS.
-Searching the entire history — not just the current files — for key, token, and password patterns turns up only this repo's own documentation talking about them.
+Searching the entire history (not just the current files) for key, token, and password patterns turns up only this repo's own documentation talking about them.
 That is the state to preserve, and it is worth re-checking whenever the repo grows.
 
 ## The directory this installs into is full of secrets
@@ -27,7 +27,7 @@ This is the real hazard, and it is easy to miss.
 None of that belongs in git.
 Transcripts alone are the whole content of private repos plus anything read or pasted during a session.
 
-The failure mode is not typing a password into `settings.json` — nobody does that.
+The failure mode is not typing a password into `settings.json`; nobody does that.
 It is broadening `install.sh` to sync "all of `~/.claude`" and sweeping the rest up with it.
 So: **the install stays an explicit allowlist**.
 `install.sh` names each file it places, one `place` line at a time, and never walks the directory.
@@ -69,10 +69,10 @@ That makes write access to this repo equivalent to code execution on all your ma
 ## A secret scanner, once it is worth the setup
 
 A pre-commit hook running `gitleaks` or `trufflehog` blocks the accidental commit before it happens.
-Overkill at the current size — there is nothing here to catch.
+Overkill at the current size: there is nothing here to catch.
 Worth adding once the repo grows to shell profiles and git config, which is where credentials genuinely creep in: a remote URL with a token embedded in it, an alias carrying a password, an exported key in `.bashrc`.
 
-That "once" arrived, and the gates are in — see [the commit gates](#the-commit-gates).
+That "once" arrived, and the gates are in: see [the commit gates](#the-commit-gates).
 
 ## The commit gates
 
@@ -132,9 +132,9 @@ That is why [the commit gates](#the-commit-gates) run `gitleaks`.
 | Layer | Catches | Misses | Cost |
 | --- | --- | --- | --- |
 | GitHub push protection | Recognized credential formats, server side, blocks the push | Passwords, host names, anything without a known token shape | A checkbox |
-| Hardened `.gitignore` | Whole files — `.credentials.json`, `.env`, private keys | `git add -f`, and secrets pasted inside tracked files | A list of filenames |
+| Hardened `.gitignore` | Whole files: `.credentials.json`, `.env`, private keys | `git add -f`, and secrets pasted inside tracked files | A list of filenames |
 | A `pre-commit` hook | Secrets pasted into tracked files, which the two above miss | `--no-verify`, and anyone who never enabled it | A config file, and `pre-commit` on the machine |
-| `gitleaks` in Actions | Whatever reached the remote anyway, `--no-verify` included | Runs after the push — on a public repo, after it is already published | A workflow file |
+| `gitleaks` in Actions | Whatever reached the remote anyway, `--no-verify` included | Runs after the push; on a public repo, after it is already published | A workflow file |
 
 Push protection is on for this repo.
 It and secret scanning are free on a public repository, and GitHub does not offer them on a private one owned by a personal account.
