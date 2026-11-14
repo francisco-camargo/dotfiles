@@ -88,6 +88,7 @@ old_backups
 install --dry-run --keep 1 || true
 check "--dry-run --keep deletes nothing" [ "$(ls -A "$backups" | wc -l)" -eq 6 ]
 check "  ...and says what it would delete" grep -q "would: rm -rf .*md-to-pdf.20260101" "$tmp/out"
+check "  ...once per backup" [ "$(grep -c "md-to-pdf.20260101" "$tmp/out")" -eq 1 ]
 
 check "--keep with no number is refused" [ "$(exit_code --keep)" -eq 2 ]
 check "--keep with a non-number is refused" [ "$(exit_code --keep two)" -eq 2 ]

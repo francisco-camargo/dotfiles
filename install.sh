@@ -74,8 +74,8 @@ prune_backups() {
       BEGIN { re = "[.][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9]$" }
       $0 ~ re { name = $0; sub(re, "", name); if (++seen[name] > keep) print }' |
     while IFS= read -r old; do
-      say "  pruning backup $dir/$old"
       run rm -rf "$dir/$old"
+      [ "$dry" -eq 1 ] || say "  pruned backup $dir/$old"
     done
 }
 
