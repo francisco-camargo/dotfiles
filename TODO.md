@@ -25,6 +25,7 @@ Delete an item once it is done, along with its plan.
 - [Spelling](docs/plans/spelling.md): decide whether `cspell` runs only in the editor or also at commit beside `typos`.
 - [Git config](docs/plans/git-config.md): keep a shared gitconfig here and include it from `~/.gitconfig`.
 - [Shell profile and WSL config](docs/plans/shell-and-wsl.md): a `.bashrc` that sets `MSYS` and starts ssh-agent, and the WSL settings that survive a restart.
+- [Parallel sessions](docs/plans/parallel-sessions.md): run several Claude sessions on one repo, each in its own worktree and branch, and land each on `main`.
 - [Standing instructions split](docs/plans/standing-instructions-split.md): move long instructions out of `CLAUDE.md` into skills once one outgrows it.
 
 ## Ideas
