@@ -104,6 +104,6 @@ The structure opinion goes in `references/` so `SKILL.md` stays short and the op
 
 - **Name:** `markdown-audit`, or `docs-audit`, since pass 3 is about documentation more than Markdown?
 - **Duplicated rules:** pattern checks in `check.sh` repeat rules that live in `CLAUDE.md`. Either accept the copy, or have the script check a rule only when `CLAUDE.md` states it.
-- **Overlap with TODO items:** [Check Markdown after Claude writes it](../../TODO.md#check-markdown-after-claude-writes-it) and [Check prose with Vale](../../TODO.md#check-prose-with-vale) cover the same pattern checks. This skill could be where they land, or they could replace its pattern checks.
+- **Overlap with the prose checks plan:** [Check Markdown after Claude writes it](prose-checks.md#check-markdown-after-claude-writes-it) and [Check prose with Vale](prose-checks.md#check-prose-with-vale) cover the same pattern checks. This skill could be where they land, or they could replace its pattern checks.
 - **A style skill:** [Split standing instructions between CLAUDE.md and skills](../../TODO.md#split-standing-instructions-between-claudemd-and-skills) expects a writing style guide to become the first skill split out of `CLAUDE.md`. The structure opinion could be that guide's first part.
 - **Repos without your rules:** in someone else's repo, should pass 2 apply your global `CLAUDE.md`, or only the repo's own?
