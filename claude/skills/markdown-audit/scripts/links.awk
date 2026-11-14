@@ -104,6 +104,8 @@ END {
       if ((g, f) in link) { linked = 1; if ((f, g) in link) back = 1 }
     }
     if (!linked) orphans = orphans "    " f "\n"
+    # TODO.md is the index of the plans, and the owner opens each from there.
+    if (f ~ /^plans\// && (("TODO.md", f) in link)) back = 1
     if (!back) noback = noback "    " f "\n"
 
     if (f ~ /^plans\// && ("TODO.md" in md) && !(("TODO.md", f) in link))

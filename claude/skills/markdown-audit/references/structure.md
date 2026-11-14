@@ -58,6 +58,7 @@ A short `SECURITY.md` or `CLAUDE.md` that does its one job stays as it is.
 - Each fact lives in one file, and other files link to it.
 
 The script's link report lists the files that break the first three.
+It counts a plan that `TODO.md` links to as linked back, since `TODO.md` is the plans' index.
 Some files need no link by design: a `CLAUDE.md` that Claude loads by path, a `SKILL.md` that Claude loads by its description, `SECURITY.md` that GitHub shows on its own tab.
 Say why each one listed is fine, or propose the link.
 

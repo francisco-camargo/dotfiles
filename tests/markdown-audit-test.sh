@@ -75,7 +75,9 @@ cat >TODO.md <<'EOF'
 
 - [A plan](plans/linked.md): a thing, back in [the README](README.md).
 - Back to [the top](TODO.md#todo).
+- [A quiet plan](plans/quiet.md): links nowhere.
 EOF
+echo "# Quiet plan" >plans/quiet.md
 echo "# Linked plan, back to [TODO](../TODO.md)" >plans/linked.md
 echo "# Forgotten plan" >plans/forgotten.md
 echo "# Nobody links here" >orphan.md
@@ -109,6 +111,8 @@ check "a linked plan is reachable" omits "unreachable from README.md" plans/link
 check "an orphan is linked from nothing" lists "linked from no other file" orphan.md
 check "a file with no link up is flagged" lists "no link back to README.md or to a file linking here" docs/guide.md
 check "a file linking up is not" omits "no link back to README.md or to a file linking here" TODO.md
+check "a plan TODO.md links needs no link back" \
+  omits "no link back to README.md or to a file linking here" plans/quiet.md
 check "a plan TODO.md skips is flagged" lists "plans that TODO.md does not link to" plans/forgotten.md
 check "a plan TODO.md links is not" omits "plans that TODO.md does not link to" plans/linked.md
 check "no CLAUDE.md is reported" says "(no CLAUDE.md in the repo)"
