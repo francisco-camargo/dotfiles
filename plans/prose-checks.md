@@ -11,7 +11,7 @@ Three, to decide together, since they cover the same rules: a hook after Claude 
 ### Check Markdown after Claude writes it
 
 - **What it catches:** em dashes and words that date a sentence, as Claude writes them, so it fixes them in the same turn. Claude put "today" into TODO.md while drafting [Check prose with Vale](#check-prose-with-vale), and caught it only on rereading.
-- **Form:** a `PostToolUse` hook on `Edit` and `Write` for `.md` files that searches the file and hands what it finds back to Claude.
+- **Form:** a `PostToolUse` hook on `Edit` and `Write` for `.md` files that runs the [Markdown audit](markdown-audit.md)'s `check.sh` on the file and hands what it finds back to Claude, so the patterns live in one script.
 - **Overlap:** a check at commit also catches the owner's own edits; this hook catches only Claude's, but sooner.
 
 ### Check prose with Vale
@@ -58,7 +58,6 @@ None.
 ## Open questions
 
 - **Vale or `grep`:** keep Vale if its warnings are worth reading; otherwise a `grep` hook covers the error-level rules.
-- **One list of patterns:** the [Markdown audit plan](markdown-audit.md) has a `check.sh` with the same patterns. Leaning: the hook calls that script, so the patterns live in one place.
 
 ## Done when
 

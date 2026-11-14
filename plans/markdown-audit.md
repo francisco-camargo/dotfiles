@@ -25,6 +25,8 @@ It follows the shape of `repo-template-check` and `memory-audit`: a script for t
 - Collect the instructions that apply to the repo: `~/.claude/CLAUDE.md`, the repo's `CLAUDE.md`, and any `CLAUDE.md` in a subdirectory, which applies to files under it.
 - Pull out the rules about prose and Markdown. If there are none, skip the pass and say so.
 - Check by pattern where a rule allows it (em dashes, filler words, dating words, bold lead-ins, fences without a language, several sentences on one line), and by reading for the rest (passive voice, getting to the point, stale claims).
+- `check.sh` reports every pattern hit tagged with its rule; the skill keeps only hits whose rule a `CLAUDE.md` in force states, so `CLAUDE.md` stays the authority.
+- Judge the repo by its own `CLAUDE.md` files. Report hits against the global `~/.claude/CLAUDE.md` that the repo's rules do not state in a section of their own, labelled as the owner's style, since someone else's repo need not follow it.
 - Check facts a document states about the repo against the repo, as the stale `init.templateDir` claim fixed in `6f90ac8` shows.
 
 ### Pass 3: structure
@@ -76,7 +78,7 @@ Merge files when:
 - two files say the same thing
 
 Line counts are a signal to look, not a verdict.
-Proposed starting points: a README past about 150 lines, any other file past about 400, a file under about 20 lines.
+The starting points: a README past about 150 lines, any other file past about 400, a file under about 20 lines.
 
 ### Every file is reachable, and said once
 
@@ -84,6 +86,10 @@ Proposed starting points: a README past about 150 lines, any other file past abo
 - Each document links back up to the README or its index.
 - No file is an orphan that nothing links to.
 - Each fact lives in one file, and other files link to it.
+
+### Plans follow the planning skill
+
+Where a repo has `TODO.md` or `plans/`, check them against the layout the [planning skill](../claude/skills/planning/SKILL.md) sets out, and cite that skill for the rule rather than restating it.
 
 ## Layout
 
@@ -95,10 +101,13 @@ claude/skills/markdown-audit/
 ```
 
 The structure opinion goes in `references/` so `SKILL.md` stays short and the opinion loads only for pass 3.
+If a writing style skill is split out of `CLAUDE.md`, as [Split standing instructions between CLAUDE.md and skills](standing-instructions-split.md) expects, the opinion can move into it as its first part.
+
+The [prose checks plan](prose-checks.md) covers the same pattern checks; its hook will call `check.sh`, so the patterns live in one script.
 
 ## Steps
 
-- [ ] Settle the open questions below, and the structure opinion with its line counts.
+- [x] Settle the open questions, and the structure opinion with its line counts.
 - [ ] Write `check.sh` and run it on this repo.
 - [ ] Write `SKILL.md` and `references/structure.md`, and install the skill.
 - [ ] Run the skill on this repo, `repo-template`, and one repo with no `CLAUDE.md` and no pre-commit config, and fix what the runs show.
@@ -106,21 +115,12 @@ The structure opinion goes in `references/` so `SKILL.md` stays short and the op
 ## Docs to update
 
 - [ ] `README.md`: list the skill in the file table and the skills list.
-- [ ] [The prose checks plan](prose-checks.md): say which pattern checks `check.sh` already makes, once the overlap question is settled.
+- [x] [The prose checks plan](prose-checks.md): say its hook calls `check.sh`, and drop the open question on one list of patterns.
 - [ ] [The planning skill](../claude/skills/planning/SKILL.md): link to this skill for checking a repo's plans, if the audit takes that on.
 
 ## Updates to send
 
 None: the skill runs only on this repo's owner's machines, and no ticket tracks it.
-
-## Open questions
-
-- **Name:** `markdown-audit`, or `docs-audit`, since pass 3 is about documentation more than Markdown? Leaning `markdown-audit`, since "audit the markdown" is how a request would be worded.
-- **Duplicated rules:** pattern checks in `check.sh` repeat rules that live in `CLAUDE.md`. Leaning: the script reports every hit tagged with its rule, and the skill keeps only hits whose rule a `CLAUDE.md` in force states, so `CLAUDE.md` stays the authority.
-- **Overlap with the prose checks plan:** [Check Markdown after Claude writes it](prose-checks.md#check-markdown-after-claude-writes-it) and [Check prose with Vale](prose-checks.md#check-prose-with-vale) cover the same pattern checks. Leaning: the hook there calls `check.sh`, so the patterns live in one script.
-- **A style skill:** [Split standing instructions between CLAUDE.md and skills](standing-instructions-split.md) expects a writing style guide to become the first skill split out of `CLAUDE.md`. The structure opinion could be that guide's first part.
-- **Repos without your rules:** in someone else's repo, should pass 2 apply your global `CLAUDE.md`, or only the repo's own? Leaning: the repo's own, with hits against the global rules reported apart as the owner's style.
-- **Plans layout:** should pass 3 check that a repo follows the [planning skill](../claude/skills/planning/SKILL.md)'s layout of `TODO.md` and `plans/`? Leaning yes, linking to the planning skill for the rule, so it lives in one place.
 
 ## Done when
 
