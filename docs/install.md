@@ -47,6 +47,11 @@ VS Code reads neither file until its user settings point at them:
 It keeps one that differs unless you choose to replace it, and moves a replaced file into `~/.claude/backups/`, printing the command to restore it.
 Use `--copy` to force copies instead of links, and `--replace-existing` to replace files that differ without asking.
 
+Backups pile up, one per replaced file per run.
+`--keep N` deletes all but the newest N backups of each file, after the install, and `--dry-run` shows what it would delete.
+It touches only the `<name>.<YYYYMMDD-HHMMSS>` backups `install.sh` makes, and leaves the `.claude.json.backup.*` files Claude Code keeps in the same directory.
+Without `--keep`, nothing is deleted: a backup may hold the only copy of something you had.
+
 After changing `install.sh`, run `tests/install-test.sh`.
 It installs into a scratch home, never yours, and checks that the installer keeps what it should and replaces only what it is told to.
 

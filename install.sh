@@ -7,6 +7,7 @@
 #   ./install.sh --copy     always copy
 #   ./install.sh --dry-run  show what would happen, change nothing
 #   ./install.sh --replace-existing  replace files that differ without asking
+#   ./install.sh --keep N   also delete all but the newest N backups of each file
 #
 # Where a file already differs from the repo's, it asks whether to keep it,
 # replace it, or show the difference. With no terminal to ask on, it keeps it.
@@ -19,6 +20,7 @@ stamp="$(date +%Y%m%d-%H%M%S)"
 mode=link
 dry=0
 replace_existing=0
+keep=
 fell_back=0
 kept=0
 kept_settings=0
@@ -30,6 +32,10 @@ while [ $# -gt 0 ]; do
     --copy)    mode=copy ;;
     --dry-run) dry=1 ;;
     --replace-existing) replace_existing=1 ;;
+    --keep)
+      keep="${2:-}"
+      case "$keep" in ''|*[!0-9]*) echo "--keep needs a whole number" >&2; exit 2 ;; esac
+      shift ;;
     -h|--help) awk 'NR == 1 { next } /^#/ { print; next } { exit }' "${BASH_SOURCE[0]}"; exit 0 ;;
     *)         echo "unknown option: $1" >&2; exit 2 ;;
   esac
@@ -54,6 +60,23 @@ backup() {
   run mkdir -p "$dest/backups"
   run mv "$target" "$saved"
   [ "$dry" -eq 1 ] || say "  to restore it: mv '$saved' '$target'"
+}
+
+# Delete all but the newest $keep backups of each name. Only the names backup()
+# writes match, so Claude Code's own .claude.json.backup.<ms> files, which share
+# the directory, stay. A stamp sorts as text in time order. The pattern spells
+# out each digit because mawk does not support {8}.
+prune_backups() {
+  local dir="$dest/backups" old
+  [ -d "$dir" ] || return 0
+  ls -A "$dir" | sort -r |
+    awk -v keep="$keep" '
+      BEGIN { re = "[.][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]-[0-9][0-9][0-9][0-9][0-9][0-9]$" }
+      $0 ~ re { name = $0; sub(re, "", name); if (++seen[name] > keep) print }' |
+    while IFS= read -r old; do
+      say "  pruning backup $dir/$old"
+      run rm -rf "$dir/$old"
+    done
 }
 
 # Decide what to do with a target that differs from src. Returns 0 to replace
@@ -163,6 +186,9 @@ place "$repo/.markdownlint.yaml"        "$HOME/.markdownlint.yaml"
 # Words that are right in every repo. cSpell.customDictionaries in VS Code's
 # settings points at this file, and "Add to user dictionary" writes to it.
 place "$repo/vscode/cspell-words.txt"   "$HOME/.cspell-words.txt"
+
+# After the installs, so a backup this run made counts among the newest.
+[ -z "$keep" ] || prune_backups
 
 # Git does not clone .git/hooks/, so the gates in .pre-commit-config.yaml are
 # inert until something writes the hook into this clone. This is that step, and

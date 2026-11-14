@@ -62,6 +62,36 @@ install --replace-existing || true
 check "--replace-existing replaces a file that differs" same_as_repo
 check "  ...after backing it up" has_backup
 
+backups="$home/.claude/backups"
+old_backups() {
+  fresh_home
+  mkdir -p "$backups/md-to-pdf.20260101-000001" "$backups/md-to-pdf.20260102-000001" \
+    "$backups/md-to-pdf.20260103-000001"
+  echo old >"$backups/CLAUDE.md.20260101-000001"
+  echo old >"$backups/CLAUDE.md.20260102-000001"
+  echo theirs >"$backups/.claude.json.backup.1794615396808"
+}
+exit_code() { install "$@" && echo 0 || echo $?; }
+newest_kept() {
+  [ -d "$backups/md-to-pdf.20260103-000001" ] && [ -f "$backups/CLAUDE.md.20260102-000001" ]
+}
+
+old_backups
+install --keep 1 || true
+check "--keep 1 keeps the newest backup of each name" newest_kept
+check "  ...and deletes the older ones" \
+  [ "$(ls "$backups" | grep -c '^md-to-pdf\.\|^CLAUDE\.md\.')" -eq 2 ]
+check "  ...and leaves Claude Code's own backups alone" \
+  [ -f "$backups/.claude.json.backup.1794615396808" ]
+
+old_backups
+install --dry-run --keep 1 || true
+check "--dry-run --keep deletes nothing" [ "$(ls -A "$backups" | wc -l)" -eq 6 ]
+check "  ...and says what it would delete" grep -q "would: rm -rf .*md-to-pdf.20260101" "$tmp/out"
+
+check "--keep with no number is refused" [ "$(exit_code --keep)" -eq 2 ]
+check "--keep with a non-number is refused" [ "$(exit_code --keep two)" -eq 2 ]
+
 fresh_home
 echo "someone else's" >"$tmp/elsewhere"
 if MSYS=winsymlinks:nativestrict ln -s "$tmp/elsewhere" "$home/.claude/CLAUDE.md" 2>/dev/null &&

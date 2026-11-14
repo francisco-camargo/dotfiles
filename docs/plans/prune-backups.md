@@ -25,25 +25,21 @@ Delete all but the newest N in each group, whether the entry is a file or a dire
 - Pruning runs after the install, so a backup made by this run counts among the N.
 - Under `--dry-run`, it prints what it would delete and deletes nothing, through the existing `run` helper.
 - It prints each path it deletes.
-- Without `--keep`, nothing is deleted.
+- Without `--keep`, nothing is deleted: a backup may hold the only copy of something the user had.
+- A count is the only rule; a date cutoff waits until a count proves wrong.
 
 ## Steps
 
-- [ ] Add `--keep N` to `install.sh`, with tests in `tests/install-test.sh` written first: keeps the newest N per name, leaves `.claude.json.backup.*` alone, deletes nothing under `--dry-run`, rejects a non-number.
+- [x] Add `--keep N` to `install.sh`, with tests in `tests/install-test.sh` written first: keeps the newest N per name, leaves `.claude.json.backup.*` alone, deletes nothing under `--dry-run`, rejects a non-number.
 
 ## Docs to update
 
-- [ ] `install.sh` header: a usage line for `--keep N`, which `--help` prints.
-- [ ] `docs/install.md`, where it says a replaced file moves into `~/.claude/backups/`: name `--keep N`, and say it leaves Claude Code's own backups alone.
+- [x] `install.sh` header: a usage line for `--keep N`, which `--help` prints.
+- [x] `docs/install.md`, where it says a replaced file moves into `~/.claude/backups/`: name `--keep N`, and say it leaves Claude Code's own backups alone.
 
 ## Updates to send
 
 None.
-
-## Open questions
-
-- Should a plain `./install.sh` prune by default, say to the newest 3? I lean no: a backup holds the only copy of something the user had, and the installer's stance is to delete nothing unasked.
-- Should a date cutoff (`--keep-days N`) come too? I lean no until a count proves wrong; one rule is easier to trust.
 
 ## Done when
 
