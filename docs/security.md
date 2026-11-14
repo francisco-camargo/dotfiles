@@ -116,7 +116,7 @@ Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest
 
 ### The config files queued up next
 
-[What else could live here](../TODO.md#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
+[TODO.md](../TODO.md#later) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
 [The commit gates](#the-commit-gates) run `gitleaks` to catch a credential from either place before it is committed.

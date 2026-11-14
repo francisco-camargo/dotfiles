@@ -48,5 +48,5 @@ The path must exist on every machine, which `${userHome}` and the install make s
 The `markdownlint.config` setting is deprecated.
 
 Two things to expect.
-VS Code settings collect absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), and those are exactly what [Per-machine differences](../../TODO.md#per-machine-differences) is about; strip or generalize them on the way in rather than committing a file that only works here.
+VS Code settings collect absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), and those are exactly what [Per-machine differences](../../TODO.md#ideas) is about; strip or generalize them on the way in rather than committing a file that only works here.
 And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](../security.md#commit-the-reference-not-the-secret) before the first commit, not after.

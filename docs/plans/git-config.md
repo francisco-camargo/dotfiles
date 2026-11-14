@@ -12,7 +12,7 @@ Git also solves here what `settings.json` could not, because a gitconfig can inc
 
 The install appends a line instead of replacing a file someone already owns, so the installer has nothing to ask about there.
 Two more things fall out of the same mechanism.
-`includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](../../TODO.md#per-machine-differences)).
+`includeIf "gitdir:~/git/work/"` gives one set of repos its own address without a `hosts/` directory ([per-machine differences](../../TODO.md#ideas)).
 And `core.excludesFile` pointing here is what retires the `.gitignore` copied into every repo.
 
 Identity and credentials come with it.
