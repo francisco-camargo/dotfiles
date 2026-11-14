@@ -1,26 +1,10 @@
 # Plan: audit a repo's Markdown
 
-Two pieces of work, in order:
+Write a `markdown-audit` skill that audits any repo's Markdown, and adds an opinion on how a repo's Markdown files should fit together.
 
-1. Fix the Markdown in this repo, from the audit already done.
-2. Write a `markdown-audit` skill that runs the same audit on any repo, and adds an opinion on how a repo's Markdown files should fit together.
+A hand audit of this repo is the worked example: commits `a7d18a4` to `e1467c1` fixed what it found, and the skill should find the same on the commit before them.
 
-The first is the worked example for the second: every check the skill makes should have caught something in step 1.
-
-## Part 1: fix this repo
-
-The audit found no pre-commit failures and these breaks from the writing rules in `claude/CLAUDE.md`.
-One commit each:
-
-1. `Convert md-to-pdf skill to one sentence per line` (staged, not committed)
-2. `Replace em dashes in TODO and security docs`
-3. `Cut filler words from the docs`, including the `docs/install.md` link to the renamed heading
-4. `Drop words that date TODO and security docs`
-5. `Make security.md's bold lead-ins headings`
-6. `Bring security.md's hook-install history up to date`: the global `init.templateDir` hook it calls future work, which `install.sh` already sets; the settled scanner debate; the 340 MB figure; the one-off history search
-7. `Link within TODO.md by anchor alone`
-
-## Part 2: the skill
+## The skill
 
 ### What it does
 
@@ -38,7 +22,7 @@ It follows the shape of `repo-template-check` and `memory-audit`: a script for t
 - Collect the instructions that apply to the repo: `~/.claude/CLAUDE.md`, the repo's `CLAUDE.md`, and any `CLAUDE.md` in a subdirectory, which applies to files under it.
 - Pull out the rules about prose and Markdown. If there are none, skip the pass and say so.
 - Check by pattern where a rule allows it (em dashes, filler words, dating words, bold lead-ins, fences without a language, several sentences on one line), and by reading for the rest (passive voice, getting to the point, stale claims).
-- Check facts a document states about the repo against the repo, as the `init.templateDir` claim in Part 1 shows.
+- Check facts a document states about the repo against the repo, as the stale `init.templateDir` claim fixed in `6f90ac8` shows.
 
 #### Pass 3: structure
 
@@ -111,7 +95,7 @@ The structure opinion goes in `references/` so `SKILL.md` stays short and the op
 ### Steps
 
 1. Agree this plan, especially the structure opinion and its numbers.
-2. Write `check.sh` and run it on this repo; it should find what Part 1 fixed, on the commit before Part 1.
+2. Write `check.sh` and run it on this repo; on `0a2d48e` it should find what the hand audit fixed.
 3. Write `SKILL.md` and `references/structure.md`.
 4. Run the skill on this repo, `repo-template`, and one repo with no `CLAUDE.md` and no pre-commit config.
 5. Add the skill to the README's table and skill list, and delete this plan.
