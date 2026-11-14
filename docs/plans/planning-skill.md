@@ -21,7 +21,7 @@ Every plan has these sections, in this order:
 - **Why:** only when the goal does not make the reason plain.
 - **Steps:** a task list, each step about the size of a commit. Tick a step (`- [x]`) in the commit that completes it.
 - **Docs to update:** a task list of the files the work makes stale, so a decision outlives the plan that made it.
-- **People to tell:** a task list of who the work affects, what they need to hear, and when.
+- **Updates to send:** a task list of the people the work affects and the tickets, threads, and channels that track it, with what each needs to hear and when.
 - **Open questions:** decisions that wait on the owner. Each one leaves the list once decided, and the answer goes where it applies.
 - **Done when:** the check that ends the plan, after which the plan and its `TODO.md` line are deleted.
 
@@ -36,6 +36,7 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 - [x] Add the skill to the README's file table and skills list.
 - [x] Have plans list the docs they make stale, and close only once those are updated.
 - [x] Have plans list the people to tell, and when.
+- [x] Widen that list to tickets, email threads, and chat channels.
 - [ ] Run the skill on the [Markdown audit plan](markdown-audit.md) to fit it to the template.
 - [ ] Fit the other plans to the template, one commit each.
 
@@ -45,9 +46,9 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 - [x] `README.md`: list the skill in the file table and the skills list.
 - [ ] `claude/skills/planning/`: move this plan's "How a repo holds its plans" and "The plan template" there, if they say anything the skill does not.
 
-## People to tell
+## Updates to send
 
-Nobody: the skill runs only on this repo's owner's machines.
+None: the skill runs only on this repo's owner's machines, and no ticket tracks it.
 
 ## Open questions
 
