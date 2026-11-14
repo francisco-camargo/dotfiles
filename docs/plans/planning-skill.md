@@ -38,7 +38,8 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 - [x] Have plans list the people to tell, and when.
 - [x] Widen that list to tickets, email threads, and chat channels.
 - [x] Run the skill on the [Markdown audit plan](markdown-audit.md) to fit it to the template.
-- [ ] Fit the other plans to the template, one commit each.
+- [x] Fit the other plans to the template, one commit each.
+- [ ] In a new session, ask Claude to plan a piece of work, and check it writes the plan file and the `TODO.md` line unprompted.
 
 ## Docs to update
 

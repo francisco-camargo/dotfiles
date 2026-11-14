@@ -1,6 +1,16 @@
 # Plan: VS Code settings
 
-The files worth versioning all live in one directory (`%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux):
+## Goal
+
+Keep VS Code's `settings.json`, keybindings, and extensions list in this repo, with the repo as the one source of truth.
+
+## Why
+
+Redoing `settings.json` by hand takes a minute; rebuilding the extension set takes an afternoon, and what is missing from it only shows up when something stops working.
+
+## The files
+
+They all live in one directory (`%APPDATA%\Code\User\` on Windows, `~/Library/Application Support/Code/User` on macOS, `~/.config/Code/User` on Linux):
 
 - `settings.json`, the bulk of it
 - `keybindings.json`
@@ -15,38 +25,49 @@ place "$repo/vscode/keybindings.json" "$vsdest/keybindings.json"
 ```
 
 `$APPDATA` is set inside Git Bash.
-The extensions list is the odd one out: it is a script input rather than a symlink target, so it wants its own small `vscode/install-extensions.sh`.
+The extensions list is a script input rather than a symlink target, so it wants its own small `vscode/install-extensions.sh`.
+It costs nothing to keep current, and it cannot drift the way `settings.json` does, because no UI writes back to it.
 
-## The recommendation
+## One source of truth
 
-Start with `settings.json` alone.
-Add keybindings once there are any worth keeping, and the extensions list once a second machine exists to replay it onto; that file is the one that pays off only on a fresh install.
-
-One argument cuts the other way, and it is the new-machine one.
-Redoing `settings.json` by hand takes a minute; rebuilding the extension set takes an afternoon, and what is missing from it only shows up when something stops working.
-`code --list-extensions > vscode/extensions.txt` costs nothing to keep current, and it cannot drift the way `settings.json` does, because no UI writes back to it.
-So take the extensions list first if the next machine is nearer than the next settings change.
-
-Then pick a single source of truth, and let it be the repo.
-This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](../install.md#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
+VS Code has a settings UI that writes to `%APPDATA%` directly, and `install.sh` is [copying rather than linking on this machine](../install.md#symlinks-on-windows).
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
-The UI-edited file is not lost (`backup()` moves it into `backups/` first), but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
-So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
-If a setting gets changed through the UI by reflex, and it will, copy it back into the repo before the next install, not after.
-
-Enabling Developer Mode and getting real symlinks removes the whole problem, and is the single change that makes versioning editor settings pleasant instead of fiddly.
-Worth doing first if you have the option.
+The UI-edited file is not lost (`backup()` moves it into `backups/` first), but recovering a change from there is slow.
+So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`, and copy back any setting changed through the UI before the next install.
+Developer Mode, and real symlinks, remove the problem.
 
 Settings Sync is a rival source of truth.
 If VS Code syncs settings through a GitHub account, Sync and a versioned `settings.json` overwrite each other.
-Turn Sync off for settings when the repo takes over, or decide Sync is enough and drop this item.
-Worth carrying over either way: the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
 
-`install.sh` installs markdownlint's fallback rules as `~/.markdownlint.yaml`; carry the setting that points `markdownlint.configFile` at `${userHome}/.markdownlint.yaml`.
-The extension uses a repo's own `.markdownlint.yaml` first, and falls back to `configFile` in a repo without one.
-The path must exist on every machine, which `${userHome}` and the install make sure of; a path into one repo makes the extension fail in every other.
-The `markdownlint.config` setting is deprecated.
+## What to carry over, and what to strip
 
-Two things to expect.
-VS Code settings collect absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), and those are exactly what [Per-machine differences](../../TODO.md#ideas) is about; strip or generalize them on the way in rather than committing a file that only works here.
-And some extensions store tokens in `settings.json`, so read [Commit the reference, not the secret](../security.md#commit-the-reference-not-the-secret) before the first commit, not after.
+- Carry the Dark+ theme, relative line numbers, and the Vim extension with its keybindings.
+- Carry `markdownlint.configFile` set to `${userHome}/.markdownlint.yaml`, the fallback rules `install.sh` installs. The extension uses a repo's own `.markdownlint.yaml` first. A path into one repo would make the extension fail in every other. The `markdownlint.config` setting is deprecated.
+- Strip absolute paths (`python.defaultInterpreterPath`, terminal profiles naming a specific shell, fonts that exist on one machine), which belong to [Per-machine differences](../../TODO.md#ideas).
+- Strip tokens: some extensions store them in `settings.json`, so read [Commit the reference, not the secret](../security.md#commit-the-reference-not-the-secret) before the first commit.
+
+## Steps
+
+- [ ] Decide between Settings Sync and the repo, and turn Sync off for settings if the repo wins.
+- [ ] Add `vscode/extensions.txt` and `vscode/install-extensions.sh`.
+- [ ] Add `vscode/settings.json`, stripped of machine paths and tokens, and have `install.sh` place it.
+- [ ] Add `vscode/keybindings.json`, once there are keybindings worth keeping.
+
+## Docs to update
+
+- [ ] `README.md`: the new files, in the file table.
+- [ ] [docs/install.md](../install.md): the VS Code destination and the extensions script.
+- [ ] francisco-camargo's notes: replace the VS Code settings part with a link here.
+
+## Updates to send
+
+None.
+
+## Open questions
+
+- **Sync or the repo:** leaning the repo, since it versions and diffs; Sync is enough only if neither matters.
+- **Order:** the extensions list first if the next machine is nearer than the next settings change, which is the order the steps take.
+
+## Done when
+
+On a second machine, `./install.sh` and `vscode/install-extensions.sh` give the same editor as this one.
