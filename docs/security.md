@@ -7,7 +7,7 @@ Decide what goes in it on that basis.
 ## What is in here
 
 Nothing sensitive.
-`settings.json` holds a model name and permission rules, `install.sh` holds paths, and the skills are shell, awk, and CSS.
+`settings.json` holds a model name, permission rules, and the gates' shell commands, `install.sh` holds paths, and the skills are shell, awk, and CSS.
 That is the state to preserve.
 The commit gates scan only the staged change; `gitleaks git` scans the whole history, and is worth running whenever the repo grows.
 
