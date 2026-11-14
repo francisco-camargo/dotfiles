@@ -57,8 +57,12 @@ fence != "" {
   next
 }
 
-# HTML comments and reference definitions are not prose.
-/^[ \t]*<!--/ || /^ {0,3}\[[^]]+\]:/ { next }
+# HTML comments and reference definitions are not prose. A comment can run
+# over many lines, such as a list kept out of the rendered page.
+FNR == 1 { comment = 0 }
+comment { if ($0 ~ /-->/) comment = 0; next }
+/^[ \t]*<!--/ { if ($0 !~ /-->/) comment = 1; next }
+/^ {0,3}\[[^]]+\]:/ { next }
 
 {
   text = $0

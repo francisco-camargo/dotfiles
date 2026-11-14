@@ -72,6 +72,11 @@ Two lines, each whole.
 
 Set up a new machine.
 It works today.
+
+<!--
+- just a note
+- Cooking
+-->
 EOF
 cat >TODO.md <<'EOF'
 # TODO
@@ -110,6 +115,8 @@ check "a link to its own file by name is flagged" \
   lists "links to their own file by name, where an anchor alone would do" TODO.md:4
 check "'new' is not a dating word" silent "docs/guide.md:24: no details that go stale"
 check "'today' is" says "docs/guide.md:25: no details that go stale"
+check "a line inside an HTML comment is not a hit" silent "docs/guide.md:28:"
+check "  ...nor one before its closing line" silent "docs/guide.md:29:"
 check "a short file is flagged" says "orphan.md: 1 lines, under 20"
 check "an orphan is unreachable" lists "unreachable from README.md" orphan.md
 check "a linked plan is reachable" omits "unreachable from README.md" plans/linked.md
