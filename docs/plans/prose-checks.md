@@ -25,7 +25,7 @@ It cannot check one sentence per line, stale counts, or whether a paragraph gets
 What it costs:
 
 - **A runtime.** Its pre-commit hook is `language: golang`, so pre-commit fetches Go as it does for `gitleaks`. The editor and a run by hand need the binary: `winget install -e --id errata-ai.Vale`.
-- **A third word list.** Turn its spelling rule off, for the reason in [Settle how spelling gets checked](../../TODO.md#settle-how-spelling-gets-checked).
+- **A third word list.** Turn its spelling rule off, for the reason in [the spelling plan](spelling.md).
 - **Vendored styles.** `vale sync` downloads packages such as write-good. Either sync on each machine, or write a small style of our own that borrows the lists worth having.
 - **Noise.** write-good's `Passive` flags a form of "be" followed by a word ending in "ed", so it misses "is written" and flags "is based". Its `E-Prime` flags every "is".
 
