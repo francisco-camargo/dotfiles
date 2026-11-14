@@ -5,7 +5,7 @@ Configuration files kept in one place so every machine behaves the same.
 ## Motivation
 
 This repo holds the configuration I want on every machine and in every project.
-Today that is Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills).
+It covers Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills).
 [What's here](#whats-here) lists each file and where it installs.
 [Candidates for later](TODO.md#what-else-could-live-here) are git config, VS Code settings, a shell profile, and the files each repo repeats, such as `.gitignore` and `.gitattributes`.
 
@@ -24,7 +24,7 @@ Hence the name *dotfiles*.
 
 ### The problem they solve
 
-Without a repo, such a config file
+Without a repo, such a config file:
 
 1. **Has no history.** Six months after changing a setting, you cannot recall what you changed or why.
 2. **Drifts between machines.** You notice only when something behaves differently on one of them.
@@ -39,7 +39,7 @@ Editing either path edits the repo.
 
 That brings git to config:
 
-- **One source of truth.** There is one copy, and it is the current one.
+- **One copy.** Each file exists once, and that copy is the current one.
 - **A history.** Each change is a commit, so `git log` shows why a setting is what it is, and `git revert` undoes it.
 - **Reproducible machines.** `git clone` and `./install.sh` make a new machine behave like the others.
 - **Documentation.** The sections below explain what each piece does.
@@ -60,16 +60,17 @@ Until then, run `./install.sh` again after each edit, or the change never reache
 ## Platform support
 
 `bash` and `git` are the only requirements for installing the config.
-Committing to this repo also wants `pre-commit`, which runs the [gates](docs/security.md#the-commit-gates) — `install.sh` says so and carries on without it, so a machine that only consumes the config needs nothing extra.
-There is nothing here that ties the repo to one operating system:
+Committing to this repo also needs `pre-commit`, which runs the [gates](docs/security.md#the-commit-gates).
+`install.sh` says so and carries on without it, so a machine that only uses the config needs nothing more.
+Nothing here ties the repo to one operating system:
 
-- **macOS and Linux** work as-is, and get real symlinks by default — no Developer Mode step, so the [working loop](#the-working-loop) above is the live-edit one rather than the re-run-`install.sh` one.
-- **Windows** works through Git Bash. `.gitattributes` normalizes line endings to LF so the scripts stay executable everywhere. Symlinks need Developer Mode, which is off on a new machine, so that is a step to do before the first install — [Symlinks on Windows](#symlinks-on-windows).
+- **macOS and Linux** work as they are and get real symlinks by default, with no Developer Mode step, so the [working loop](#the-working-loop) above is the live-edit one rather than the re-run-`install.sh` one.
+- **Windows** works through Git Bash. `.gitattributes` normalizes line endings to LF so the scripts stay executable everywhere. Symlinks need Developer Mode, which is off on a new machine, so turn it on before the first install: see [Symlinks on Windows](#symlinks-on-windows).
 
-The Windows-specific pieces are inert elsewhere rather than broken: the `PowerShell(...)` entries in `permissions.ask` name a tool that does not exist on macOS, `md2pdf.sh` guards its `cygpath` calls behind `command -v`, and its browser search list already includes the `/Applications/` paths alongside the `C:\Program Files\` ones.
+The Windows-specific pieces do nothing elsewhere rather than break: the `PowerShell(...)` entries in `permissions.ask` name a tool that does not exist on macOS, `md2pdf.sh` guards its `cygpath` calls behind `command -v`, and its browser search list includes the `/Applications/` paths alongside the `C:\Program Files\` ones.
 
-Where the sections below say "this Windows machine", they are reporting where the config happens to run today, not stating a requirement.
-Developer Mode is the exception: it is off on every new Windows machine, so anyone installing on Windows meets it, not just me.
+Where the sections below say "this Windows machine", they report where the config happens to run, not a requirement.
+Developer Mode is the exception: it is off on every new Windows machine, so anyone installing on Windows meets it.
 
 ## Install on a new machine
 
@@ -78,13 +79,17 @@ Where a file is already there and differs from this repo's, it shows you which a
 With no terminal to ask on, it keeps it.
 If you already have a `~/.claude/settings.json`, read [`install.sh` and an existing `settings.json`](#installsh-and-an-existing-settingsjson) first.
 
-**On Windows, turn on Developer Mode before the first run.**
-Settings → For developers → Developer Mode on — under System on Windows 11, under Update & Security on Windows 10 — then restart Git Bash.
+### On Windows, turn on Developer Mode first
+
+Open Settings → For developers and turn Developer Mode on (under System on Windows 11, under Update & Security on Windows 10), then restart Git Bash.
 Windows will not let an ordinary user create a symlink without it, and every new machine arrives with it off, so `install.sh` reports the refusal and copies instead.
 Copies work, but each edit here then needs another `./install.sh` to reach `~/.claude/`, and the next run asks about any file edited under `~/.claude` ([copies drift both ways](#copies-drift-both-ways)).
-Turning it on takes an administrator; running the install from an elevated shell does the same job for one run.
+Turning it on takes an administrator; running the install from an elevated shell does the same for one run.
 
-See what it would do first. `--dry-run` changes nothing:
+### Run the installer
+
+See what it would do first.
+`--dry-run` changes nothing:
 
 ```bash
 git clone https://github.com/francisco-camargo/dotfiles.git ~/git/dotfiles
@@ -92,7 +97,8 @@ cd ~/git/dotfiles
 ./install.sh --dry-run
 ```
 
-It prints every move it would make. When that reads the way you want, drop the flag:
+It prints every move it would make.
+When that reads the way you want, drop the flag:
 
 ```bash
 ./install.sh
@@ -100,7 +106,7 @@ It prints every move it would make. When that reads the way you want, drop the f
 
 Then restart Claude Code, or open `/hooks` once, so it reloads settings.
 
-`git` and `bash` are the whole requirement for this much.
+`git` and `bash` are all this much needs.
 `install.sh` symlinks `claude/settings.json`, `claude/CLAUDE.md`, and each skill under `claude/skills/` into `~/.claude/`.
 It also links this repo's `.markdownlint.yaml` to `~/.markdownlint.yaml`, the rules the markdownlint extension uses in a repo without its own.
 And it links `vscode/cspell-words.txt` to `~/.cspell-words.txt`, the words the Code Spell Checker extension accepts in every repo.
@@ -113,8 +119,8 @@ VS Code reads neither file until its user settings point at them:
 },
 ```
 
-A file already there that matches the repo's is left alone.
-One that differs is kept unless you choose to replace it, and a replaced file moves into `~/.claude/backups/`, with the command to restore it printed beside it.
+`install.sh` leaves alone a file that matches the repo's.
+It keeps one that differs unless you choose to replace it, and moves a replaced file into `~/.claude/backups/`, printing the command to restore it.
 Use `--copy` to force copies instead of links, and `--replace-existing` to replace files that differ without asking.
 
 After changing `install.sh`, run `tests/install-test.sh`.
@@ -122,19 +128,19 @@ It installs into a scratch home, never yours, and checks that the installer keep
 
 ### Making it your own
 
-This repo is meant as a starting point rather than something to depend on.
+Treat this repo as a starting point, not something to depend on.
 Fork it, or clone it and point `origin` at your own remote, and everything from that commit on is yours to change.
 
-Install `pre-commit` before running `install.sh`, and the same run also wires [the gates](docs/security.md#the-commit-gates) into your clone, and into every repo you clone or create afterwards:
+Install `pre-commit` before running `install.sh`, and the same run also sets up [the gates](docs/security.md#the-commit-gates) in your clone, and in every repo you clone or create afterwards:
 
 ```bash
 uv tool install pre-commit
 ```
 
 `uv` is what I use; `pipx install pre-commit` or a `pip --user` install do the same job, and nothing here depends on which.
-Either order works — `install.sh` says so when the gates end up off, and `pre-commit install` from inside the clone turns them on afterwards.
+Either order works: `install.sh` says so when the gates end up off, and `pre-commit install` from inside the clone turns them on afterwards.
 
-In short, `install.sh` makes every `git clone` and `git init` run the equivalent of `pre-commit install`, so nobody has to remember it on a new clone.
+`install.sh` makes every `git clone` and `git init` run the equivalent of `pre-commit install`, so nobody has to remember it on a new clone.
 It does this through git's template folder.
 `install.sh` writes a pre-commit hook into `~/.git-template` and points `init.templateDir` at it, so git copies the hook into each repo as it clones or creates it.
 The hook runs the gates in that repo's own `.pre-commit-config.yaml`, and skips a repo that has none.
@@ -142,8 +148,8 @@ A repo already on disk picks the hook up from `git init` run inside it, which ad
 If `init.templateDir` already points somewhere else, `install.sh` leaves it alone and says so.
 
 The gates are worth more in your copy than in mine.
-A dotfiles repo grows toward shell profiles and git config, and that is where a credential eventually lands: see [how a secret would actually get out](docs/security.md#how-a-secret-would-actually-get-out).
-Mine is small enough that there is nothing to catch yet, which is exactly the wrong moment to find out the gates were never on.
+A dotfiles repo grows toward shell profiles and git config, and that is where a credential tends to land: see [how a secret would actually get out](docs/security.md#how-a-secret-would-actually-get-out).
+Mine holds nothing to catch yet, and that is the wrong moment to find out the gates were never on.
 
 ### `install.sh` and an existing `settings.json`
 
@@ -157,18 +163,19 @@ Keeping yours means going without this repo's hooks; `install.sh` says so, and y
 
 ### Symlinks on Windows
 
-Creating a symlink on Windows is a privilege ordinary users do not hold, and Developer Mode — which grants it — is off on a machine out of the box.
-So copying is what Windows does by default, on any new machine rather than on this one in particular, until someone turns Developer Mode on or runs the install elevated.
+Creating a symlink on Windows is a privilege ordinary users do not hold, and Developer Mode, which grants it, is off on a new machine.
+So Windows copies by default, on any new machine and not only this one, until someone turns Developer Mode on or runs the install elevated.
 Without the privilege the script notices, says so, and copies instead.
 
 Git Bash adds a second requirement that is easy to miss.
-Its `ln -s` copies the file and exits 0 unless `MSYS=winsymlinks:nativestrict` is set, so no link is attempted and nothing reports a problem — turning Developer Mode on by itself would not have changed the outcome.
-`install.sh` now sets that variable on the `ln` call, which makes the OS refusal visible for the `-L` check to catch.
+Its `ln -s` copies the file and exits 0 unless `MSYS=winsymlinks:nativestrict` is set, so it never tries a link and nothing reports a problem.
+Turning Developer Mode on by itself would not have changed the outcome.
+`install.sh` sets that variable on the `ln` call, which makes the OS refusal visible for the `-L` check to catch.
 The variable means nothing to `ln` on macOS or Linux.
 
 With Developer Mode off and the shell not elevated, a native symlink fails with "operation not permitted" and `install.sh` copies.
-Copies work fine, but they do not track edits: after changing anything in this repo, re-run `./install.sh` to push the change back out.
-Turn Developer Mode on and you get real symlinks, and edits propagate on their own.
+Copies work, but they do not track edits: after changing anything in this repo, run `./install.sh` again to push the change out.
+Turn Developer Mode on and you get real symlinks, and edits reach `~/.claude/` on their own.
 
 ### Copies drift both ways
 
@@ -182,22 +189,22 @@ Better still, edit files in this repo, never in `~/.claude`, and turn on Develop
 ### A backup can load as a skill
 
 `install.sh` used to leave backups beside the original, as `<name>.bak.<timestamp>`.
-Harmless for a file, wrong for a skill.
-Claude Code loads every directory under `~/.claude/skills/` as a skill, so `md-to-pdf.bak.20260904-012854` was not sitting quietly on disk — it was a second copy of the skill offered to the model next to the real one, carrying an older description of when to use it.
+That is harmless for a file and wrong for a skill.
+Claude Code loads every directory under `~/.claude/skills/` as a skill, so `md-to-pdf.bak.20260904-012854` was a second copy of the skill, offered to the model beside the real one with an older description of when to use it.
 Every reinstall added one more.
 
-Backups now collect in `~/.claude/backups/`, which nothing loads.
-The general point is worth keeping for anything else installed here: `~/.claude` is not a plain directory, and where a file sits decides whether it runs.
+Backups collect in `~/.claude/backups/`, which nothing loads.
+The general point holds for anything else installed here: `~/.claude` is not a plain directory, and where a file sits decides whether it runs.
 
 ### Settings only load at startup
 
 Claude Code reads `~/.claude/settings.json` when a session starts.
-Installing or editing settings mid-session does nothing until the config reloads — a session that was already running keeps the old rules, including no git approval gate.
+Installing or editing settings mid-session does nothing until the config reloads: a session that was already running keeps the old rules, including no git approval gate.
 Restart Claude Code, or open `/hooks` once, before assuming a change is live.
 
-To confirm the gate is actually working, ask Claude to make a trivial commit.
+To confirm the gate works, ask Claude to make a trivial commit.
 You should get an approval prompt.
-If the commit just goes through, the settings have not reloaded yet.
+If the commit goes through, the settings have not reloaded yet.
 
 ## What's here
 
@@ -212,15 +219,23 @@ If the commit just goes through, the settings have not reloaded yet.
 ## Hooks
 
 Each gate below is an entry in `hooks.PreToolUse` in `claude/settings.json`.
-A `PreToolUse` hook runs before every Bash and PowerShell tool call and can let it through, force an approval prompt, or refuse it outright.
+A `PreToolUse` hook runs before a Bash or PowerShell tool call and can let it through, force an approval prompt, or refuse it.
 The git gate backs its hook with further layers of permission rules; the rest are the hook alone.
 
-These rules hold for every gate here, and all are worth keeping if one is ever edited.
+To drop a gate, delete its entry in `hooks.PreToolUse`.
+To turn a refusal into a prompt, change that entry's `"permissionDecision": "deny"` to `"ask"`.
 
-**`sed` and `grep` only** — no `jq`, `node`, or `python`, none of which are reliably installed.
+### Rules for every gate
+
+Keep these when you edit a gate.
+
+#### `sed` and `grep` only
+
+Use no `jq`, `node`, or `python`, none of which are reliably installed.
 Keep it that way, or a hook will silently stop firing on a machine that lacks the dependency.
 
-**Test the pattern after JSON escaping, not before.**
+#### Test the pattern after JSON escaping
+
 Each pattern is a string inside `settings.json`, so an alternation written `\|\|` at a shell prompt has to survive as `\\|\\|`, and `\.` as `\\.`.
 Get that wrong and the pattern still parses, still exits 0, and matches nothing.
 Test the string pulled back out of `settings.json`, not the one typed into the shell.
@@ -228,84 +243,88 @@ Test the string pulled back out of `settings.json`, not the one typed into the s
 Claude Code then turns each `\\` into `\` once more before the shell runs the hook, so a doubled backslash in the decoded string reaches `grep` single.
 To match a literal backslash, write `[\\]` in the JSON: `grep` reads a backslash inside brackets as itself, and no layer changes it.
 
-**A command can start on a later line.**
+#### A command can start on a later line
+
 The hooks read the raw JSON payload, where a newline in a multi-line command arrives as the two characters `\n`.
 A gate that anchors a command to the start or to `;`, `&&`, `|` must also accept `\n` before it, or the second line of a call slips through.
 
-**A gate runs only when its command does.**
+#### A gate runs only when its command does
+
 The `sed` and uv gates carry an `if` rule, `Bash(sed *)` or `Bash(py*)`, so Claude Code starts them only when some part of the call runs `sed` or a name starting with `py`.
 Claude Code splits the call itself, so `sed -i` inside quotes, a commit message, or a heredoc does not start the gate.
 An `if` rule names one tool, so each gate has a Bash handler and a PowerShell handler with the same command; `tests/hooks-test.sh` fails if the copies differ.
 
-**Text after `git commit` is the git gate's.**
+#### Text after `git commit` belongs to the git gate
+
 The `sed` and uv gates cut the command at `git … commit` before matching, so a commit message that mentions `sed -i` or starts a line with `python` goes through even when a real `sed` elsewhere in the call starts the gate.
 The git gate already shows the whole command for approval.
-`tests/hooks-test.sh` runs each gate as written in `settings.json` against sample commands; run it after changing one.
 
-To drop any one gate, delete its entry in `hooks.PreToolUse`.
-To turn a refusal into a prompt, change that entry's `"permissionDecision": "deny"` to `"ask"`.
+#### Run the test after a change
+
+`tests/hooks-test.sh` runs each gate as written in `settings.json` against sample commands; run it after changing one.
 
 ### The git approval gate
 
-This gate requires explicit approval before Claude runs `git commit` or `git push`.
-Three layers, because the first two have gaps:
+This gate requires your approval before Claude runs `git commit` or `git push`.
+It has three layers, because the first two have gaps:
 
-1. **`hooks.PreToolUse`** — a sed+grep command that reads the command out of the tool payload and forces an approval prompt when it matches `git[^;&|]{0,60}(commit|push)`. This is the layer that matters: it catches compound commands like `cd /repo && git commit`, which the prefix-matching permission rules below miss entirely.
-2. **`permissions.ask`** — rules for `Bash(git commit:*)`, `Bash(git push:*)` and the PowerShell equivalents. `ask` rules beat `allow` rules, so a project cannot grant itself permission later.
-3. **`autoMode.soft_deny`** — stops auto mode's classifier from self-approving a commit, and spells out that "save this" or "version this" is not authorization.
+1. **`hooks.PreToolUse`**: a sed+grep command that reads the command out of the tool payload and forces an approval prompt when it matches `git[^;&|]{0,60}(commit|push)`. This is the layer that matters: it catches compound commands like `cd /repo && git commit`, which the prefix-matching permission rules below miss.
+2. **`permissions.ask`**: rules for `Bash(git commit:*)`, `Bash(git push:*)` and the PowerShell equivalents. `ask` rules beat `allow` rules, so a project cannot grant itself permission later.
+3. **`autoMode.soft_deny`**: stops auto mode's classifier from approving a commit itself, and spells out that "save this" or "version this" is not authorization.
 
 To tighten it from "prompt me" to "never, I'll run git myself", move the entries from `permissions.ask` to `permissions.deny`.
 
 ### The sed gate
 
 This gate denies `sed` edits outright.
-Unlike the git gate it does not prompt, because there is no case where the answer is yes.
+Unlike the git gate it does not prompt, because the answer is never yes.
 
-sed rewrites a file by regex, and code is full of characters a regex reads as syntax — `.`, `*`, `[`, `$`, `/`.
+sed rewrites a file by regex, and code is full of characters a regex reads as syntax: `.`, `*`, `[`, `$`, `/`.
 A pattern that looks literal matches more than it says.
 `s/old/new/g` then replaces every match on every line rather than the one that was meant, `-i` writes the result straight over the file, and the command exits 0 either way.
 Run by hand that is survivable, because you read the diff before moving on.
 Run as one step in a longer task it is not: the mangled line becomes the base for the next several edits, and by the time it surfaces the diff is hard to untangle.
 
 The hook denies a sed invocation carrying `-i`, `--in-place`, or an `s///` substitution.
-It leaves `sed -n '1,50p' file` alone, so paging a file still works — and so does the git gate above, which is itself a `sed -n 's///p'` pipeline.
+It leaves `sed -n '1,50p' file` alone, so paging a file still works, and so does the git gate above, which is itself a `sed -n 's///p'` pipeline.
 The refusal names the alternatives, so the response is to use the `Edit` tool or write a short script, not to look for a way around the hook.
 
-One detail took a try to get right, and is worth keeping if this is ever edited.
+#### It trims the payload before matching
 
-**It trims the payload before matching.**
+This step took a second try to get right; keep it if you edit the gate.
+
 The hook reads the command out of the tool payload with the same `sed -n 's/.*"command"...//p'` extraction as the git gate.
-That extraction is greedy in one direction only: it strips everything before the command but leaves the rest of the JSON — including the `description` field — on the line.
-Any description containing `files,` or `functions,` then reads as an `s,` substitution and blocks an innocent command.
-The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, which is what stops it.
+That extraction is greedy in one direction only: it strips everything before the command but leaves the rest of the JSON, including the `description` field, on the line.
+Any description containing `files,` or `functions,` then reads as an `s,` substitution and blocks a harmless command.
+The second `sed 's/"[,}].*$//'` cuts the line at the end of the command value, which stops it.
 
 ### The uv gate
 
-This gate denies a bare `python`, `pythonw`, or `py`, and any version suffix on the first of those — `python3`, `python3.12`.
+This gate denies a bare `python`, `pythonw`, or `py`, and the first of those with any version suffix, such as `python3` or `python3.12`.
 Like the sed gate it refuses outright, with no prompt, because the answer never changes: run it through `uv`.
 
 The reason is not taste.
-On this machine `python` and `python3` on `PATH` are symlinks to `AppInstallerPythonRedirector.exe` — the Microsoft Store redirector, which opens a Store page and runs nothing.
-There is no Python installed outside uv; the only real interpreter is the one under `%APPDATA%\uv\python\`.
-So `python script.py` cannot succeed here, and the cost of trying is a wasted turn spent reading a failure that looks like a missing file rather than a missing interpreter.
+On this machine `python` and `python3` on `PATH` are symlinks to `AppInstallerPythonRedirector.exe`, the Microsoft Store redirector, which opens a Store page and runs nothing.
+No Python is installed outside uv; the only real interpreter is the one under `%APPDATA%\uv\python\`.
+So `python script.py` cannot succeed here, and trying costs a turn spent reading a failure that looks like a missing file rather than a missing interpreter.
 
-The hook matches those names in command position — at the start of a line, or after `;`, `&&`, `||`, `|`, or `(`.
+The hook matches those names in command position: at the start of a line, or after `;`, `&&`, `||`, `|`, or `(`.
 That anchoring is what makes it worth a hook rather than a permission rule, for the same reason the git gate needs one: it catches `cd src && python app.py`, which prefix matching misses.
 
-It deliberately leaves alone anything under `uv run`, including `uv run python -c ...`, where `python` is an argument rather than the command.
-It also leaves an explicit interpreter path such as `.venv/Scripts/python.exe` alone, which is a deliberate choice, not the habit being corrected, and `python` used as an argument or inside a filename — `which python`, `grep -r python src/`, `cat python_notes.md`.
-`pytest` is untouched too, despite sharing its first two letters with the `py` launcher.
+It leaves alone anything under `uv run`, including `uv run python -c ...`, where `python` is an argument rather than the command.
+It also leaves alone an explicit interpreter path such as `.venv/Scripts/python.exe`, which is a choice and not the habit being corrected, and `python` used as an argument or inside a filename: `which python`, `grep -r python src/`, `cat python_notes.md`.
+`pytest` passes too, though it shares its first two letters with the `py` launcher.
 
 The refusal names the `uv` forms to use, so the correction arrives in the same turn and the next attempt is `uv run`, not a hunt for the interpreter.
 
-This is the gate that argued for the escaping rule at the top of this section: the alternation `\|\|` and the escaped `\.` both had to be written into JSON doubled.
+This gate prompted the rule to [test the pattern after JSON escaping](#test-the-pattern-after-json-escaping): the alternation `\|\|` and the escaped `\.` both had to be written into JSON doubled.
 
-`pip` is not covered.
-`pip install` reaches for the same missing interpreter, and `uv pip` or `uv add` is the replacement — the omission is scope, not a finding that it is safe.
+The gate does not cover `pip`.
+`pip install` reaches for the same missing interpreter, and `uv pip` or `uv add` replaces it; leaving it out is a matter of scope, not a finding that it is safe.
 
 ## Skills
 
-A skill pairs a script with the description that tells Claude when to reach for it.
+A skill pairs a script with the description that tells Claude when to use it.
 
 ### The md-to-pdf skill
 
@@ -313,9 +332,9 @@ A skill pairs a script with the description that tells Claude when to reach for 
 ~/.claude/skills/md-to-pdf/scripts/md2pdf.sh some-document.md
 ```
 
-Converts Markdown to HTML with a small awk script, inlines `assets/print.css`, and prints it with headless Chrome or Edge.
-No pandoc or node needed.
-Layout, including page breaks and repeated table headers, is all in the stylesheet.
+`md2pdf.sh` converts Markdown to HTML with a small awk script, inlines `assets/print.css`, and prints it with headless Chrome or Edge.
+It needs no pandoc or node.
+The stylesheet holds all the layout, including page breaks and repeated table headers.
 See `claude/skills/md-to-pdf/SKILL.md` for details.
 
 ### The repo-template-check skill
@@ -349,13 +368,13 @@ See `claude/skills/memory-audit/SKILL.md` for details.
 A skill installed here lands in `~/.claude/skills/` and is available in every project.
 A skill committed to a repo's own `.claude/skills/` is available only in that repo.
 When the same skill name exists in both, the project copy wins.
-Two copies of one skill is a problem to fix by deleting one, not by keeping them both.
+Two copies of one skill is a problem to fix by deleting one, not by keeping both.
 
 ## Standing instructions
 
-`~/.claude/CLAUDE.md` holds standing instructions Claude reads at the start of every session in every project — the home for preferences that otherwise get re-explained, and then re-explained again.
-It is now in the repo as `claude/CLAUDE.md` and installed like everything else.
-The entries so far arrived two ways: some had to be said once already and would otherwise have to be said again, and some are standards set up front.
+`~/.claude/CLAUDE.md` holds standing instructions Claude reads at the start of every session in every project: the home for preferences I would otherwise explain again and again.
+The repo keeps it as `claude/CLAUDE.md`, and `install.sh` installs it like everything else.
+The entries arrived two ways: some I had said once already and would otherwise say again, and some are standards set up front.
 
 ### The bug that makes the case for it
 
@@ -378,80 +397,80 @@ MSG
 
 Feed the PowerShell form to the Bash tool and nothing errors.
 Bash has no idea `@'` is meant to open anything, so it passes the `@` through as an ordinary character.
-The commit succeeds — with `@` and a space glued to the front of the subject and a stray `@` alone on the last line of the body.
-Nothing complains, the tool reports success, and it looks fine until the log is read back.
+The commit succeeds, with `@` and a space glued to the front of the subject and a stray `@` alone on the last line of the body.
+Nothing complains, the tool reports success, and it looks fine until someone reads the log.
 The repair is an amend.
 
-That happened here while making commit `116e4ff`, and it is the kind of mistake that recurs rather than teaching itself: neither tool signals the mismatch, and the confusion is a permanent property of a setup that exposes both shells.
+That happened here while making commit `116e4ff`, and the mistake recurs rather than teaching itself: neither tool signals the mismatch, and any setup that exposes both shells invites it.
 
-Which is precisely what a global `CLAUDE.md` is for.
-Not one-off errors, but standing facts about this environment that need saying once, somewhere durable:
+A global `CLAUDE.md` is for this.
+It holds standing facts about the environment that need saying once, somewhere lasting, rather than one-off errors:
 
-> This machine exposes both a PowerShell tool and a Bash tool, and their syntaxes do not mix.
+> When a session exposes both a PowerShell tool and a Bash tool, their syntaxes do not mix.
 >
 > In the Bash tool, use heredocs (`<<'EOF'`) and POSIX quoting.
-> The PowerShell here-string `@'...'@` is not Bash syntax and does not fail — Bash passes the `@` through as an ordinary character, silently embedding it in the text.
+> The PowerShell here-string `@'...'@` is not Bash syntax and does not fail: Bash passes the `@` through as an ordinary character, silently embedding it in the text.
 >
-> In the PowerShell tool the reverse holds, and `&&` and `||` are parse errors in Windows PowerShell 5.1.
+> In the PowerShell tool, write `A; if ($?) { B }` in place of `A && B`: `&&` and `||` are parse errors in Windows PowerShell 5.1.
 
-The general shape is worth noticing: anything corrected twice in two different sessions is a candidate.
-A correction that only lives in one conversation is gone when that conversation ends.
+The general rule: anything corrected in two different sessions is a candidate.
+A correction made only in a conversation ends with it.
 
 ### The preference that makes the same case
 
-The wrapping convention is not a bug, which is the point — the file is for anything that would otherwise be re-explained, and preferences qualify.
+The wrapping convention is not a bug, which is the point: the file is for anything I would otherwise explain again, and preferences qualify.
 Prose here was hard-wrapped to eighty columns, which splits sentences across lines and makes a one-word edit reflow every line after it: the diff reports a paragraph changed when a word did.
 The convention that fixes it is one sentence per line, breaking at sentence boundaries only.
 Markdown joins the lines back into a paragraph when rendered, so the output is identical and only the diffs improve.
 
-Left in a conversation, that preference lasts until the conversation ends and the next session goes back to wrapping at eighty.
+Left in a conversation, that preference lasts until the conversation ends, and the next session goes back to wrapping at eighty.
 Written down here, it holds in every repo, including ones that have never heard of it.
 
-This README was written in the old style and converted in one pass, which is what the rule asks for: a whole-file change of its own rather than a paragraph quietly reflowed while editing something else.
+I wrote this README in the old style and converted it in one pass, as the rule asks: a whole-file change of its own rather than a paragraph quietly reflowed while editing something else.
 
 ### The entry chosen rather than corrected
 
 Orwell's six rules from *Politics and the English Language* are in there too.
 Where the wrapping rule governs the line breaks, these govern the words: cut what can be cut, prefer the short word, prefer the active, and skip the jargon when a plain word carries the same meaning.
-His sixth rule keeps the other five honest — break any of them sooner than say something clumsy — which matters, because a style rule applied past the point of sense costs more than it saves.
+His sixth rule, to break any of them sooner than say anything barbarous, limits the other five, and that matters because a style rule applied past the point of sense costs more than it saves.
 
 That entry arrived differently from the ones above.
 Nothing went wrong first: no mangled commit, no paragraph reflowed for one word.
-It is a standard set up front, which is the other legitimate way in.
-The bar is not only "this has gone wrong twice" — it is also "this is general and durable enough to be worth saying before it costs anything."
-What stays out is the preference that applies to one file, or the rule that would read as a surprise six months from now.
+It is a standard set up front, which is the other fair way in.
+The bar is not only "this has gone wrong twice"; it is also "this is general and lasting enough to say before it costs anything".
+What stays out is the preference that applies to one file, or the rule that would surprise a reader six months from now.
 
 ### Instructions are not enforcement
 
-Worth being honest about the ceiling.
-`CLAUDE.md` is advice the model reads, not a rule the machine applies — it lowers the odds, it does not remove them.
-The `PreToolUse` hook that already gates commits could genuinely enforce this one: match `@'` in a Bash tool command and refuse it, the same way the gate stops an unapproved commit.
-If the written instruction proves not to be enough, that is the escalation rather than wording it more emphatically.
+This approach has a limit.
+`CLAUDE.md` is advice the model reads, not a rule the machine applies: it lowers the odds and does not remove them.
+The `PreToolUse` hook that gates commits could enforce this one: match `@'` in a Bash tool command and refuse it, the same way the gate stops an unapproved commit.
+If the written instruction proves not enough, that is the next step, rather than wording it more forcefully.
 
 ### One caveat on contents
 
 A global `CLAUDE.md` gets committed and pushed like everything else here, so [Security](docs/security.md) applies to it in full.
-It is also a natural place to drift into recording machine specifics — absolute paths, host names, which drive holds what.
+It also invites machine specifics: absolute paths, host names, which drive holds what.
 Keep it to preferences and conventions, and it stays portable to the next machine.
 
 ### What belongs here, and what belongs in a skill
 
-Everything in this file is read at the start of every session in every project, whether or not that session touches the subject.
+Claude reads everything in this file at the start of every session in every project, whether or not the session touches the subject.
 While it stays short that costs nothing.
-A long guide would cost something every time, including in the sessions that never write a word of prose.
+A long guide would cost something every time, including in sessions that never write a word of prose.
 
 A skill is the other half of the pair.
-It installs to `~/.claude/skills/` and is available everywhere, exactly like this file, but it loads only when the work matches its description.
-So the choice is not where the instructions live — both are global — but when they are paid for.
+It installs to `~/.claude/skills/` and is available everywhere, like this file, but it loads only when the work matches its description.
+So the choice is not where the instructions live, since both are global, but when they are paid for.
 
-The test: instructions that must shape work nobody thought to ask about, such as a commit message, a code comment, or a reply in the session, have to be always-on and belong here.
-Instructions that only matter once someone sits down to a particular kind of task can be ten times longer as a skill and cost nothing the rest of the time.
+The test: instructions that must shape work nobody thought to ask about, such as a commit message, a code comment, or a reply in the session, have to be always on and belong here.
+Instructions that matter only for a particular kind of task can be ten times longer as a skill and cost nothing the rest of the time.
 
-Writing style is the worked example rather than the whole of it.
+Writing style is the worked example, not the whole of it.
 Orwell's six rules apply to every sentence produced in any session, so they belong in this file.
-A longer style guide — examples, before and after pairs, a checklist — would not, and would sit better as a `writing-style` skill that this file points at.
+A longer style guide, with examples, before and after pairs, and a checklist, would not, and would sit better as a `writing-style` skill that this file points at.
 
-The same split is waiting for anything else that grows past a few lines: review checklists, commit message conventions, a house style for diagrams.
+The same split applies to anything else that grows past a few lines: review checklists, commit message conventions, a house style for diagrams.
 The test is the same each time, and [Split standing instructions between CLAUDE.md and skills](TODO.md#split-standing-instructions-between-claudemd-and-skills) records what is left to decide.
 
 ## Security
