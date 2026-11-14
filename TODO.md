@@ -10,12 +10,12 @@ Delete an item once it is done, along with its plan.
 - [Markdown audit skill](docs/plans/markdown-audit.md): audit a repo's Markdown against its pre-commit hooks, its writing rules, and an opinion on how its files fit together.
 - [New-machine setup](docs/plans/new-machine.md): install the tools the config assumes, check the result, and put the steps in one order.
 - [VS Code settings](docs/plans/vscode-settings.md): version VS Code's settings, keybindings, and extensions list here.
+- [Prune install backups](docs/plans/prune-backups.md): `./install.sh --keep N` keeps the newest N backups of each file and leaves Claude Code's own alone.
 
 ## Small tasks
 
 - Turn on private vulnerability reporting, which [SECURITY.md](SECURITY.md) sends reports through; [repo-template's README](https://github.com/francisco-camargo/repo-template#use-it) has the command.
 - Delete the copy of `md-to-pdf` another repo keeps, as [Skill scope, and duplicates](README.md#skill-scope-and-duplicates) says to.
-- Prune `~/.claude/backups/`, which gains a copy on every install and loses none, with a `--keep N` or a date cutoff.
 - As each item lands, replace the matching part of [francisco-camargo](https://github.com/francisco-camargo/francisco-camargo)'s notes with a link here: the ssh-agent block and git credentials, VS Code settings, and the WSL fixes.
 
 ## Later
