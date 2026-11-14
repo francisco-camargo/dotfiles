@@ -24,6 +24,10 @@ A plan is one file in `docs/plans/`, named for the work in kebab case, such as `
 
 - [ ] <A file the work makes stale or incomplete>: <what it should say once the work lands.>
 
+## People to tell
+
+- [ ] <Who>: <what they need to know>, <when: before a step, once a step lands, by a date, or when the plan is done>.
+
 ## Open questions
 
 - <A decision that waits on the owner, with the option you lean towards.>
@@ -65,6 +69,14 @@ A task list of the files that must change for the repo's docs to match the work:
 The plan is deleted once done, so anything it decided that a reader will need later goes into one of these files: the design into `docs/`, a convention into `CLAUDE.md`, the reason for a choice into the README or a commit message.
 Tick an item in the commit that makes the change, which is usually the commit of the step that made the doc stale.
 
+### People to tell
+
+A task list of the people and parties the work affects, each with what they need to hear and when.
+Look for anyone who uses what changes, depends on its behaviour, owns something it touches, or must approve it: users of a repo or a template, collaborators, the author of a vendored file, a team, a service's support.
+Tie each item to a trigger the plan can see, such as "before step 3", "once the change is pushed", or a date; "eventually" is no trigger.
+Tick an item once the owner confirms the message went out.
+When nobody needs telling, write "Nobody" under the heading rather than deleting it, so the question was asked.
+
 ### Open questions
 
 Decisions that wait on the owner.
@@ -75,5 +87,5 @@ When the list is empty, delete the heading.
 ### Done when
 
 A check someone can run or read, such as "the skill finds the same problems on commit `0a2d48e` that the hand audit did".
-The plan is done when the check passes and every item under Docs to update is ticked.
+The plan is done when the check passes and every item under Docs to update and People to tell is ticked.
 Then delete the plan and its line in `TODO.md`.
