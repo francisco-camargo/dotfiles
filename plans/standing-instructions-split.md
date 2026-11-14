@@ -30,7 +30,7 @@ None.
 - **Where the line falls:** what stays in the short core, and what moves.
 - **Triggering:** whether a skill's `description` loads it reliably for prose work, which is a vaguer trigger than "render this Markdown to PDF".
 - **One skill or several:** a skill per subject, or one `house-style` skill for all of it.
-- **The structure opinion:** whether the [Markdown audit plan](markdown-audit.md)'s opinion on how a repo's Markdown fits together becomes the style skill's first part.
+- **The structure opinion:** whether the markdown-audit skill's [structure rules](../claude/skills/markdown-audit/references/structure.md), on how a repo's Markdown fits together, become the style skill's first part.
 
 ## Done when
 

@@ -6,7 +6,6 @@ Delete an item once it is done, along with its plan.
 
 ## Next
 
-- [Markdown audit skill](plans/markdown-audit.md): audit a repo's Markdown against its pre-commit hooks, its writing rules, and an opinion on how its files fit together.
 - [New-machine setup](plans/new-machine.md): install the tools the config assumes, check the result, and put the steps in one order.
 - [VS Code settings](plans/vscode-settings.md): version VS Code's settings, keybindings, and extensions list here.
 - [Uninstall](plans/uninstall.md): `./install.sh --uninstall` removes what the install placed and leaves anything that differs.

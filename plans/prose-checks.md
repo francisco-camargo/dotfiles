@@ -11,7 +11,7 @@ Three, to decide together, since they cover the same rules: a hook after Claude 
 ### Check Markdown after Claude writes it
 
 - **What it catches:** em dashes and words that date a sentence, as Claude writes them, so it fixes them in the same turn. Claude put "today" into TODO.md while drafting [Check prose with Vale](#check-prose-with-vale), and caught it only on rereading.
-- **Form:** a `PostToolUse` hook on `Edit` and `Write` for `.md` files that runs the [Markdown audit](markdown-audit.md)'s `patterns.awk` on the file and hands what it finds back to Claude, so the patterns live in one script.
+- **Form:** a `PostToolUse` hook on `Edit` and `Write` for `.md` files that runs the markdown-audit skill's [patterns.awk](../claude/skills/markdown-audit/scripts/patterns.awk) on the file and hands what it finds back to Claude, so the patterns live in one script.
 - **Overlap:** a check at commit also catches the owner's own edits; this hook catches only Claude's, but sooner.
 
 ### Check prose with Vale
