@@ -97,25 +97,28 @@ Where a repo has `TODO.md` or `plans/`, check them against the layout the [plann
 claude/skills/markdown-audit/
   SKILL.md                 the three passes, the report, the approval step
   references/structure.md  the structure opinion, read in pass 3
-  scripts/check.sh         pre-commit run, pattern checks, line counts, link graph
+  scripts/check.sh         pre-commit run, line counts, and the two checks below
+  scripts/patterns.awk     pattern checks, each hit tagged with its rule
+  scripts/links.awk        the link graph
+tests/markdown-audit-test.sh  runs check.sh on a scratch repo with known problems
 ```
 
 The structure opinion goes in `references/` so `SKILL.md` stays short and the opinion loads only for pass 3.
 If a writing style skill is split out of `CLAUDE.md`, as [Split standing instructions between CLAUDE.md and skills](standing-instructions-split.md) expects, the opinion can move into it as its first part.
 
-The [prose checks plan](prose-checks.md) covers the same pattern checks; its hook will call `check.sh`, so the patterns live in one script.
+The [prose checks plan](prose-checks.md) covers the same pattern checks; its hook will run `patterns.awk` on the file Claude wrote, so the patterns live in one script.
 
 ## Steps
 
 - [x] Settle the open questions, and the structure opinion with its line counts.
-- [ ] Write `check.sh` and run it on this repo.
+- [x] Write `check.sh` and run it on this repo.
 - [ ] Write `SKILL.md` and `references/structure.md`, and install the skill.
 - [ ] Run the skill on this repo, `repo-template`, and one repo with no `CLAUDE.md` and no pre-commit config, and fix what the runs show.
 
 ## Docs to update
 
 - [ ] `README.md`: list the skill in the file table and the skills list.
-- [x] [The prose checks plan](prose-checks.md): say its hook calls `check.sh`, and drop the open question on one list of patterns.
+- [x] [The prose checks plan](prose-checks.md): say its hook runs `patterns.awk`, and drop the open question on one list of patterns.
 - [ ] [The planning skill](../claude/skills/planning/SKILL.md): link to this skill for checking a repo's plans, if the audit takes that on.
 
 ## Updates to send
