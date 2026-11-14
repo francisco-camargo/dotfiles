@@ -151,6 +151,15 @@ EOF
   check "an edit already there is not" silent "TODO.md |"
   check "a hook with no files to check is not shown" silent "no match"
 
+  # A repo can keep its config elsewhere and name it at install time.
+  git checkout --quiet -- .
+  mkdir gates
+  git mv .pre-commit-config.yaml gates/config.yaml
+  git commit --quiet -am "move config"
+  pre-commit install -c gates/config.yaml >/dev/null
+  echo "xx" >>orphan.md
+  "$check_sh" >"$tmp/out" || true
+  check "the config the hook names is used" says "strip x"
 else
   echo "skip  pre-commit is not installed"
 fi

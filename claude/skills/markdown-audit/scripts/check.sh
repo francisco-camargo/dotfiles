@@ -53,11 +53,21 @@ for f in "${md[@]}"; do
 done
 [ "$found" = 1 ] || echo "  (no CLAUDE.md in the repo)"
 
+# A repo can keep its config elsewhere, installed with `pre-commit install -c`,
+# and the hook it installs records that path.
+config=.pre-commit-config.yaml
+if [ "$git" = 1 ]; then
+  hook="$(git rev-parse --git-path hooks)/pre-commit"
+  named="$(grep -os -- "--config=[^' )]*" "$hook" | head -n 1 | tr '\\' / || true)"
+  named="${named#--config=}"
+  [ -n "$named" ] && [ -f "$named" ] && config="$named"
+fi
+
 echo
 echo "pre-commit:"
 if [ "$run_pre_commit" = 0 ]; then
   echo "  skipped (--no-pre-commit)"
-elif [ ! -f .pre-commit-config.yaml ]; then
+elif [ ! -f "$config" ]; then
   echo "  no .pre-commit-config.yaml (repo-template-check offers one)"
 elif ! command -v pre-commit >/dev/null 2>&1; then
   echo "  pre-commit is not installed"
@@ -69,7 +79,8 @@ else
     echo "  the working tree had uncommitted changes before the run"
     base="$(git stash create)"
   fi
-  if out="$(pre-commit run --all-files --color never 2>&1)"; then
+  [ "$config" = .pre-commit-config.yaml ] || echo "  config: $config, as the installed hook names it"
+  if out="$(pre-commit run --all-files --color never -c "$config" 2>&1)"; then
     echo "  every hook passed"
   else
     printf '%s\n' "$out" | grep -Ev '(Passed|Skipped)$' | sed 's/^/  /'
