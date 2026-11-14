@@ -115,12 +115,14 @@ Nobody is going to type a password into `settings.json`.
 The realistic leak is this repo starting to track a file that already holds a credential.
 Two places it could come from, and the repo is growing toward both.
 
-**One: the auth token, which already sits in the directory this repo mirrors.**
+### The auth token, in the directory this repo mirrors
+
 `~/.claude/.credentials.json` holds it.
 Nothing copies it, because `install.sh` names every file it places ([The directory this installs into is full of secrets](#the-directory-this-installs-into-is-full-of-secrets)).
 Swap that allowlist for a sweep of `~/.claude` and the token ships with the rest.
 
-**Two: the config files queued up to arrive next.**
+### The config files queued up next
+
 [What else could live here](../TODO.md#what-else-could-live-here) reaches for shell profiles, global git config, VS Code settings, and a bootstrap script.
 Every one of those is a place a credential hides: a remote URL with a token in `.gitconfig`, a credential helper, an extension token in VS Code's own `settings.json`, an `export` in `.bashrc`.
 
