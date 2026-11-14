@@ -22,7 +22,7 @@ The template comes from `$REPO_TEMPLATE`, else `~/git/repo-template`, else a fre
 The script does the fixed checks and changes nothing:
 
 - **Template:** the clone it used, its version, and whether that clone is behind its upstream or has uncommitted changes.
-- **Project:** whether the pre-commit hook is installed and whether the GitHub repo is public or private.
+- **Project:** whether the pre-commit hook is installed, whether the GitHub repo is public or private, and whether the rules in force on its default branch block deleting it and force pushes to it.
 - **Each template file:** missing, identical (ignoring line endings), or differs.
 - **Each file that differs:** the template's lines the project's copy lacks, compared with whitespace and comments stripped.
 
@@ -67,6 +67,10 @@ When `.pre-commit-config.yaml` was copied or changed:
 
 Point at the GitHub settings in repo-template's README, under "Use it": push protection, a branch ruleset, and private vulnerability reporting.
 A public repo needs them now; a private one needs them the day it is made public.
+
+Whatever was adopted, if the report says a public repo's default branch is unprotected, say so, and offer the ruleset command from repo-template's README section "Protect the default branch".
+Run it only once the user says yes: it changes the repo's settings on GitHub.
+On a private repo GitHub refuses to list rules, and on a free plan enforces none, so mention the ruleset only as a step for the day it goes public.
 
 End with a message that repeats what was left out and why, and what still waits on the user, since explanations given between steps may not have reached them.
 

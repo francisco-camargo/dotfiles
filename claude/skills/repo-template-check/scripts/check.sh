@@ -49,6 +49,24 @@ version="$(git -C "$template_repo" describe --tags --always 2>/dev/null || echo 
 echo "template: $template_repo ($version, $origin)"
 echo "project:  $project"
 
+# Whether the rules in force on the default branch block its deletion and
+# force pushes to it, the two that repo-template's README asks every repo for.
+branch_rules() {
+  local branch types gaps=""
+  branch="$(cd "$project" && gh repo view --json defaultBranchRef -q .defaultBranchRef.name 2>/dev/null)" \
+    || { echo "unknown, could not read the default branch"; return; }
+  # A private repo on a free plan gets a 403 here: GitHub enforces no rules there.
+  types="$(cd "$project" && gh api "repos/{owner}/{repo}/rules/branches/$branch" --jq '.[].type' 2>/dev/null)" \
+    || { echo "none in force on $branch (GitHub refused to list them)"; return; }
+  grep -qx deletion <<<"$types" || gaps="$gaps, deletion allowed"
+  grep -qx non_fast_forward <<<"$types" || gaps="$gaps, force pushes allowed"
+  if [ -z "$gaps" ]; then
+    echo "$branch blocks deletion and force pushes"
+  else
+    echo "$branch unprotected: ${gaps#, }"
+  fi
+}
+
 if git -C "$project" rev-parse --git-dir >/dev/null 2>&1; then
   hooks="$(cd "$project" && git rev-parse --git-path hooks)"
   case "$hooks" in /*) ;; *) hooks="$project/$hooks" ;; esac
@@ -62,6 +80,9 @@ if git -C "$project" rev-parse --git-dir >/dev/null 2>&1; then
     visibility="$(cd "$project" && gh repo view --json visibility -q .visibility 2>/dev/null || echo unknown)"
   fi
   echo "  GitHub visibility: $visibility"
+  if [ "$visibility" != unknown ]; then
+    echo "  default branch rules: $(branch_rules)"
+  fi
 else
   echo "  not a git repository"
 fi
