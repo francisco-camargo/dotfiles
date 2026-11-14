@@ -20,7 +20,7 @@ Delete an item once it is done, along with its plan.
 
 ## Later
 
-- [Hook scripts](docs/plans/hook-scripts.md): make the hooks easy to adopt for someone who keeps their own `settings.json`.
+- [Hook scripts](docs/plans/hook-scripts.md): make the gates easy to adopt for someone who keeps their own `settings.json`.
 - [Proposed hooks](docs/plans/proposed-hooks.md): block `pip install`, staging everything, and edits to installed copies, and name `--no-verify` in the commit prompt.
 - [Prose checks](docs/plans/prose-checks.md): check the writing rules by machine, with Vale or a hook after Claude writes Markdown.
 - [Spelling](docs/plans/spelling.md): decide whether `cspell` runs only in the editor or also at commit beside `typos`.
