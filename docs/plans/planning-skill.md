@@ -37,7 +37,7 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 - [x] Have plans list the docs they make stale, and close only once those are updated.
 - [x] Have plans list the people to tell, and when.
 - [x] Widen that list to tickets, email threads, and chat channels.
-- [ ] Run the skill on the [Markdown audit plan](markdown-audit.md) to fit it to the template.
+- [x] Run the skill on the [Markdown audit plan](markdown-audit.md) to fit it to the template.
 - [ ] Fit the other plans to the template, one commit each.
 
 ## Docs to update
@@ -49,10 +49,6 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 ## Updates to send
 
 None: the skill runs only on this repo's owner's machines, and no ticket tracks it.
-
-## Open questions
-
-- Whether the [Markdown audit skill](markdown-audit.md) checks that a repo follows this layout, or leaves that to this skill. Leaning: the audit checks it and links here, so the rule lives in one place.
 
 ## Done when
 
