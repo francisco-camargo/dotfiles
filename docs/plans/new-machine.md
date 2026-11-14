@@ -28,10 +28,10 @@ A `doctor.sh` would report state and change nothing:
 - whether this clone has a `pre-commit` hook in `.git/hooks/`
 - whether `uv` and `gh` are on PATH
 
-Two of those are worth more than a status line.
 The difference check already exists in `install.sh`, which uses it to decide when to ask before replacing a file, so the doctor can share it.
-And a doctor script is where the test that [Hooks](../hooks.md) demands can live: pull each pattern back out of `settings.json`, feed it a sample tool payload, and confirm it still matches.
-A gate that quietly stopped firing is the failure this repo keeps designing against, and nothing checks for it.
+
+The doctor should also run `tests/hooks-test.sh`, which pulls each gate back out of `settings.json` and checks it against sample commands.
+That test runs only when someone remembers to run it after [editing a gate](../hooks.md#run-the-test-after-a-change), and a gate that quietly stopped firing is the failure this repo keeps designing against.
 
 `sed` and `grep` only, for the reason the hooks are.
 
