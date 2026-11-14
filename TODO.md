@@ -25,7 +25,7 @@ Two smaller pieces instead:
 
 ### Split standing instructions between CLAUDE.md and skills
 
-Described under [What belongs here, and what belongs in a skill](README.md#what-belongs-here-and-what-belongs-in-a-skill).
+Described under [What belongs here, and what belongs in a skill](docs/standing-instructions.md#what-belongs-here-and-what-belongs-in-a-skill).
 
 Nothing is wrong today.
 `CLAUDE.md` is short and every entry in it earns being read every session.
