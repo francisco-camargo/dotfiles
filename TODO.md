@@ -6,7 +6,6 @@ Delete an item once it is done, along with its plan.
 
 ## Next
 
-- [Planning skill](docs/plans/planning-skill.md): structure plan files, and keep this list and the plans in step.
 - [Markdown audit skill](docs/plans/markdown-audit.md): audit a repo's Markdown against its pre-commit hooks, its writing rules, and an opinion on how its files fit together.
 - [New-machine setup](docs/plans/new-machine.md): install the tools the config assumes, check the result, and put the steps in one order.
 - [VS Code settings](docs/plans/vscode-settings.md): version VS Code's settings, keybindings, and extensions list here.
