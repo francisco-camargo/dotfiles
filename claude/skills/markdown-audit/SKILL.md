@@ -20,7 +20,7 @@ It reads only tracked Markdown files, so build output and vendored packages stay
 It prints:
 
 - **Instructions in force:** the global `~/.claude/CLAUDE.md`, the repo's `CLAUDE.md`, and any in a subdirectory, which applies to files under it.
-- **Pre-commit:** each failing hook, and what the fixers changed.
+- **Pre-commit:** each failing hook, run on the Markdown files only, and what the fixers changed.
 - **Pattern hits:** `file:line: rule: text`, each tagged with the `CLAUDE.md` heading of the rule it may break.
 - **Lengths worth a look:** a README past 150 lines, another file past 400, any file under 20.
 - **Links:** files the README does not reach, files nothing links to, files with no link back up, plans `TODO.md` does not link to, and links to a file's own name where an anchor alone would do.

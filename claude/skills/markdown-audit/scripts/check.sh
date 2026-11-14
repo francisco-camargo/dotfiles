@@ -3,9 +3,10 @@
 #
 #   check.sh [project-dir] [--no-pre-commit]
 #
-# Lists the CLAUDE.md files in force, runs pre-commit on every file, and
-# reports pattern hits against the writing rules, file lengths, and the link
-# graph. Only pre-commit's fixers change files; --no-pre-commit skips them.
+# Lists the CLAUDE.md files in force, runs pre-commit on the Markdown files,
+# and reports pattern hits against the writing rules, file lengths, and the
+# link graph. Only pre-commit's fixers change files; --no-pre-commit skips
+# them.
 set -euo pipefail
 
 project="."
@@ -69,6 +70,8 @@ if [ "$run_pre_commit" = 0 ]; then
   echo "  skipped (--no-pre-commit)"
 elif [ ! -f "$config" ]; then
   echo "  no .pre-commit-config.yaml (repo-template-check offers one)"
+elif [ "${#md[@]}" = 0 ]; then
+  echo "  no Markdown files to check"
 elif ! command -v pre-commit >/dev/null 2>&1; then
   echo "  pre-commit is not installed"
 else
@@ -80,7 +83,9 @@ else
     base="$(git stash create)"
   fi
   [ "$config" = .pre-commit-config.yaml ] || echo "  config: $config, as the installed hook names it"
-  if out="$(pre-commit run --all-files --color never -c "$config" 2>&1)"; then
+  # Only the Markdown files, so hooks for other file types skip and the
+  # fixers leave code alone.
+  if out="$(pre-commit run --color never -c "$config" --files "${md[@]}" 2>&1)"; then
     echo "  every hook passed"
   else
     printf '%s\n' "$out" | grep -Ev '(Passed|Skipped)$' | sed 's/^/  /'
