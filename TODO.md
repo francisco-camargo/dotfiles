@@ -10,7 +10,7 @@ Each of these is known to be missing, not merely imagined.
 
 ### Merge `settings.json` instead of replacing it
 
-Described in full under [`install.sh` and an existing `settings.json`](README.md#installsh-and-an-existing-settingsjson).
+Described in full under [`install.sh` and an existing `settings.json`](docs/install.md#installsh-and-an-existing-settingsjson).
 `install.sh` asks before replacing someone's settings.
 What is left is making the hooks easy to adopt for someone who keeps their own.
 
@@ -157,7 +157,7 @@ Each adds a pattern escaped inside JSON, which strengthens the case for moving h
 
 #### Edit the repo, not the installed copy
 
-- **What it catches:** Claude editing `~/.claude/CLAUDE.md`, `settings.json`, or one of this repo's skills in place, which has already lost work once ([copies drift both ways](README.md#copies-drift-both-ways)). The only guard is a rule I have to remember.
+- **What it catches:** Claude editing `~/.claude/CLAUDE.md`, `settings.json`, or one of this repo's skills in place, which has already lost work once ([copies drift both ways](docs/install.md#copies-drift-both-ways)). The only guard is a rule I have to remember.
 - **Form:** a `PreToolUse` hook on `Edit` and `Write` that denies a path `install.sh` places, and says to edit the repo and re-run the installer. It leaves `~/.claude/projects/`, where memory lives, and other skills alone.
 - **Catch:** the hook needs its own list of the paths `install.sh` places, a second source of truth. Either `install.sh` drops a marker beside each copy for the hook to look for, or real symlinks under Developer Mode may make the hook unneeded.
 
@@ -199,7 +199,7 @@ Read [Commit the reference, not the secret](docs/security.md#commit-the-referenc
 
 - **A bootstrap list** of what a machine needs, argued under [Install what this config already assumes](TODO.md#install-what-this-config-already-assumes) — it starts with the tools this repo's own config depends on.
 - **Editor settings** — VS Code, covered on its own in [VS Code settings](#vs-code-settings) below.
-- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](README.md#symlinks-on-windows)). GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
+- **Shell profile** — `.bashrc` for Git Bash, or the PowerShell profile, holding aliases and PATH tweaks. There is no `.bashrc` on this machine at all, and one line earns the file on its own: `export MSYS=winsymlinks:nativestrict` makes every `ln -s` in Git Bash behave the way `install.sh` has to force by hand ([Symlinks on Windows](docs/install.md#symlinks-on-windows)). GitHub's [ssh-agent auto-start block](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/working-with-ssh-key-passphrases#auto-launching-ssh-agent-on-git-for-windows) belongs there too, so a key loads once per session; the block goes in the repo, the key never does.
 - **WSL config** — `/etc/wsl.conf` inside a distro and `.wslconfig` in the Windows home directory. A hand-edited `/etc/resolv.conf` reverts because WSL regenerates it at startup; `generateResolvConf = false` under `[network]` in `wsl.conf` keeps the edit.
 
 ### VS Code settings
@@ -234,7 +234,7 @@ Redoing `settings.json` by hand takes a minute; rebuilding the extension set tak
 So take the extensions list first if the next machine is nearer than the next settings change.
 
 Then pick a single source of truth, and let it be the repo.
-This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](README.md#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
+This matters more for VS Code than it did for Claude Code, because `install.sh` is [copying rather than linking on this machine](docs/install.md#symlinks-on-windows), and VS Code has a settings UI that writes to `%APPDATA%` directly.
 Editing settings through that UI while the repo holds the canonical copy produces two files that disagree, and the next `./install.sh` replaces the newer one with the repo's version.
 The UI-edited file is not lost — `backup()` moves it into `backups/` first — but recovering a change from a backup in `%APPDATA%` is not a workflow anyone wants twice.
 So: edit `vscode/settings.json` in the repo, commit, re-run `./install.sh`.
