@@ -1,6 +1,6 @@
 # dotfiles
 
-Configuration files kept in one place so every machine behaves the same.
+My Claude Code settings, gates, instructions, and skills, kept in git so one `install.sh` gives every machine the same setup.
 
 ## Motivation
 
