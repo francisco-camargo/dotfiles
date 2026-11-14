@@ -168,6 +168,11 @@ Wrap a body at 72 characters.
 Title a pull request as you would a commit subject.
 The body says why the change exists and how to check it; the diff already says what.
 
+## Plans
+
+`TODO.md` orders a repo's work, one line per item, and an item that needs more links to its plan in `docs/plans/`.
+The planning skill says how to write a plan and tick off its steps.
+
 ## Replies in the session
 
 Say how you checked a claim, or say that you did not.
