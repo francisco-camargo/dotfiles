@@ -1,6 +1,6 @@
 ---
 name: planning
-description: Write and maintain a repo's plans, one Markdown file per piece of work in docs/plans/, each with a goal, a task list of steps ticked off as commits land, open questions, and a done-when check, and keep TODO.md a short, ordered list that links to them. Use when asked to plan a piece of work, write or update a plan, tick off progress, split a long TODO list into plans, or decide what to work on next.
+description: Write and maintain a repo's plans, one Markdown file per piece of work in docs/plans/, each with a goal, a task list of steps ticked off as commits land, the docs the work must update, open questions, and a done-when check, and keep TODO.md a short, ordered list that links to them. Use when asked to plan a piece of work, write or update a plan, tick off progress, split a long TODO list into plans, or decide what to work on next.
 ---
 
 # Plan a repo's work
@@ -20,8 +20,9 @@ Read it before writing or changing a plan.
 
 1. Read `TODO.md` and the plans in `docs/plans/`, so the new plan neither repeats one nor contradicts one.
 2. Write `docs/plans/<name>.md` from the template. Fill the goal first; if it will not fit in two sentences, the work is more than one plan.
-3. Add one line to `TODO.md` under the section that matches its priority, linking to the plan.
-4. Present the plan and its steps. The steps are the commit plan: once the owner approves them, take each in turn.
+3. List the docs the work will make stale. Search the repo, and any repo that links into it, for the names of what the work changes: files, commands, settings, headings.
+4. Add one line to `TODO.md` under the section that matches its priority, linking to the plan.
+5. Present the plan and its steps. The steps are the commit plan: once the owner approves them, take each in turn.
 
 Commit the plan and the `TODO.md` line together, before starting the work, so the plan is on record when the first step lands.
 
@@ -33,14 +34,17 @@ A task that fits on one line stays a line in `TODO.md`, with no plan.
 For each step:
 
 1. Do the work.
-2. Tick the step (`- [x]`) in the plan.
-3. Stage the work and the ticked plan together, and commit.
+2. Update the docs the step made stale, and tick their items under Docs to update.
+3. Tick the step (`- [x]`) in the plan.
+4. Stage the work, the docs, and the ticked plan together, and commit.
 
-When the work changes the plan, change the plan in the same commit: add a step it turned up, delete one that no longer applies, move a decided question's answer into the section it affects.
+When the work changes the plan, change the plan in the same commit: add a step it turned up, add a doc it made stale, delete one that no longer applies, move a decided question's answer into the section it affects.
 
-When the last step is ticked, run the done-when check.
-If it passes, delete the plan and its `TODO.md` line in one commit.
-If it fails, add the steps that would make it pass.
+When the last step is ticked, close the plan:
+
+1. Run the done-when check. If it fails, add the steps that would make it pass.
+2. Read the plan once more for anything a reader will need after it is deleted, such as a design, a convention, or the reason for a choice. Move each into the doc where it belongs, and add that doc to Docs to update.
+3. Once every box is ticked, delete the plan and its `TODO.md` line in one commit.
 
 ## Keep `TODO.md` short
 

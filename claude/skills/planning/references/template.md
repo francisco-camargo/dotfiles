@@ -20,6 +20,10 @@ A plan is one file in `docs/plans/`, named for the work in kebab case, such as `
 - [ ] <A step about the size of one commit, in the imperative.>
 - [ ] <The next step.>
 
+## Docs to update
+
+- [ ] <A file the work makes stale or incomplete>: <what it should say once the work lands.>
+
 ## Open questions
 
 - <A decision that waits on the owner, with the option you lean towards.>
@@ -55,6 +59,12 @@ Each step is about one commit, so the list doubles as the commit plan the owner 
 Tick a step (`- [x]`) in the same commit that completes it, never in a later one.
 Add a step when the work turns one up; delete one that stops making sense, rather than ticking it.
 
+### Docs to update
+
+A task list of the files that must change for the repo's docs to match the work: the README, files in `docs/`, a `CLAUDE.md`, a skill, or a page in another repo that links here.
+The plan is deleted once done, so anything it decided that a reader will need later goes into one of these files: the design into `docs/`, a convention into `CLAUDE.md`, the reason for a choice into the README or a commit message.
+Tick an item in the commit that makes the change, which is usually the commit of the step that made the doc stale.
+
 ### Open questions
 
 Decisions that wait on the owner.
@@ -65,4 +75,5 @@ When the list is empty, delete the heading.
 ### Done when
 
 A check someone can run or read, such as "the skill finds the same problems on commit `0a2d48e` that the hand audit did".
-When it passes, delete the plan and its line in `TODO.md`.
+The plan is done when the check passes and every item under Docs to update is ticked.
+Then delete the plan and its line in `TODO.md`.
