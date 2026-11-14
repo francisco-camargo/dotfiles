@@ -7,7 +7,7 @@ Configuration files kept in one place so every machine behaves the same.
 This repo holds the configuration I want on every machine and in every project.
 It covers Claude Code: its settings and [hooks](#hooks), the [instructions](#standing-instructions) it reads each session, and its [skills](#skills), along with VS Code's Markdown lint rules and spelling words.
 [What's here](#whats-here) lists each file and where it installs.
-[Candidates for later](TODO.md#later) are git config, VS Code settings, a shell profile, and the files each repo repeats, such as `.gitignore` and `.gitattributes`.
+[TODO.md](TODO.md) lists what comes next, such as VS Code settings, git config, and a shell profile.
 
 When I settle how a tool should behave, through a setting, a hook, or a rule for Claude, I want to do it **once**, not once per repo or once per machine.
 The hook that makes Claude ask before `git commit` shows the idea: written once here, it holds in every repo on every machine that runs `install.sh`.
