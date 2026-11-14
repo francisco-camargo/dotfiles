@@ -31,7 +31,7 @@ A plan may add sections of its own between Goal and Steps, such as this one and 
 - [x] Rewrite this plan to the template, and move the planning skill to the top of `TODO.md`.
 - [x] Write `claude/skills/planning/SKILL.md`, with the template in `references/template.md`, and install it.
 - [x] Add the rule for `TODO.md` and `docs/plans/` to the global `CLAUDE.md`, in two lines, pointing to the skill for the rest.
-- [ ] Add the skill to the README's file table and skills list.
+- [x] Add the skill to the README's file table and skills list.
 - [ ] Run the skill on the [Markdown audit plan](markdown-audit.md) to fit it to the template.
 - [ ] Fit the other plans to the template, one commit each.
 

@@ -62,6 +62,7 @@ Until then, run `./install.sh` again after each edit, or the change never reache
 | `claude/skills/md-to-pdf/` | `~/.claude/skills/md-to-pdf/` | A [skill](claude/skills/md-to-pdf/SKILL.md) that renders a Markdown file to a print-ready PDF |
 | `claude/skills/repo-template-check/` | `~/.claude/skills/repo-template-check/` | A [skill](claude/skills/repo-template-check/SKILL.md) that checks a repo against repo-template |
 | `claude/skills/memory-audit/` | `~/.claude/skills/memory-audit/` | A [skill](claude/skills/memory-audit/SKILL.md) that moves Claude's per-project memories into visible files |
+| `claude/skills/planning/` | `~/.claude/skills/planning/` | A [skill](claude/skills/planning/SKILL.md) that writes plans in `docs/plans/` and keeps `TODO.md` in step |
 
 ## Hooks
 
@@ -81,6 +82,7 @@ Ask Claude for the task, and it runs the skill:
 - **[md-to-pdf](claude/skills/md-to-pdf/SKILL.md)** renders a Markdown file to a print-ready PDF through headless Chrome or Edge, with no pandoc or node.
 - **[repo-template-check](claude/skills/repo-template-check/SKILL.md)** compares a repo with [repo-template](https://github.com/francisco-camargo/repo-template), the files every project starts with, and offers what is missing.
 - **[memory-audit](claude/skills/memory-audit/SKILL.md)** finds Claude Code's per-project memories and, once you approve, moves each into a file you can see.
+- **[planning](claude/skills/planning/SKILL.md)** writes a plan for a piece of work in `docs/plans/`, with steps ticked off as commits land, and keeps `TODO.md` a short, ordered list that links to the plans.
 
 ### Skill scope, and duplicates
 
